@@ -1,0 +1,3325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#de2910">
+<title>Shaikh China Sourcing — ERP</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0a0a0a; --muted:#5d6470; --red:#de2910; --red-dark:#b91c0c;
+  --orange:#ff6a00; --cream:#fff7ed; --line:#e5e7eb;
+  --card:#ffffff; --panel:#fbfaf8; --ok:#1a9b5c; --ok-soft:#e6f7ee;
+  --radius:20px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',ui-sans-serif,system-ui,sans-serif; background:#fff; color:var(--ink);
+  min-height:100vh; line-height:1.5; letter-spacing:-.01em;
+}
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
+  background-image:linear-gradient(90deg, #de29100b 1px, transparent 1px), linear-gradient(#de29100b 1px, transparent 1px);
+  background-size:44px 44px;
+}
+h1,h2,h3,.display{font-family:'Inter',sans-serif; letter-spacing:-.05em; font-weight:900}
+button{font-family:inherit; cursor:pointer}
+input,select,textarea{font-family:inherit}
+a{color:var(--red)}
+
+/* ---------- shell ---------- */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 24px; border-bottom:1px solid var(--line);
+  position:sticky; top:0; background:#ffffffc7; -webkit-backdrop-filter:blur(20px) saturate(145%); backdrop-filter:blur(20px) saturate(145%); z-index:50;
+}
+.brand{display:flex; align-items:center; gap:12px}
+.brand-logo{width:46px; height:46px; object-fit:contain; border-radius:10px; background:transparent}
+.brand-mark{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--red),var(--orange));color:#fff;display:grid;place-items:center;font-size:12px;font-weight:900;letter-spacing:-.03em;box-shadow:0 8px 18px #de291022}
+.brand-copy{display:flex; align-items:baseline; gap:10px; flex-wrap:wrap}
+.brand .display{font-size:22px; letter-spacing:-.04em}
+.brand .display b{color:var(--red); font-weight:900}
+.brand small{color:var(--muted); font-size:11px; letter-spacing:.14em; text-transform:uppercase; font-weight:700}
+.nav{display:flex; gap:8px}
+.nav button{
+  background:transparent; border:1px solid var(--line); color:var(--muted);
+  padding:9px 18px; border-radius:999px; font-size:13px; font-weight:700; transition:.18s;
+}
+.nav button:hover{color:var(--red); border-color:#de291055}
+.nav button.active{background:var(--ink); border-color:var(--ink); color:#fff}
+.nav button:focus-visible, .btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+  outline:2px solid var(--orange); outline-offset:2px;
+}
+main{max-width:1080px; margin:0 auto; padding:36px 24px 80px; position:relative}
+.view{display:none}
+.view.on{display:block; animation:fade .35s ease}
+@keyframes fade{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:none}}
+@media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important} }
+
+/* ---------- home ---------- */
+.hero{text-align:center; padding:48px 0 20px}
+.hero .eyebrow{
+  color:var(--red-dark); letter-spacing:.02em; text-transform:none; font-size:12px; font-weight:750;
+  background:#fff7ede6; border:1px solid #de291033; border-radius:999px; padding:7px 14px; display:inline-block;
+}
+.hero h1{font-size:clamp(40px,7vw,64px); line-height:.98; margin:18px 0 8px}
+.hero h1 span{color:var(--red)}
+.hero p{color:var(--muted); max-width:520px; margin:0 auto; font-weight:500}
+.home-cards{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:36px}
+@media(max-width:700px){.home-cards{grid-template-columns:1fr}}
+.home-card{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  padding:28px; text-align:left; transition:.2s; color:var(--ink); box-shadow:0 2px 10px #0a0a0a08;
+}
+.home-card:hover{border-color:var(--red); transform:translateY(-2px); box-shadow:0 16px 30px #de291014}
+.home-card h2{font-size:24px; margin-bottom:6px; letter-spacing:-.03em}
+.home-card p{color:var(--muted); font-size:14px; font-weight:500}
+.home-card .tag{display:inline-block; margin-top:14px; font-size:12px; font-weight:750; letter-spacing:.04em; color:var(--red)}
+
+/* ---------- track ---------- */
+.track-box{max-width:560px; margin:0 auto}
+.search-row{display:flex; gap:10px; margin-top:18px}
+.search-row input{
+  flex:1; background:#fff; border:1px solid var(--line); border-radius:999px;
+  padding:14px 18px; color:var(--ink); font-size:16px; letter-spacing:.02em;
+}
+.search-row input::placeholder{color:#9aa0aa}
+.btn{
+  background:var(--ink); color:#fff; border:none; border-radius:999px;
+  padding:14px 24px; font-weight:750; font-size:14px; transition:.18s;
+}
+.btn:hover{background:var(--red); transform:translateY(-1px)}
+.btn.ghost{background:#fffc; border:1px solid var(--line); color:var(--ink)}
+.btn.ghost:hover{border-color:var(--red); color:var(--red); background:#fff; transform:none}
+.btn.gold{background:linear-gradient(120deg,var(--orange),var(--red)); color:#fff}
+.btn.gold:hover{filter:brightness(1.08); background:linear-gradient(120deg,var(--orange),var(--red))}
+.btn.whatsapp{background:#128c7e;color:#fff}
+.btn.whatsapp:hover{background:#075e54}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn.sm{padding:9px 16px; font-size:12.5px; border-radius:999px}
+.hint{color:var(--muted); font-size:13px; margin-top:10px; text-align:center}
+.err{color:var(--red-dark); font-size:14px; margin-top:12px; text-align:center; display:none}
+
+/* ---------- order card / route ---------- */
+.order-card{
+  background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+  padding:28px; margin-top:28px; box-shadow:0 2px 10px #0a0a0a08;
+}
+.order-head{display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap}
+.order-head h2{font-size:26px; letter-spacing:-.03em}
+.order-head .tn{color:var(--muted); font-size:13px; letter-spacing:.03em; font-weight:600; margin-top:4px}
+.status-pill{
+  padding:7px 15px; border-radius:999px; font-size:12.5px; font-weight:750;
+  background:#fff0eb; color:var(--red-dark); border:1px solid #de291033;
+  white-space:nowrap;
+}
+.status-pill.done{background:var(--ok-soft); color:var(--ok); border-color:#1a9b5c33}
+
+.route{margin:34px 0 8px; position:relative; padding:26px 48px 0}
+.route-line{position:relative; height:4px; background:#eef0f2; border-radius:99px}
+.route-fill{
+  position:absolute; left:0; top:0; height:100%; border-radius:99px;
+  background:linear-gradient(90deg, var(--orange), var(--red)); transition:width 1s ease;
+}
+.route-stops{position:relative;height:90px;margin-top:14px}
+.stop{
+  width:100px;height:86px;text-align:center;position:absolute;left:var(--stop-position);
+  top:0;transform:translateX(-50%);
+}
+.stop::before{
+  content:""; position:absolute; left:50%; top:-16px; transform:translate(-50%,-50%);
+  width:10px; height:10px; border-radius:50%; background:#eef0f2;
+  border:2px solid var(--line); display:block; margin:0;
+}
+.stop.past::before{background:var(--orange); border-color:var(--orange)}
+.stop.now::before{visibility:hidden}
+.stage-ship{
+  position:absolute;
+  left:50%;
+  top:-16px;
+  width:32px;
+  height:32px;
+  transform:translate(-50%,-50%);
+  z-index:4;
+  font-size:0;
+  line-height:0;
+  filter:drop-shadow(0 3px 6px rgba(10,10,10,.25));
+}
+.stage-ship svg{width:100%;height:100%;display:block;transform:rotate(90deg);transform-origin:center}
+.stop-label{
+  position:absolute;left:50%;top:0;transform:translateX(-50%);width:96px;
+  font-size:10px;line-height:1.35;letter-spacing:.025em;text-transform:uppercase;
+  color:#9aa0aa;font-weight:700;overflow-wrap:anywhere;
+}
+.stop:nth-child(even) .stop-label{top:38px}
+.stop.past .stop-label,.stop.now .stop-label{color:var(--ink)}
+@media(max-width:640px){
+  .preview-modal{padding:18px 14px}
+  .preview-modal .order-card{padding:20px 16px}
+  .preview-modal .route{
+    margin:24px 0 12px;
+    padding:0 0 0 54px;
+    min-height:var(--route-height);
+  }
+  .preview-modal .route-line{
+    position:absolute;
+    left:22px;
+    top:10px;
+    bottom:10px;
+    width:4px;
+    height:auto;
+  }
+  .preview-modal .route-fill{
+    width:100%!important;
+    height:var(--route-position);
+    background:linear-gradient(180deg,var(--orange),var(--red));
+  }
+  .preview-modal .route-stops{
+    min-height:var(--route-height);
+    height:auto;
+    margin-top:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    align-items:stretch;
+  }
+  .preview-modal .stop{
+    position:relative;
+    left:auto;
+    transform:none;
+    width:auto;
+    flex:0 0 auto;
+    min-height:20px;
+    display:flex;
+    align-items:center;
+    text-align:left;
+  }
+  .preview-modal .stop::before{
+    position:absolute;
+    left:-30px;
+    top:50%;
+    transform:translate(-50%,-50%);
+    margin:0;
+    z-index:2;
+  }
+  .preview-modal .stage-ship{
+    left:-30px;
+    top:50%;
+    width:28px;
+    height:28px;
+    transform:translate(-50%,-50%);
+  }
+  .preview-modal .stage-ship svg{transform:none}
+  .preview-modal .stop-label{
+    position:static;
+    width:auto;
+    transform:none;
+    font-size:11px;
+    line-height:1.25;
+    letter-spacing:.035em;
+  }
+}
+
+.meta-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-top:26px}
+.meta{background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:14px}
+.meta label{display:block; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:750; margin-bottom:4px}
+.meta div{font-size:16px; font-weight:700}
+.meta .big{font-size:28px; color:var(--red); letter-spacing:-.03em}
+
+.updates{margin-top:26px}
+.updates h3{font-size:17px; color:var(--ink); margin-bottom:12px; letter-spacing:-.02em}
+.update{
+  display:flex; gap:14px; padding:12px 0; border-bottom:1px dashed var(--line); font-size:14px; font-weight:500;
+}
+.update:last-child{border-bottom:none}
+.update time{color:var(--muted); white-space:nowrap; font-size:13px; min-width:92px; font-weight:600}
+
+/* ---------- admin ---------- */
+.admin-head{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; margin-bottom:22px}
+.admin-head h1{font-size:32px; letter-spacing:-.04em}
+.admin-head p{color:var(--muted);font-size:13px;margin-top:4px}
+.admin-nav{display:flex;gap:8px;flex-wrap:wrap;margin:-8px 0 24px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.admin-nav button{background:transparent;border:1px solid var(--line);border-radius:999px;padding:9px 16px;color:var(--muted);font-weight:750}
+.admin-nav button:hover,.admin-nav button.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.admin-page{display:none}
+.admin-page.on{display:block;animation:fade .2s ease}
+.stat-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin-bottom:26px}
+.stat{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; box-shadow:0 2px 10px #0a0a0a08}
+.stat.action{width:100%;text-align:left;color:var(--ink);cursor:pointer}
+.stat.action:hover{border-color:#fdba74;background:#fff7ed;transform:translateY(-1px)}
+.stat b{font-size:30px; display:block; color:var(--red); letter-spacing:-.03em}
+.stat span{font-size:11px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase; font-weight:700}
+.dashboard-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:26px}
+.dashboard-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:0 2px 10px #0a0a0a08}
+.dashboard-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.dashboard-card h2{font-size:20px;letter-spacing:-.025em}
+.dashboard-card p{color:var(--muted);font-size:12px;margin-top:3px}
+.summary-list{display:grid;gap:8px}
+.summary-list.scrollable{max-height:360px;overflow-y:auto;padding-right:3px}
+.summary-row{
+  width:100%;display:grid;grid-template-columns:minmax(110px,1fr) 2fr auto;align-items:center;gap:12px;
+  background:var(--panel);border:1px solid transparent;border-radius:10px;padding:10px 12px;text-align:left;color:var(--ink);cursor:pointer;
+}
+.summary-row:hover,.summary-row.active{background:#fff7ed;border-color:#fed7aa}
+.summary-row strong{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.summary-row .count{font-size:14px;font-weight:800;color:var(--red);min-width:22px;text-align:right}
+.summary-bar{height:7px;background:#e5e7eb;border-radius:99px;overflow:hidden}
+.summary-bar-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--red));border-radius:99px}
+.dashboard-empty{color:var(--muted);font-size:14px;padding:18px 0;text-align:center}
+.order-filter-note{color:var(--muted);font-size:13px;margin-top:3px}
+.order-page-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.order-tools{
+  display:grid;grid-template-columns:minmax(240px,1.45fr) repeat(5,minmax(135px,.8fr));
+  gap:10px;margin:0 0 16px;padding:14px;background:#fff;border:1px solid var(--line);
+  border-radius:16px;box-shadow:0 2px 10px #0a0a0a08
+}
+.order-tool{position:relative;min-width:0}
+.order-tool label{
+  display:block;color:var(--muted);font-size:9.5px;font-weight:800;letter-spacing:.065em;
+  text-transform:uppercase;margin:0 0 5px 3px
+}
+.order-tool input,.order-tool select{
+  width:100%;height:42px;background:#fff;border:1px solid var(--line);border-radius:10px;
+  color:var(--ink);font:inherit;font-size:13px;font-weight:650;padding:0 12px;outline:none
+}
+.order-tool input{padding-left:39px}
+.order-tool input:focus,.order-tool select:focus{border-color:var(--orange);box-shadow:0 0 0 3px #ff8a1f1a}
+.order-search-icon{
+  position:absolute;left:13px;bottom:12px;width:17px;height:17px;color:var(--muted);pointer-events:none
+}
+.view-toggle{
+  display:inline-flex;align-items:center;padding:3px;background:#f3f4f6;border:1px solid var(--line);
+  border-radius:999px
+}
+.view-toggle button{
+  display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;color:var(--muted);
+  border-radius:999px;padding:7px 11px;font-size:12px;font-weight:750;cursor:pointer
+}
+.view-toggle button svg{width:15px;height:15px}
+.view-toggle button.active{background:#fff;color:var(--ink);box-shadow:0 1px 4px #0a0a0a18}
+.order-card-grid{display:none;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px}
+.order-card-grid.on{display:grid}
+.orders-table-wrap.view-hidden{display:none}
+.admin-order-card{
+  min-width:0;background:#fff;border:1px solid var(--line);border-radius:16px;padding:17px;
+  box-shadow:0 2px 10px #0a0a0a08;transition:.18s
+}
+.admin-order-card:hover{border-color:#fdba74;box-shadow:0 12px 28px #de291012;transform:translateY(-2px)}
+.admin-order-card-head{display:grid;grid-template-columns:62px minmax(0,1fr);gap:13px;align-items:center}
+.order-thumbnail{
+  width:62px;height:62px;border-radius:14px;display:grid;place-items:center;color:#fff;
+  background:linear-gradient(145deg,var(--orange),var(--red))
+}
+.order-thumbnail.shipping{background:linear-gradient(145deg,#0f766e,#14b8a6)}
+.order-thumbnail.trading{background:linear-gradient(145deg,#1f2937,#6b7280)}
+.order-thumbnail svg{width:34px;height:34px}
+.order-thumbnail img{width:100%;height:100%;display:block;object-fit:cover;border-radius:inherit}
+.order-thumbnail.has-image{background:#f3f4f6}
+.order-thumbnail.has-image .thumbnail-fallback{display:none}
+.thumbnail-fallback{display:grid;place-items:center}
+.admin-order-card h3{
+  font-size:17px;line-height:1.22;letter-spacing:-.02em;display:-webkit-box;
+  -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+}
+.admin-order-customer{color:var(--muted);font-size:12.5px;font-weight:650;margin-top:5px}
+.order-card-badges{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:14px 0 13px}
+.order-card-badges .stagechip{
+  font-size:10.5px;font-weight:750;padding:5px 9px;border-radius:999px;
+  background:var(--panel);border:1px solid var(--line)
+}
+.category-chip{background:#eef2ff!important;color:#3730a3!important;border-color:#c7d2fe!important}
+.category-chip.shipping-category{background:#ccfbf1!important;color:#0f766e!important;border-color:#5eead4!important}
+.stage-status-chip{background:#fff7ed!important;color:#9a3412!important;border-color:#fdba74!important}
+.stage-status-chip::before{
+  content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:currentColor;
+  margin-right:5px;vertical-align:1px
+}
+.stage-status-chip.payment-stage{
+  background:#fef3c7!important;color:#92400e!important;border-color:#f59e0b!important;
+  box-shadow:inset 0 0 0 1px #fbbf24
+}
+.order-card-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px}
+.order-card-meta div{min-width:0;background:#f8fafc;border:1px solid #eef0f2;border-radius:10px;padding:9px 10px}
+.order-card-meta label{
+  display:block;color:var(--muted);font-size:9.5px;font-weight:750;letter-spacing:.06em;
+  text-transform:uppercase;margin-bottom:3px
+}
+.order-card-meta strong{display:block;font-size:12.5px;overflow-wrap:anywhere}
+.order-card-progress-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.order-card-progress-head span{color:var(--muted);font-size:11px;font-weight:700}
+.order-card-progress-head strong{color:var(--red-dark);font-size:12px}
+.order-card-progress{height:8px;background:#eef0f2;border-radius:999px;overflow:hidden}
+.order-card-progress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--orange),var(--red))}
+.order-card-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:15px}
+.order-card-actions .btn{width:100%;padding:9px 8px;text-align:center;font-size:11.5px}
+@media(max-width:1180px){.order-tools{grid-template-columns:repeat(3,minmax(150px,1fr))}}
+@media(max-width:980px){.dashboard-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:780px){
+  .dashboard-grid{grid-template-columns:1fr}
+  .summary-row{grid-template-columns:minmax(105px,1fr) 1.4fr auto}
+  .order-page-actions{width:100%;justify-content:space-between}
+  .order-tools{grid-template-columns:1fr 1fr;padding:12px}
+  .order-tool.search-tool{grid-column:1/-1}
+  .order-card-grid{grid-template-columns:1fr}
+}
+@media(max-width:520px){.order-tools{grid-template-columns:1fr}.order-tool.search-tool{grid-column:auto}}
+
+/* ---------- centralized leads ---------- */
+.lead-stats{display:grid;grid-template-columns:repeat(4,minmax(140px,1fr));gap:12px;margin-bottom:18px}
+.lead-stat{
+  width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:16px;color:var(--ink);box-shadow:0 2px 10px #0a0a0a08
+}
+.lead-stat.action:hover{border-color:#fdba74;background:#fff7ed;transform:translateY(-1px)}
+.lead-stat b{display:block;color:var(--red);font-size:28px;letter-spacing:-.04em}
+.lead-stat span{display:block;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+.lead-tools{
+  display:grid;grid-template-columns:minmax(250px,1.5fr) repeat(3,minmax(145px,.7fr));
+  gap:10px;margin:0 0 16px;padding:14px;background:#fff;border:1px solid var(--line);
+  border-radius:16px;box-shadow:0 2px 10px #0a0a0a08
+}
+.lead-source{
+  display:inline-flex;align-items:center;gap:6px;max-width:190px;padding:5px 10px;border-radius:999px;
+  color:#3730a3;background:#eef2ff;border:1px solid #c7d2fe;font-size:11px;font-weight:750
+}
+.lead-source::before{content:"";width:6px;height:6px;border-radius:50%;background:#6366f1;flex:none}
+.lead-status{
+  display:inline-flex;align-items:center;padding:5px 10px;border-radius:999px;border:1px solid var(--line);
+  background:#f8fafc;color:#475569;font-size:11px;font-weight:800;white-space:nowrap
+}
+.lead-status.new{background:#fff1ed;color:#b91c0c;border-color:#fecaca}
+.lead-status.contacted{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
+.lead-status.follow_up{background:#fff7ed;color:#9a3412;border-color:#fed7aa}
+.lead-status.quoted{background:#faf5ff;color:#7e22ce;border-color:#e9d5ff}
+.lead-status.converted{background:#ecfdf5;color:#047857;border-color:#a7f3d0}
+.lead-status.lost{background:#f3f4f6;color:#6b7280;border-color:#d1d5db}
+.lead-contact{display:grid;gap:2px}
+.lead-contact strong{font-size:13px}
+.lead-contact a,.lead-contact span{color:var(--muted);font-size:11px;text-decoration:none}
+.lead-product{max-width:250px}
+.lead-product strong{display:block;font-size:13px}
+.lead-product span{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.lead-dates{font-size:11px;color:var(--muted);line-height:1.65;white-space:nowrap}
+.lead-dates b{color:var(--ink);font-weight:750}
+.lead-dates .due{color:var(--red-dark)}
+.lead-actions{display:flex;gap:6px;flex-wrap:wrap}
+.lead-actions .btn{padding:8px 11px}
+.lead-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.lead-detail-grid .form-full{grid-column:1/-1}
+.lead-detail-grid label{font-size:11px;color:var(--muted);font-weight:750}
+.lead-detail-grid input,.lead-detail-grid select,.lead-detail-grid textarea{
+  width:100%;margin-top:6px;background:#fff;border:1px solid var(--line);border-radius:10px;
+  padding:11px 12px;color:var(--ink);font-size:13px
+}
+.lead-readonly{
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;
+  color:var(--muted);font-size:13px;line-height:1.65;margin-bottom:14px;overflow-wrap:anywhere
+}
+.lead-readonly strong{color:var(--ink)}
+.lead-setup-note{
+  display:none;margin:0 0 16px;padding:13px 15px;border-radius:12px;background:#fff7ed;
+  border:1px solid #fed7aa;color:#9a3412;font-size:13px;font-weight:650
+}
+@media(max-width:850px){
+  .lead-stats{grid-template-columns:1fr 1fr}
+  .lead-tools{grid-template-columns:1fr 1fr}
+  .lead-tools .search-tool{grid-column:1/-1}
+}
+@media(max-width:560px){
+  .lead-stats,.lead-tools,.lead-detail-grid{grid-template-columns:1fr}
+  .lead-tools .search-tool,.lead-detail-grid .form-full{grid-column:auto}
+}
+
+.table-wrap{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow-x:auto; box-shadow:0 2px 10px #0a0a0a08}
+table{width:100%; border-collapse:collapse; min-width:760px}
+th{
+  text-align:left; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+  padding:14px 16px; border-bottom:1px solid var(--line); font-weight:750;
+}
+td{padding:14px 16px; border-bottom:1px solid var(--line); font-size:14px; vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr.row:hover td{background:#fff7ed80}
+.mini-bar{width:110px; height:8px; background:#eef0f2; border-radius:99px; overflow:hidden}
+.mini-fill{height:100%; background:linear-gradient(90deg,var(--orange),var(--red)); border-radius:99px}
+.pct{font-weight:750; color:var(--red-dark); font-size:13px; margin-left:8px}
+td .stagechip{
+  font-size:11.5px; font-weight:750; padding:5px 12px; border-radius:99px;
+  background:var(--panel); border:1px solid var(--line); white-space:nowrap;
+}
+.copy-tn{background:none; border:none; color:var(--red); font-size:13px; font-weight:700; padding:0}
+.copy-tn:hover{text-decoration:underline}
+.empty{padding:40px; text-align:center; color:var(--muted)}
+.section-head{display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap; margin:30px 0 14px}
+.section-head h2{font-size:24px}
+.staff-chip{display:inline-flex; align-items:center; gap:7px; padding:6px 11px; border:1px solid var(--line); border-radius:999px; font-size:12px; font-weight:700; color:var(--muted)}
+.staff-dot{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+.activity-filters{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.activity-filters select{background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 14px;font-weight:650;color:var(--ink)}
+.activity-detail{max-width:360px;white-space:normal;color:var(--muted);font-size:12px}
+
+/* ---------- modal / form ---------- */
+.modal-bg{
+  position:fixed; inset:0; background:rgba(10,10,10,.55); backdrop-filter:blur(4px);
+  display:none; align-items:flex-start; justify-content:center; z-index:100; padding:40px 16px; overflow-y:auto;
+}
+.modal-bg.on{display:flex}
+.modal{
+  background:#fff; border:1px solid var(--line); border-radius:var(--radius);
+  width:100%; max-width:640px; padding:28px; animation:fade .25s ease; box-shadow:0 30px 70px #0a0a0a2e;
+}
+.modal h2{font-size:24px; margin-bottom:18px; letter-spacing:-.03em}
+.whatsapp-ready-modal{max-width:520px}
+.whatsapp-ready-modal p{color:var(--muted);font-size:14px;line-height:1.55}
+.whatsapp-message-preview{
+  margin-top:16px;padding:15px;border:1px solid #b7e4dc;border-radius:12px;
+  background:#f0fdf9;color:var(--ink);font-size:13px;line-height:1.55;white-space:pre-wrap
+}
+.preview-modal{max-width:980px}
+.preview-modal-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}
+.preview-modal-head h2{margin:0}
+.preview-modal .order-card{margin-top:0}
+.preview-modal .order-head h2{margin-bottom:0}
+.table-actions{display:flex;gap:7px;align-items:center;flex-wrap:wrap;white-space:nowrap}
+@media(min-width:781px){
+  .orders-table-wrap{overflow-x:hidden}
+  .orders-table-wrap table{table-layout:fixed;min-width:0}
+  .orders-table-wrap th,
+  .orders-table-wrap td{
+    padding:12px 8px;
+    font-size:12.5px;
+    overflow-wrap:anywhere;
+  }
+  .orders-table-wrap th{font-size:9.5px;letter-spacing:.055em}
+  .orders-table-wrap th:nth-child(1){width:11%}
+  .orders-table-wrap th:nth-child(2){width:15%}
+  .orders-table-wrap th:nth-child(3){width:10%}
+  .orders-table-wrap th:nth-child(4){width:10%}
+  .orders-table-wrap th:nth-child(5){width:17%}
+  .orders-table-wrap th:nth-child(6){width:16%}
+  .orders-table-wrap th:nth-child(7){width:8%}
+  .orders-table-wrap th:nth-child(8){width:13%}
+  .orders-table-wrap td .stagechip{
+    display:inline-block;
+    max-width:100%;
+    padding:5px 8px;
+    font-size:10px;
+    line-height:1.2;
+    text-align:center;
+    white-space:normal;
+  }
+  .orders-table-wrap td:nth-child(6)>div{gap:5px;min-width:0}
+  .orders-table-wrap .mini-bar{width:auto;min-width:34px;flex:1}
+  .orders-table-wrap .pct{margin-left:0;font-size:11px}
+  .orders-table-wrap .table-actions{
+    display:grid;
+    gap:5px;
+    align-items:stretch;
+    white-space:normal;
+  }
+  .orders-table-wrap .table-actions .btn{
+    width:100%;
+    padding:7px 6px;
+    font-size:10.5px;
+    line-height:1.15;
+    text-align:center;
+    white-space:normal;
+  }
+}
+.fgrid{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.fgrid .full{grid-column:1/-1}
+@media(max-width:560px){.fgrid{grid-template-columns:1fr}}
+.field label{display:block; font-size:11.5px; font-weight:750; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:6px}
+.field input,.field select,.field textarea{
+  width:100%; background:#fff; border:1px solid var(--line); border-radius:10px;
+  padding:11px 13px; color:var(--ink); font-size:15px;
+}
+.field textarea{resize:vertical; min-height:70px}
+.field label.closed-check{
+  display:flex; align-items:center; gap:10px; padding:12px 14px;
+  background:#fff7ed; border:1px solid #fed7aa; border-radius:10px;
+  color:var(--ink); font-size:14px; font-weight:700; cursor:pointer;
+  letter-spacing:0; text-transform:none; margin:0;
+}
+.field label.closed-check input{width:18px; height:18px; margin:0; padding:0; accent-color:var(--red)}
+.closed-check span{display:flex; flex-direction:column; gap:2px}
+.closed-check small{color:var(--muted); font-size:12px; font-weight:500}
+.closed-chip{background:#f3f4f6!important;color:#4b5563;border-color:#d1d5db!important}
+.product-link-view,.product-link-actions{display:flex;align-items:center;gap:8px}
+.product-link-view{
+  min-height:46px;padding:10px 12px;background:#f8fafc;border:1px solid var(--line);
+  border-radius:10px;justify-content:space-between
+}
+.product-link-view a,.product-files-link{
+  color:var(--red-dark);font-weight:750;text-decoration:none;overflow-wrap:anywhere
+}
+.product-link-view a:hover,.product-files-link:hover{text-decoration:underline}
+.icon-btn{
+  width:34px;height:34px;display:inline-grid;place-items:center;border:1px solid var(--line);
+  border-radius:9px;background:#fff;color:var(--ink);cursor:pointer;font-size:16px;flex:0 0 auto
+}
+.icon-btn:hover{border-color:#fdba74;background:#fff7ed}
+.product-link-actions{margin-top:8px;justify-content:flex-end}
+.field-help{display:block;color:var(--muted);font-size:11px;line-height:1.45;margin-top:6px}
+.product-link-card{
+  margin-top:16px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#f8fafc
+}
+.product-link-card label{
+  display:block;color:var(--muted);font-size:11px;font-weight:750;letter-spacing:.06em;
+  text-transform:uppercase;margin-bottom:5px
+}
+.order-extra-controls{
+  grid-column:1/-1;display:grid;gap:14px;padding:15px;
+  background:#fffaf7;border:2px solid #fdba74;border-radius:13px
+}
+.order-extra-controls h3{
+  margin:0;color:var(--red-dark);font-size:15px;letter-spacing:-.01em
+}
+.order-update-history{
+  background:var(--panel); border:1px solid var(--line); border-radius:12px;
+  max-height:220px; overflow-y:auto; padding:4px 14px;
+}
+.order-update-history .update{align-items:flex-start}
+.order-update-history-empty{color:var(--muted); font-size:14px; padding:14px 0}
+.private-note-history{background:#fffbeb;border-color:#fde68a}
+.private-note-history .update time{color:#92400e}
+.private-label{display:inline-flex;align-items:center;gap:5px}
+.private-badge{display:inline-block;background:#111827;color:#fff;border-radius:999px;padding:2px 7px;font-size:9px;letter-spacing:.08em}
+.admin-note-entry{grid-column:1/-1;border-top:1px solid #fed7aa;padding-top:14px}
+.admin-note-entry small{display:block;color:#92400e;font-size:11px;margin-top:6px}
+.private-notes-panel{margin-top:24px;background:#fffbeb;border:1px solid #fde68a;border-radius:14px;padding:16px}
+.private-notes-panel h3{font-size:17px;margin-bottom:8px;color:#78350f}
+.new-update-box{
+  grid-column:1/-1; display:grid; grid-template-columns:170px 1fr; gap:14px;
+  background:#fff7ed; border:1px solid #fed7aa; border-radius:12px; padding:14px;
+}
+@media(max-width:560px){.new-update-box{grid-template-columns:1fr}}
+.modal-actions{display:flex; justify-content:flex-end; gap:10px; margin-top:22px}
+.danger{color:var(--red-dark); background:none; border:none; font-size:14px; font-weight:700; margin-right:auto}
+.danger:hover{text-decoration:underline}
+
+/* login */
+.login-box{max-width:380px; margin:60px auto; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:32px; text-align:center; box-shadow:0 2px 10px #0a0a0a08}
+.login-box h2{font-size:26px; margin-bottom:6px; letter-spacing:-.03em}
+.login-box p{color:var(--muted); font-size:14px; margin-bottom:18px; font-weight:500}
+.login-box input{
+  width:100%; background:#fff; border:1px solid var(--line); border-radius:10px;
+  padding:13px; color:var(--ink); font-size:16px; text-align:center; letter-spacing:.15em; margin-bottom:14px;
+}
+
+/* ---------- ERP v1 ---------- */
+.erp-kicker{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:5px}
+.erp-nav{overflow-x:auto;scrollbar-width:thin;flex-wrap:nowrap;padding-bottom:12px}
+.erp-nav button{white-space:nowrap;flex:0 0 auto}
+.erp-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+.erp-span-4{grid-column:span 4}.erp-span-6{grid-column:span 6}.erp-span-8{grid-column:span 8}.erp-span-12{grid-column:span 12}
+.erp-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:0 2px 10px #0a0a0a08}
+.erp-card h2{font-size:20px;letter-spacing:-.03em}.erp-card h3{font-size:15px;letter-spacing:-.02em}
+.erp-card .sub{color:var(--muted);font-size:12px;margin-top:3px}
+.erp-metric{font-size:30px;font-weight:900;letter-spacing:-.04em;margin-top:12px}.erp-metric.red{color:var(--red)}
+.erp-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+.erp-list{display:grid;gap:0}.erp-list-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-bottom:1px dashed var(--line)}
+.erp-list-row:last-child{border-bottom:none}.erp-list-row strong{font-size:13px}.erp-list-row small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.erp-amount{font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.erp-toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:16px}
+.erp-toolbar input,.erp-toolbar select{border:1px solid var(--line);border-radius:999px;padding:10px 14px;background:#fff;min-width:180px}
+.erp-chip{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;background:#fff7ed;border:1px solid #de291022;color:var(--red-dark);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.erp-chip.ok{background:var(--ok-soft);border-color:#1a9b5c22;color:var(--ok)}
+.erp-table td.num,.erp-table th.num{text-align:right;font-variant-numeric:tabular-nums}
+.erp-setup{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:13px 15px;font-size:12px;margin-bottom:18px;display:none}
+.erp-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.erp-form-grid .full{grid-column:1/-1}
+.erp-field label{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;margin-bottom:5px}
+.erp-field input,.erp-field select,.erp-field textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:#fff;color:var(--ink);font-size:14px}
+.erp-field textarea{min-height:76px;resize:vertical}
+.erp-module-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.erp-module{border:1px solid var(--line);border-radius:16px;padding:15px;background:#fff}.erp-module b{display:block;font-size:14px}.erp-module span{color:var(--muted);font-size:11px}
+.erp-empty{color:var(--muted);font-size:13px;padding:18px 0;text-align:center}
+.erp-bottom-nav{display:none}
+@media(max-width:820px){
+  .erp-span-4,.erp-span-6,.erp-span-8{grid-column:span 12}.erp-module-strip{grid-template-columns:1fr 1fr}
+}
+@media(max-width:640px){
+  main{padding-bottom:96px}.brand-copy small{display:none}.brand .display{font-size:17px}
+  .erp-nav{display:none}.erp-form-grid{grid-template-columns:1fr}.erp-form-grid .full{grid-column:auto}
+  .erp-bottom-nav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:8px;right:8px;bottom:8px;z-index:80;background:#fffffff2;backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:18px;padding:6px;box-shadow:0 14px 34px #0a0a0a22}
+  .erp-bottom-nav button{border:0;background:transparent;border-radius:12px;padding:8px 3px;font-size:9px;font-weight:800;color:var(--muted)}
+  .erp-bottom-nav button.active{background:var(--ink);color:#fff}.erp-module-strip{grid-template-columns:1fr}
+}
+.toast{
+  position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px);
+  background:var(--ink); color:#fff; font-weight:700; padding:12px 22px; border-radius:99px;
+  transition:.3s; z-index:200; font-size:14px; opacity:0;
+}
+.toast.on{transform:translateX(-50%) translateY(0); opacity:1}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark" aria-label="Shaikh China Sourcing">SCS</div>
+    <div class="brand-copy">
+      <div class="display">SHAIKH <b>CHINA</b> SOURCING</div>
+      <small>Accounting ERP</small>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ADMIN -->
+  <section id="view-admin" class="view on">
+    <div id="admin-login" class="login-box">
+      <h2>Admin access</h2>
+      <p>Sign in with your admin email and password.</p>
+      <input id="admin-email" type="email" placeholder="you@shaikhchinasourcing.com" style="letter-spacing:normal; text-align:left; font-size:15px">
+      <input id="admin-pass" type="password" placeholder="Password" style="letter-spacing:normal; text-align:left; font-size:15px"
+             onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="btn" style="width:100%" onclick="doLogin()">Sign in</button>
+    </div>
+
+    <div id="admin-panel" style="display:none">
+      <div class="admin-head">
+        <div>
+          <h1 id="admin-page-title">Dashboard</h1>
+          <p id="admin-page-subtitle">A compact overview of all customer orders.</p>
+        </div>
+        <div style="display:flex; gap:10px">
+          <span class="staff-chip" id="signed-in-user"><span class="staff-dot"></span>Admin</span>
+          <button class="btn ghost sm" onclick="doLogout()">Sign out</button>
+        </div>
+      </div>
+      <nav class="admin-nav erp-nav" aria-label="ERP modules">
+        <button id="nav-dashboard" onclick="showAdminPage('dashboard')">Dashboard</button>
+        <button id="nav-orders" onclick="showAdminPage('orders')">Orders / Projects</button>
+        <button id="nav-parties" onclick="showAdminPage('parties')">Parties</button>
+        <button id="nav-products" onclick="showAdminPage('products')">Products</button>
+        <button id="nav-sales" onclick="showAdminPage('sales')">Sales</button>
+        <button id="nav-purchasing" onclick="showAdminPage('purchasing')">Purchasing</button>
+        <button id="nav-inventory" onclick="showAdminPage('inventory')">Inventory</button>
+        <button id="nav-logistics" onclick="showAdminPage('logistics')">Logistics</button>
+        <button id="nav-accounting" onclick="showAdminPage('accounting')">Accounting</button>
+        <button id="nav-banking" onclick="showAdminPage('banking')">Banking</button>
+        <button id="nav-reports" onclick="showAdminPage('reports')">Reports</button>
+        <button id="nav-leads" onclick="showAdminPage('leads')">Leads <span id="lead-nav-count"></span></button>
+        <button id="nav-users" onclick="showAdminPage('users')">Users</button>
+      </nav>
+
+      <div class="admin-page" id="page-dashboard">
+        <div class="stat-row" id="stats"></div>
+        <div class="erp-module-strip" aria-label="ERP quick access">
+          <button class="erp-module" style="text-align:left;cursor:pointer" onclick="showAdminPage('parties')"><b>Parties</b><span>Customers &amp; suppliers</span></button>
+          <button class="erp-module" style="text-align:left;cursor:pointer" onclick="showAdminPage('accounting')"><b>Accounting</b><span>Journals &amp; chart of accounts</span></button>
+          <button class="erp-module" style="text-align:left;cursor:pointer" onclick="showAdminPage('banking')"><b>Banking</b><span>PKR / CNY accounts</span></button>
+          <button class="erp-module" style="text-align:left;cursor:pointer" onclick="showAdminPage('reports')"><b>Reports</b><span>Trial balance &amp; exports</span></button>
+        </div>
+        <div class="dashboard-grid">
+          <section class="dashboard-card">
+            <div class="dashboard-card-head">
+              <div>
+                <h2>Orders by status</h2>
+                <p>Select a status to open its order list.</p>
+              </div>
+              <button class="btn ghost sm" onclick="openAllOrders()">View all</button>
+            </div>
+            <div class="summary-list" id="status-summary"></div>
+          </section>
+          <section class="dashboard-card">
+            <div class="dashboard-card-head">
+              <div>
+                <h2>Orders by customer</h2>
+                <p>Select a customer to open their order list.</p>
+              </div>
+              <button class="btn ghost sm" onclick="openAllOrders()">View all</button>
+            </div>
+            <div class="summary-list scrollable" id="customer-summary"></div>
+          </section>
+          <section class="dashboard-card">
+            <div class="dashboard-card-head">
+              <div>
+                <h2>Orders by category</h2>
+                <p>Select a category to open its order list.</p>
+              </div>
+              <button class="btn ghost sm" onclick="openAllOrders()">View all</button>
+            </div>
+            <div class="summary-list" id="category-summary"></div>
+          </section>
+        </div>
+      </div>
+
+      <div class="admin-page" id="page-orders">
+        <div class="section-head" id="orders-section" style="margin-top:0">
+          <div>
+            <h2 id="orders-heading">All orders</h2>
+            <p class="order-filter-note" id="orders-filter-note">Showing every customer order.</p>
+          </div>
+          <div class="order-page-actions">
+            <div class="view-toggle" role="group" aria-label="Order display">
+              <button id="orders-list-button" type="button" onclick="setOrderView('list')" aria-pressed="true" title="List view">
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 5h2M8 5h9M3 10h2M8 10h9M3 15h2M8 15h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                List
+              </button>
+              <button id="orders-card-button" type="button" onclick="setOrderView('cards')" aria-pressed="false" title="Card view">
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="2.5" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="11.5" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="2.5" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.7"/><rect x="11.5" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.7"/></svg>
+                Cards
+              </button>
+            </div>
+            <button class="btn ghost sm" id="clear-order-filter" style="display:none" onclick="clearOrderFilter()">Show all orders</button>
+            <button class="btn gold sm" onclick="openForm()">+ New order</button>
+          </div>
+        </div>
+        <div class="order-tools" aria-label="Search, filter and sort orders">
+          <div class="order-tool search-tool">
+            <label for="order-search">Search orders</label>
+            <svg class="order-search-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.8"/><path d="m13 13 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <input id="order-search" type="search" placeholder="Customer, product or tracking #" oninput="updateOrderControls()">
+          </div>
+          <div class="order-tool">
+            <label for="order-stage-filter">Stage</label>
+            <select id="order-stage-filter" onchange="updateOrderControls()">
+              <option value="">All stages</option>
+            </select>
+          </div>
+          <div class="order-tool">
+            <label for="order-category-filter">Category</label>
+            <select id="order-category-filter" onchange="updateOrderControls()">
+              <option value="">All categories</option>
+            </select>
+          </div>
+          <div class="order-tool">
+            <label for="order-customer-filter">Customer</label>
+            <select id="order-customer-filter" onchange="updateOrderControls()">
+              <option value="">All customers</option>
+            </select>
+          </div>
+          <div class="order-tool">
+            <label for="order-state-filter">Order status</label>
+            <select id="order-state-filter" onchange="updateOrderControls()">
+              <option value="">Any status</option>
+              <option value="active">In progress</option>
+              <option value="delivered">Delivered</option>
+              <option value="closed">Closed</option>
+            </select>
+          </div>
+          <div class="order-tool">
+            <label for="order-sort">Sort by</label>
+            <select id="order-sort" onchange="updateOrderControls()">
+              <option value="newest">Recently added</option>
+              <option value="oldest">Oldest added</option>
+              <option value="eta_soon">ETA: soonest</option>
+              <option value="eta_latest">ETA: latest</option>
+              <option value="progress_desc">Progress: high to low</option>
+              <option value="progress_asc">Progress: low to high</option>
+              <option value="customer_az">Customer: A–Z</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-wrap orders-table-wrap" id="orders-list-view">
+          <table>
+            <thead>
+              <tr><th>Customer</th><th>Product</th><th>Category</th><th>Tracking #</th><th>Stage</th><th>Progress</th><th>ETA</th><th></th></tr>
+            </thead>
+            <tbody id="order-rows"></tbody>
+          </table>
+        </div>
+        <div class="order-card-grid" id="order-cards"></div>
+        <div class="empty" id="empty-msg" style="display:none">No orders yet. Click “+ New order” to add your first one.</div>
+      </div>
+
+      <div class="admin-page" id="page-leads">
+        <div class="section-head" style="margin-top:0">
+          <div>
+            <h2>Central lead inbox</h2>
+            <p class="order-filter-note" id="leads-filter-note">Inquiries received across all connected websites.</p>
+          </div>
+          <button class="btn ghost sm" onclick="loadLeads().then(renderLeads)">Refresh</button>
+        </div>
+        <div class="lead-setup-note" id="lead-setup-note">
+          The leads database has not been installed yet. Run the supplied Supabase setup SQL, then refresh this page.
+        </div>
+        <div class="lead-stats">
+          <button class="lead-stat action" onclick="filterLeadsByStatus('')"><b id="lead-stat-total">0</b><span>Total leads</span></button>
+          <button class="lead-stat action" onclick="filterLeadsByStatus('new')"><b id="lead-stat-new">0</b><span>New</span></button>
+          <button class="lead-stat action" onclick="filterLeadsByStatus('follow_up')"><b id="lead-stat-due">0</b><span>Follow-up due</span></button>
+          <button class="lead-stat action" onclick="filterLeadsByStatus('converted')"><b id="lead-stat-converted">0</b><span>Converted</span></button>
+        </div>
+        <div class="lead-tools" aria-label="Search, filter and sort leads">
+          <div class="order-tool search-tool">
+            <label for="lead-search">Search leads</label>
+            <svg class="order-search-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.8"/><path d="m13 13 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <input id="lead-search" type="search" placeholder="Name, phone, product or business" oninput="updateLeadControls()">
+          </div>
+          <div class="order-tool">
+            <label for="lead-source-filter">Website source</label>
+            <select id="lead-source-filter" onchange="updateLeadControls()"><option value="">All websites</option></select>
+          </div>
+          <div class="order-tool">
+            <label for="lead-status-filter">Lead status</label>
+            <select id="lead-status-filter" onchange="updateLeadControls()">
+              <option value="">All statuses</option>
+              <option value="new">New</option>
+              <option value="contacted">Contacted</option>
+              <option value="follow_up">Follow-up</option>
+              <option value="quoted">Quoted</option>
+              <option value="converted">Converted</option>
+              <option value="lost">Lost</option>
+            </select>
+          </div>
+          <div class="order-tool">
+            <label for="lead-sort">Sort by</label>
+            <select id="lead-sort" onchange="updateLeadControls()">
+              <option value="newest">Recently received</option>
+              <option value="oldest">Oldest received</option>
+              <option value="follow_up">Next follow-up</option>
+              <option value="name">Name A–Z</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Lead</th><th>Requirement</th><th>Source</th><th>Status</th><th>Received / follow-up</th><th></th></tr></thead>
+            <tbody id="lead-rows"></tbody>
+          </table>
+          <div class="empty" id="lead-empty-msg">No leads have been received yet.</div>
+        </div>
+      </div>
+
+      <div class="admin-page" id="page-parties">
+        <div class="erp-setup" id="erp-setup-note">ERP tables are not installed in Supabase yet. This page is showing a safe preview. Run <strong>001_core_schema.sql</strong> and <strong>002_supabase_security.sql</strong> to connect it.</div>
+        <div class="section-head" style="margin-top:0">
+          <div><h2>Customers &amp; suppliers</h2><p class="order-filter-note">One party master — a company can be a customer, supplier, or both.</p></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" onclick="syncTrackerToErp()">Sync tracker data</button><button class="btn gold sm" onclick="openErpModal('party')">+ New party</button></div>
+        </div>
+        <div class="erp-toolbar"><input id="erp-party-search" type="search" placeholder="Search company, city or contact" oninput="renderErpParties()"><span class="erp-chip" id="erp-party-count">0 parties</span></div>
+        <div class="table-wrap"><table class="erp-table"><thead><tr><th>Party</th><th>Role</th><th>City / country</th><th>Contact</th><th>Currency</th></tr></thead><tbody id="erp-party-rows"></tbody></table><div class="erp-empty" id="erp-party-empty">No parties yet.</div></div>
+      </div>
+
+      <div class="admin-page" id="page-products">
+        <div class="section-head" style="margin-top:0"><div><h2>Product master</h2><p class="order-filter-note">Reusable items for quotations, purchases, sales and profitability.</p></div><button class="btn gold sm" disabled>+ New product</button></div>
+        <div class="erp-module-strip"><div class="erp-module"><b>Product master</b><span>SKU, name, UOM and category</span></div><div class="erp-module"><b>Supplier history</b><span>Purchase price by supplier</span></div><div class="erp-module"><b>Sales history</b><span>Sale price by project</span></div><div class="erp-module"><b>Images</b><span>R2-backed product media</span></div></div>
+        <div class="erp-card"><div class="erp-card-head"><div><h2>Module scaffold ready</h2><p class="sub">The database foundation is included. Product CRUD is the next build step after master data.</p></div><span class="erp-chip">Phase 2</span></div><div class="erp-empty">No products have been created yet.</div></div>
+      </div>
+
+      <div class="admin-page" id="page-sales">
+        <div class="section-head" style="margin-top:0"><div><h2>Sales</h2><p class="order-filter-note">Quotation → confirmation → sales invoice → receipt, linked to the project.</p></div></div>
+        <div class="erp-module-strip"><div class="erp-module"><b>Quotations</b><span>Multiple quotes per project</span></div><div class="erp-module"><b>Sales invoices</b><span>PKR / CNY document lines</span></div><div class="erp-module"><b>Receipts</b><span>Allocate incoming payments</span></div><div class="erp-module"><b>Margins</b><span>Project-level contribution</span></div></div>
+        <div class="erp-card"><div class="erp-card-head"><div><h2>Sales document engine</h2><p class="sub">Project and accounting links are prepared in the schema; document entry comes in Phase 2.</p></div><span class="erp-chip">Phase 2</span></div></div>
+      </div>
+
+      <div class="admin-page" id="page-purchasing">
+        <div class="section-head" style="margin-top:0"><div><h2>Purchasing</h2><p class="order-filter-note">Supplier RFQ → PO → supplier bill → goods receipt → payment.</p></div></div>
+        <div class="erp-module-strip"><div class="erp-module"><b>Supplier RFQs</b><span>Compare vendor offers</span></div><div class="erp-module"><b>Purchase orders</b><span>Optional PO control</span></div><div class="erp-module"><b>Supplier bills</b><span>Cost and project allocation</span></div><div class="erp-module"><b>Payments</b><span>Bank-linked settlements</span></div></div>
+        <div class="erp-card"><div class="erp-card-head"><div><h2>Purchasing workflow</h2><p class="sub">Party master and project links are active in Version 1; purchasing documents follow in Phase 2.</p></div><span class="erp-chip">Phase 2</span></div></div>
+      </div>
+
+      <div class="admin-page" id="page-inventory">
+        <div class="section-head" style="margin-top:0"><div><h2>Inventory</h2><p class="order-filter-note">Movement-based stock across multiple warehouses.</p></div></div>
+        <div class="erp-module-strip"><div class="erp-module"><b>Warehouses</b><span>Multiple stock locations</span></div><div class="erp-module"><b>Goods receipts</b><span>Inbound stock movements</span></div><div class="erp-module"><b>Transfers</b><span>Warehouse-to-warehouse</span></div><div class="erp-module"><b>Reservations</b><span>Pick, pack and allocate</span></div></div>
+        <div class="erp-card"><div class="erp-card-head"><div><h2>Inventory ledger</h2><p class="sub">Movement-table design is included so stock is derived from transactions, never a manually edited balance.</p></div><span class="erp-chip">Phase 3</span></div></div>
+      </div>
+
+      <div class="admin-page" id="page-logistics">
+        <div class="section-head" style="margin-top:0"><div><h2>Logistics &amp; warehouse</h2><p class="order-filter-note">Container, BL, goods receipt, delivery and order timeline in one place.</p></div></div>
+        <div class="erp-module-strip"><div class="erp-module"><b>Goods receipt</b><span>Receive against project / PO</span></div><div class="erp-module"><b>Shipments</b><span>Container and BL tracking</span></div><div class="erp-module"><b>Delivery notes</b><span>Delivery separate from invoice</span></div><div class="erp-module"><b>Attachments</b><span>R2-backed logistics files</span></div></div>
+        <div class="erp-card"><div class="erp-card-head"><div><h2>Tracker integration</h2><p class="sub">Your current Orders / Projects screen remains the operational timeline and will feed this module.</p></div><span class="erp-chip ok">Integrated</span></div></div>
+      </div>
+
+      <div class="admin-page" id="page-accounting">
+        <div class="erp-grid">
+          <div class="erp-card erp-span-4"><div class="erp-kicker">Ledger</div><h3>Posted journals</h3><div class="erp-metric red" id="erp-journal-count">0</div><div class="sub">Double-entry records</div></div>
+          <div class="erp-card erp-span-4"><div class="erp-kicker">Reporting currency</div><h3>Base currency</h3><div class="erp-metric">PKR</div><div class="sub">CNY transactions retain their FX rate</div></div>
+          <div class="erp-card erp-span-4"><div class="erp-kicker">Control</div><h3>Journal balance</h3><div class="erp-metric" id="erp-ledger-balance">PKR 0</div><div class="sub">Debit minus credit across loaded lines</div></div>
+          <div class="erp-card erp-span-8"><div class="erp-card-head"><div><h2>Recent journal entries</h2><p class="sub">Every posting can be allocated to an Order / Project.</p></div><button class="btn gold sm" onclick="openErpModal('journal')">+ New journal</button></div><div class="erp-list" id="erp-journal-list"></div></div>
+          <div class="erp-card erp-span-4"><div class="erp-card-head"><div><h2>Chart of accounts</h2><p class="sub">Portable PostgreSQL master.</p></div></div><div class="erp-list" id="erp-account-list"></div></div>
+        </div>
+      </div>
+
+      <div class="admin-page" id="page-banking">
+        <div class="section-head" style="margin-top:0"><div><h2>Banking</h2><p class="order-filter-note">Bank and cash accounts with PKR/CNY balances.</p></div><button class="btn gold sm" onclick="openErpModal('bank')">+ Bank account</button></div>
+        <div class="erp-grid" id="erp-bank-grid"></div><div class="erp-empty" id="erp-bank-empty">No bank accounts yet.</div>
+      </div>
+
+      <div class="admin-page" id="page-reports">
+        <div class="section-head" style="margin-top:0"><div><h2>Reports</h2><p class="order-filter-note">Accounting and project views generated from the same ledger.</p></div><button class="btn ghost sm" onclick="exportTrialBalanceCsv()">Export trial balance CSV</button></div>
+        <div class="erp-module-strip"><div class="erp-module"><b>Trial balance</b><span>Live in Version 1</span></div><div class="erp-module"><b>General ledger</b><span>Ledger-line foundation ready</span></div><div class="erp-module"><b>Project profitability</b><span>Project allocations ready</span></div><div class="erp-module"><b>Party statement</b><span>Party allocation ready</span></div></div>
+        <div class="erp-card"><div class="erp-card-head"><div><h2>Trial balance</h2><p class="sub">Posted journal lines in PKR reporting value.</p></div><span class="erp-chip ok" id="erp-tb-status">Balanced</span></div><div class="table-wrap"><table class="erp-table"><thead><tr><th>Code</th><th>Account</th><th class="num">Debit PKR</th><th class="num">Credit PKR</th><th class="num">Balance PKR</th></tr></thead><tbody id="erp-trial-balance"></tbody></table></div></div>
+      </div>
+
+      <div class="admin-page" id="page-users">
+        <div class="section-head" style="margin-top:0">
+          <div>
+            <h2>Customers &amp; access</h2>
+            <p style="color:var(--muted);font-size:13px;margin-top:3px">Customer login details and password management.</p>
+          </div>
+          <button class="btn ghost sm" id="new-customer-btn" onclick="openCustomerForm()">+ New customer</button>
+        </div>
+        <div class="table-wrap" style="margin-bottom:22px">
+          <table>
+            <thead><tr><th>Customer</th><th>City</th><th>Mobile</th><th>Email (username)</th><th></th></tr></thead>
+            <tbody id="customer-rows"></tbody>
+          </table>
+          <div class="empty" id="cust-empty-msg" style="display:none">No customers yet. Click “+ New customer” to add one.</div>
+        </div>
+
+        <div id="team-section">
+          <div class="section-head">
+            <div>
+              <h2>Team management</h2>
+              <p style="color:var(--muted);font-size:13px;margin-top:3px">Create staff logins and manage team access.</p>
+            </div>
+            <button class="btn ghost sm" onclick="openStaffForm()">+ Add team user</button>
+          </div>
+          <div class="table-wrap" style="margin-bottom:18px">
+            <table>
+              <thead><tr><th>Team user</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr></thead>
+              <tbody id="staff-rows"></tbody>
+            </table>
+            <div class="empty" id="staff-empty-msg" style="display:none">No team users are available.</div>
+          </div>
+        </div>
+        <div id="activity-section">
+          <div class="section-head" style="margin-top:18px">
+            <div>
+              <h2 style="font-size:20px">Owner changes log</h2>
+              <p style="color:var(--muted);font-size:13px;margin-top:3px">Visible only to owners.</p>
+            </div>
+            <div class="activity-filters">
+              <select id="activity-user-filter" onchange="renderActivity()"><option value="">All users</option></select>
+              <button class="btn ghost sm" onclick="loadActivity().then(renderActivity)">Refresh</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Date &amp; time</th><th>User</th><th>Action</th><th>Item</th><th>Details</th></tr></thead>
+              <tbody id="activity-rows"></tbody>
+            </table>
+            <div class="empty" id="activity-empty-msg">No recorded changes yet.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="erp-bottom-nav" id="erp-bottom-nav" aria-label="Mobile ERP navigation">
+  <button data-page="orders" onclick="showAdminPage('orders')">Projects</button>
+  <button data-page="parties" onclick="showAdminPage('parties')">Parties</button>
+  <button data-page="accounting" onclick="showAdminPage('accounting')">Accounting</button>
+  <button data-page="banking" onclick="showAdminPage('banking')">Banking</button>
+  <button data-page="reports" onclick="showAdminPage('reports')">Reports</button>
+</nav>
+
+<!-- READ-ONLY ORDER PREVIEW -->
+<div class="modal-bg" id="view-order-modal-bg">
+  <div class="modal preview-modal">
+    <div class="preview-modal-head">
+      <h2>Customer order view</h2>
+      <button class="btn ghost sm" onclick="closeOrderView()">Close</button>
+    </div>
+    <div id="order-preview"></div>
+  </div>
+</div>
+
+<!-- WHATSAPP UPDATE READY -->
+<div class="modal-bg" id="whatsapp-modal-bg">
+  <div class="modal whatsapp-ready-modal">
+    <h2>Customer update saved</h2>
+    <p id="whatsapp-ready-copy">The WhatsApp update is ready to send.</p>
+    <div class="whatsapp-message-preview" id="whatsapp-message-preview"></div>
+    <div class="modal-actions">
+      <button class="btn ghost" type="button" onclick="closeWhatsAppModal()">Not now</button>
+      <button class="btn ghost" type="button" onclick="copyPendingWhatsAppMessage()">Copy message</button>
+      <button class="btn whatsapp" id="whatsapp-send-btn" type="button" onclick="sendPendingWhatsApp()">Send on WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER FORM MODAL -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h2 id="modal-title">New order</h2>
+    <div class="fgrid">
+      <div class="field full"><label>Customer</label>
+        <select id="f-customer-id"></select>
+      </div>
+      <div class="field full"><label>Product / order description</label><input id="f-product" placeholder="500 units LED desk lamps, custom logo"></div>
+      <div class="order-extra-controls">
+        <h3>Product files and order closure</h3>
+        <div class="field">
+          <label>Product thumbnail image</label>
+          <div class="product-link-view" id="thumbnail-link-view" style="display:none">
+            <a id="thumbnail-link-anchor" href="#" target="_blank" rel="noopener noreferrer">Open thumbnail image</a>
+            <button class="icon-btn" type="button" onclick="editThumbnailLink()" title="Edit product thumbnail link" aria-label="Edit product thumbnail link">✎</button>
+          </div>
+          <div id="thumbnail-link-editor">
+            <input id="f-thumbnail-url" type="url" placeholder="Paste a Google Drive image sharing link">
+            <small class="field-help">For Google Drive, set the image to “Anyone with the link” so it can appear on the order card.</small>
+            <div class="product-link-actions">
+              <button class="btn ghost sm" id="thumbnail-link-cancel" type="button" onclick="cancelThumbnailLinkEdit()">Cancel</button>
+              <button class="btn ghost sm" type="button" onclick="finishThumbnailLinkEdit()">Done</button>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Product pictures/videos link</label>
+          <div class="product-link-view" id="product-link-view" style="display:none">
+            <a id="product-link-anchor" href="#" target="_blank" rel="noopener noreferrer">Open product files</a>
+            <button class="icon-btn" type="button" onclick="editProductLink()" title="Edit product files link" aria-label="Edit product files link">✎</button>
+          </div>
+          <div id="product-link-editor">
+            <input id="f-asset-url" type="url" placeholder="Paste a Google Drive, Dropbox or storage folder link">
+            <div class="product-link-actions">
+              <button class="btn ghost sm" id="product-link-cancel" type="button" onclick="cancelProductLinkEdit()">Cancel</button>
+              <button class="btn ghost sm" type="button" onclick="finishProductLinkEdit()">Done</button>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>ERP attachments · Cloudflare R2</label>
+          <input id="f-r2-file" type="file" accept="application/pdf,image/*,video/*">
+          <div class="product-link-actions" style="margin-top:8px"><button class="btn ghost sm" type="button" onclick="uploadCurrentOrderAttachment()">Upload attachment</button></div>
+          <small class="field-help">Edit an existing order first. Files are private and require an authenticated SCS staff session.</small>
+          <div id="f-r2-attachments" class="order-update-history" style="margin-top:8px"></div>
+        </div>
+        <div class="field">
+          <label class="closed-check">
+            <input id="f-show-assets-customer" type="checkbox">
+            <span>Show product pictures and videos to customer
+              <small>When enabled, the product-files link appears in this order on the customer portal.</small>
+            </span>
+          </label>
+        </div>
+        <div class="field">
+          <label class="closed-check">
+            <input id="f-closed" type="checkbox">
+            <span>Mark order as closed
+              <small>Closed orders are excluded from the in-progress totals.</small>
+            </span>
+          </label>
+        </div>
+      </div>
+      <div class="field full"><label>Order category</label>
+        <select id="f-category" onchange="categoryChanged()"></select>
+      </div>
+      <div class="field"><label>Tracking number</label><input id="f-tn" placeholder="Auto-generated" readonly style="opacity:.7"></div>
+      <div class="field"><label>Current stage</label>
+        <select id="f-stage" onchange="stagePct()"></select>
+      </div>
+      <div class="field"><label>Completion %</label><input id="f-pct" type="number" min="0" max="100"></div>
+      <div class="field"><label>Estimated completion</label><input id="f-eta" type="date"></div>
+      <div class="field full" id="order-update-history-wrap">
+        <label>Previous customer updates</label>
+        <div class="order-update-history" id="order-update-history"></div>
+      </div>
+      <div class="field full" id="admin-note-history-wrap">
+        <label class="private-label">Previous admin notes <span class="private-badge">Private</span></label>
+        <div class="order-update-history private-note-history" id="admin-note-history"></div>
+      </div>
+      <div class="new-update-box">
+        <div class="field"><label>Entry date</label>
+          <input id="f-update-date" type="date">
+        </div>
+        <div class="field"><label>Add a new update (visible to customer)</label>
+          <textarea id="f-update" placeholder="e.g. Sample approved, mass production started at factory."></textarea>
+        </div>
+        <div class="field admin-note-entry">
+          <label class="private-label">Add an admin-only note <span class="private-badge">Private</span></label>
+          <textarea id="f-admin-note" placeholder="e.g. Supplier requested revised payment terms. Do not show this to the customer."></textarea>
+          <small>Only active staff can access this note. It will not appear in the customer portal or customer email.</small>
+        </div>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="danger" id="btn-delete" style="display:none" onclick="deleteOrder()">Delete order</button>
+      <button class="btn ghost" onclick="closeForm()">Cancel</button>
+      <button class="btn" onclick="saveOrder()">Save order</button>
+    </div>
+  </div>
+</div>
+
+<!-- NEW CUSTOMER MODAL -->
+<div class="modal-bg" id="cust-modal-bg">
+  <div class="modal">
+    <h2>New customer</h2>
+    <p style="color:var(--ink-dim); font-size:14px; margin-bottom:16px">Creates a login for them and adds them to your customer list.</p>
+    <div class="fgrid">
+      <div class="field full"><label>Customer / company name</label><input id="nc-name" placeholder="Bilal Traders"></div>
+      <div class="field"><label>Email (their username)</label><input id="nc-email" type="email" placeholder="bilal@traders.com"></div>
+      <div class="field"><label>City</label><input id="nc-city" placeholder="Karachi"></div>
+      <div class="field full"><label>Mobile number</label><input id="nc-mobile" type="tel" inputmode="tel" placeholder="+92 300 1234567"></div>
+      <div class="field"><label>Password type</label>
+        <select id="nc-password-mode" onchange="toggleCustomerPasswordField('nc')">
+          <option value="automatic">Generate automatically</option>
+          <option value="custom">Use custom password</option>
+        </select>
+      </div>
+      <div class="field" id="nc-password-wrap" style="display:none"><label>Custom password</label>
+        <input id="nc-password" type="password" minlength="10" placeholder="At least 10 characters">
+      </div>
+    </div>
+    <div id="nc-result" style="display:none; margin-top:18px; background:var(--navy); border:1px solid var(--gold); border-radius:10px; padding:16px">
+      <div style="font-size:13px; color:var(--ink-dim); margin-bottom:8px">Share these with the customer (shown once):</div>
+      <div style="font-family:monospace; font-size:15px" id="nc-creds"></div>
+      <button class="btn gold sm" style="margin-top:10px" onclick="copyCreds()">Copy for WhatsApp</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeCustomerForm()">Close</button>
+      <button class="btn" id="nc-submit" onclick="createCustomer()">Create login</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT CUSTOMER MODAL -->
+<div class="modal-bg" id="edit-customer-modal-bg">
+  <div class="modal">
+    <h2 id="ec-title">Edit customer</h2>
+    <p style="color:var(--ink-dim);font-size:14px;margin-bottom:16px">Update the customer’s contact information and tracking-portal username.</p>
+    <div class="fgrid">
+      <div class="field full"><label>Customer / company name</label><input id="ec-name" placeholder="Bilal Traders"></div>
+      <div class="field"><label>Email (their username)</label><input id="ec-email" type="email" placeholder="bilal@traders.com"></div>
+      <div class="field"><label>City</label><input id="ec-city" placeholder="Karachi"></div>
+      <div class="field full"><label>Mobile number</label><input id="ec-mobile" type="tel" inputmode="tel" placeholder="+92 300 1234567"></div>
+    </div>
+    <div class="modal-actions" style="justify-content:space-between">
+      <button class="btn ghost" type="button" onclick="openResetFromCustomerEdit()">Reset password</button>
+      <div style="display:flex;gap:10px">
+        <button class="btn ghost" type="button" onclick="closeEditCustomerForm()">Cancel</button>
+        <button class="btn" id="ec-submit" type="button" onclick="saveCustomerChanges()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEW ADMIN USER MODAL -->
+<div class="modal-bg" id="staff-modal-bg">
+  <div class="modal">
+    <h2>Add team user</h2>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:16px">Owners and admins can create a separate staff login with an automatic or custom password.</p>
+    <div class="fgrid">
+      <div class="field"><label>Full name</label><input id="ns-name" placeholder="Team member name"></div>
+      <div class="field"><label>Email</label><input id="ns-email" type="email" placeholder="user@shaikhchinasourcing.com"></div>
+      <div class="field full"><label>Role</label>
+        <select id="ns-role">
+          <option value="manager">Manager — operational work only</option>
+          <option value="admin">Admin — can also create users and set passwords</option>
+        </select>
+      </div>
+      <div class="field"><label>Password type</label>
+        <select id="ns-password-mode" onchange="toggleStaffPasswordField('ns')">
+          <option value="automatic">Generate automatically</option>
+          <option value="custom">Use custom password</option>
+        </select>
+      </div>
+      <div class="field" id="ns-password-wrap" style="display:none"><label>Custom password</label>
+        <input id="ns-password" type="password" minlength="10" placeholder="At least 10 characters">
+      </div>
+    </div>
+    <div id="ns-result" style="display:none;margin-top:18px;background:var(--cream);border:1px solid #de291033;border-radius:10px;padding:16px">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px">New staff login (shown once):</div>
+      <div style="font-family:monospace;font-size:15px" id="ns-creds"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeStaffForm()">Close</button>
+      <button class="btn" id="ns-submit" onclick="createStaff()">Create team login</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT TEAM USER MODAL — OWNER ONLY -->
+<div class="modal-bg" id="edit-staff-modal-bg">
+  <div class="modal">
+    <h2 id="es-title">Edit team user</h2>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:16px">Only an owner can edit a team member’s profile, role or access status.</p>
+    <div class="fgrid">
+      <div class="field"><label>Full name</label><input id="es-name"></div>
+      <div class="field"><label>Email</label><input id="es-email" type="email"></div>
+      <div class="field"><label>Role</label>
+        <select id="es-role">
+          <option value="owner">Owner — full control and logs</option>
+          <option value="admin">Admin — create users and set passwords</option>
+          <option value="manager">Manager — operational work only</option>
+        </select>
+      </div>
+      <div class="field"><label>Status</label>
+        <select id="es-active">
+          <option value="true">Active</option>
+          <option value="false">Disabled</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeEditStaffForm()">Cancel</button>
+      <button class="btn" onclick="saveStaffChanges()">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- TEAM USER PASSWORD MODAL — OWNER / ADMIN -->
+<div class="modal-bg" id="staff-password-modal-bg">
+  <div class="modal">
+    <h2 id="sp-title">Set team user password</h2>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:16px">Generate a secure password automatically or enter your own.</p>
+    <div class="fgrid">
+      <div class="field full"><label>Password type</label>
+        <select id="sp-password-mode" onchange="toggleStaffPasswordField('sp')">
+          <option value="automatic">Generate automatically</option>
+          <option value="custom">Use custom password</option>
+        </select>
+      </div>
+      <div class="field full" id="sp-password-wrap" style="display:none"><label>Custom password</label>
+        <input id="sp-password" type="password" minlength="10" placeholder="At least 10 characters">
+      </div>
+    </div>
+    <div id="sp-result" style="display:none;margin-top:18px;background:var(--cream);border:1px solid #de291033;border-radius:10px;padding:16px">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px">New login password (shown once):</div>
+      <div style="font-family:monospace;font-size:15px" id="sp-creds"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeStaffPasswordForm()">Close</button>
+      <button class="btn" id="sp-submit" onclick="saveStaffPassword()">Set password</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESET PASSWORD MODAL -->
+<div class="modal-bg" id="reset-modal-bg">
+  <div class="modal">
+    <h2 id="reset-title">Reset password</h2>
+    <p style="color:var(--ink-dim); font-size:14px; margin:6px 0 16px" id="reset-sub">Generate a secure password automatically or enter a custom password to share with the customer.</p>
+    <div class="fgrid" style="margin-bottom:18px">
+      <div class="field"><label>Password type</label>
+        <select id="reset-password-mode" onchange="toggleCustomerPasswordField('reset')">
+          <option value="automatic">Generate automatically</option>
+          <option value="custom">Use custom password</option>
+        </select>
+      </div>
+      <div class="field" id="reset-password-wrap" style="display:none"><label>Custom password</label>
+        <input id="reset-password" type="password" minlength="10" placeholder="At least 10 characters">
+      </div>
+    </div>
+    <div id="reset-result" style="display:none; background:var(--navy); border:1px solid var(--gold); border-radius:10px; padding:16px">
+      <div style="font-size:13px; color:var(--ink-dim); margin-bottom:8px">New login (shown once):</div>
+      <div style="font-family:monospace; font-size:15px" id="reset-creds"></div>
+      <button class="btn gold sm" style="margin-top:10px" onclick="copyResetCreds()">Copy for WhatsApp</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeResetModal()">Close</button>
+      <button class="btn" id="reset-submit" onclick="confirmReset()">Generate new password</button>
+    </div>
+  </div>
+</div>
+
+<!-- LEAD FOLLOW-UP MODAL -->
+<div class="modal-bg" id="lead-modal-bg">
+  <div class="modal">
+    <div class="preview-modal-head">
+      <div>
+        <h2 id="lead-modal-title">Lead details</h2>
+        <p id="lead-modal-source" style="color:var(--muted);font-size:12px;margin-top:3px"></p>
+      </div>
+      <button class="btn ghost sm" onclick="closeLeadModal()">Close</button>
+    </div>
+    <div class="lead-readonly" id="lead-modal-details"></div>
+    <div class="lead-detail-grid">
+      <label>Status
+        <select id="lead-edit-status">
+          <option value="new">New</option>
+          <option value="contacted">Contacted</option>
+          <option value="follow_up">Follow-up</option>
+          <option value="quoted">Quoted</option>
+          <option value="converted">Converted</option>
+          <option value="lost">Lost</option>
+        </select>
+      </label>
+      <label>Next follow-up
+        <input id="lead-edit-follow-up" type="date">
+      </label>
+      <label>Assigned to
+        <select id="lead-edit-assigned"><option value="">Unassigned</option></select>
+      </label>
+      <label>Last contacted
+        <input id="lead-edit-contacted" type="datetime-local">
+      </label>
+      <label class="form-full">Admin notes
+        <textarea id="lead-edit-notes" rows="5" placeholder="Add follow-up notes, quotation details or next steps."></textarea>
+      </label>
+    </div>
+    <div class="modal-actions" style="justify-content:space-between">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn whatsapp sm" id="lead-modal-whatsapp" onclick="openLeadWhatsApp()">WhatsApp</button>
+        <button class="btn ghost sm" id="lead-modal-email" onclick="openLeadEmail()">Email</button>
+      </div>
+      <button class="btn" id="lead-save-button" onclick="saveLead()">Save follow-up</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="erp-modal-bg">
+  <div class="modal" style="max-width:620px">
+    <div class="erp-card-head"><div><div class="erp-kicker">SCS ERP</div><h2 id="erp-modal-title">New record</h2></div><button class="btn ghost sm" type="button" onclick="closeErpModal()">Close</button></div>
+    <div id="erp-modal-body"></div>
+    <div class="modal-actions"><button class="btn ghost" type="button" onclick="closeErpModal()">Cancel</button><button class="btn gold" id="erp-modal-save" type="button" onclick="saveErpModal()">Save</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= data layer ================= */
+const STAGES = [
+  {name:'Inquiry',        pct:5},
+  {name:'Quote',          pct:15},
+  {name:'Payment',        pct:25},
+  {name:'Production',     pct:50},
+  {name:'Received in China Warehouse', pct:60},
+  {name:'Quality Check',  pct:70},
+  {name:'Shipping',       pct:85},
+  {name:'Customs',        pct:93},
+  {name:'Delivered',      pct:100},
+];
+const ORDER_CATEGORIES = ['Sourcing','Shipping','Trading'];
+const STAGE_MESSAGES = {
+  'Inquiry':'We received your inquiry and are reviewing your requirements.',
+  'Quote':'Your quotation is ready for review and approval.',
+  'Payment':'Payment is being processed; production will begin after confirmation.',
+  'Production':'Your order is currently under production.',
+  'Received in China Warehouse':'Your goods have arrived at our China warehouse.',
+  'Quality Check':'Your goods are being checked before shipment.',
+  'Shipping':'Your shipment is on its way to the destination.',
+  'Customs':'Your shipment is undergoing customs clearance.',
+  'Delivered':'Your order has been delivered successfully.'
+};
+const TRACKING_PORTAL_URL = 'https://track.shaikhchinasourcing.com/';
+// ===== Supabase config — fill these in from Settings → API in your Supabase project =====
+const SUPABASE_URL = 'https://eourkizstbgmrqkdwnjd.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_rEKWzv2DaUZHhHwBdCJKXg_9jEQkz6k';
+// Deploy the supplied Cloudflare Worker, then paste its https:// URL here.
+// R2 credentials never belong in this GitHub Pages file.
+const R2_API_BASE = 'YOUR_CLOUDFLARE_WORKER_URL';
+const NEEDS_SETUP = SUPABASE_URL.startsWith('YOUR_') || SUPABASE_ANON_KEY.startsWith('YOUR_');
+const sb = NEEDS_SETUP ? null : supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let orders = [];
+let customers = [];       // admin: every customer. customer login: just their own row.
+let editingId = null;
+let unlocked = false;     // admin session
+let custUnlocked = false; // customer session
+let currentStaff = null;
+let staff = [];
+let activityLogs = [];
+let leads = [];
+let leadsAvailable = true;
+let editingLeadId = null;
+let leadSearch = '';
+let leadFilter = {source:'', status:''};
+let leadSort = 'newest';
+let editingStaffId = null;
+let passwordStaffId = null;
+let editingCustomerId = null;
+let erpAvailable = false;
+let erpParties = [];
+let erpProjects = [];
+let erpAccounts = [];
+let erpJournals = [];
+let erpJournalLines = [];
+let erpBanks = [];
+let erpAttachments = [];
+let erpModalType = null;
+function emptyOrderFilter(){ return {stage:'', customerId:'', category:'', state:''}; }
+function defaultOrderFilter(){ return {...emptyOrderFilter(), state:'active'}; }
+let orderFilter = defaultOrderFilter();
+let orderSearch = '';
+let orderSort = 'newest';
+let orderViewMode = (() => {
+  try { return localStorage.getItem('scs-order-view') === 'cards' ? 'cards' : 'list'; }
+  catch { return 'list'; }
+})();
+let adminPage = 'orders';
+let currentAdminNotes = [];
+let pendingWhatsAppOrderId = null;
+
+function currentRole(){ return currentStaff?.role || (NEEDS_SETUP ? 'owner' : 'manager'); }
+function isOwner(){ return currentRole()==='owner'; }
+function canManageUsers(){ return ['owner','admin'].includes(currentRole()); }
+
+// demo data shown only if Supabase isn't configured yet, so the prototype still works
+const seed = () => {
+  const c1 = crypto.randomUUID(), c2 = crypto.randomUUID(), c3 = crypto.randomUUID();
+  customers = [
+    {id:c1, name:'Bilal Traders', email:'demo@bilaltraders.com', city:'Karachi', mobile:'+92 300 1234567'},
+    {id:c2, name:'Al Noor Electronics', email:'demo@alnoor.ae', city:'Dubai', mobile:'+971 50 123 4567'},
+    {id:c3, name:'Madina Mart', email:'demo@madinamart.pk', city:'Lahore', mobile:'+92 321 7654321'},
+  ];
+  orders = [
+    {id:crypto.randomUUID(), customer_id:c1, tn:'SCS-2607-4821',
+     product:'500 × LED desk lamps, custom logo', stage:'Production', pct:55,
+     eta:'2026-08-20', updates:[
+       {t:'2026-07-02', msg:'Inquiry received and supplier shortlist prepared.'},
+       {t:'2026-07-08', msg:'Quote approved and 30% advance received.'},
+       {t:'2026-07-18', msg:'Sample approved — mass production started at factory.'}]},
+    {id:crypto.randomUUID(), customer_id:c2, tn:'SCS-2606-3390',
+     product:'1,200 × Bluetooth speakers', stage:'Shipping', pct:85,
+     eta:'2026-08-02', updates:[
+       {t:'2026-06-25', msg:'QC passed — 0 critical defects in AQL inspection.'},
+       {t:'2026-07-14', msg:'Container loaded at Guangzhou port, vessel departs 16 July.'}]},
+    {id:crypto.randomUUID(), customer_id:c3, tn:'SCS-2605-1177',
+     product:'300 × kitchen appliance sets', stage:'Delivered', pct:100,
+     eta:'2026-07-05', updates:[
+       {t:'2026-07-04', msg:'Cleared Karachi customs.'},
+       {t:'2026-07-05', msg:'Delivered to warehouse. Order complete — thank you!'}]},
+  ];
+  leads = [
+    {id:crypto.randomUUID(),name:'Hamza Electronics',business:'Hamza Mobile',phone:'+92 300 5550182',
+     email:'hamza@example.com',country:'Pakistan',product:'OLED mobile screens',estimated_quantity:'500 units',
+     message:'Need Samsung-compatible OLED displays and price for mixed models.',source_code:'mobile_parts',
+     source_name:'Mobile Parts Website',source_url:'https://mobile.example.com',category:'Mobile Parts',status:'new',
+     created_at:new Date().toISOString()},
+    {id:crypto.randomUUID(),name:'Adeel Auto Store',business:'Adeel Autos',phone:'+92 321 5550100',
+     email:'adeel@example.com',country:'Pakistan',product:'LED headlights',estimated_quantity:'200 pairs',
+     message:'Looking for private-label headlights for Japanese vehicles.',source_code:'auto_parts',
+     source_name:'Auto Parts Website',source_url:'https://auto.example.com',category:'Auto Parts',status:'follow_up',
+     next_follow_up:new Date().toISOString().slice(0,10),created_at:new Date(Date.now()-86400000).toISOString()}
+  ];
+};
+
+async function loadOrders(){
+  if(NEEDS_SETUP) return; // seed() already filled orders
+  const {data, error} = await sb.from('orders').select('*').order('created_at');
+  if(error){ toast('Could not load orders: '+error.message); orders = []; return; }
+  orders = data;
+}
+async function loadCustomers(){
+  if(NEEDS_SETUP) return; // seed() already filled customers
+  const {data, error} = await sb.from('customers').select('*').order('name');
+  if(error){ toast('Could not load customers: '+error.message); customers = []; return; }
+  customers = data;
+}
+async function loadStaff(){
+  if(NEEDS_SETUP){
+    staff = [{user_id:'demo-admin', name:'Demo Administrator', email:'admin@shaikhchinasourcing.com', role:'owner', active:true}];
+    return;
+  }
+  const {data, error} = await sb.from('staff').select('*').order('name');
+  if(error){ staff = currentStaff ? [currentStaff] : []; return; }
+  staff = data || [];
+}
+async function loadActivity(){
+  if(!isOwner()){ activityLogs = []; return; }
+  if(NEEDS_SETUP) return;
+  const {data, error} = await sb.from('activity_logs').select('*').order('created_at',{ascending:false}).limit(250);
+  if(error){ activityLogs = []; return; }
+  activityLogs = data || [];
+}
+async function loadLeads(){
+  if(NEEDS_SETUP) return;
+  const {data, error} = await sb.from('leads').select('*').order('created_at',{ascending:false});
+  leadsAvailable = !error;
+  if(error){
+    leads = [];
+    const setupNote = document.getElementById('lead-setup-note');
+    if(setupNote) setupNote.style.display = 'block';
+    return;
+  }
+  leads = data || [];
+  const setupNote = document.getElementById('lead-setup-note');
+  if(setupNote) setupNote.style.display = 'none';
+}
+
+/* ================= ERP v1 data ================= */
+function seedErpPreview(){
+  erpParties = customers.map(c=>({
+    id:c.id, legacy_customer_id:c.id, name:c.name, party_type:'customer', city:c.city,
+    country:'Pakistan', email:c.email, phone:c.mobile, default_currency:'PKR', active:true
+  }));
+  erpProjects = orders.map(o=>({
+    id:o.id, legacy_order_id:o.id, party_id:o.customer_id, project_no:o.tn,
+    name:o.product, transaction_type:orderCategory(o).toLowerCase(), status:o.is_closed?'closed':'active'
+  }));
+  erpAccounts = [
+    {id:'a1000',code:'1000',name:'Cash on Hand',account_type:'asset'},
+    {id:'a1100',code:'1100',name:'Bank — PKR',account_type:'asset'},
+    {id:'a1200',code:'1200',name:'Accounts Receivable',account_type:'asset'},
+    {id:'a2000',code:'2000',name:'Accounts Payable',account_type:'liability'},
+    {id:'a4000',code:'4000',name:'Sourcing Revenue',account_type:'income'},
+    {id:'a4100',code:'4100',name:'Trading Revenue',account_type:'income'},
+    {id:'a5000',code:'5000',name:'Cost of Goods Sold',account_type:'expense'},
+    {id:'a6000',code:'6000',name:'General Expenses',account_type:'expense'}
+  ];
+  erpJournals = [{id:'demo-j1',journal_no:'JV-DEMO-001',journal_date:todayInputDate(),description:'ERP preview opening entry',currency:'PKR',exchange_rate:1,status:'posted'}];
+  erpJournalLines = [
+    {journal_id:'demo-j1',account_id:'a1100',debit:150000,credit:0,base_debit:150000,base_credit:0},
+    {journal_id:'demo-j1',account_id:'a4000',debit:0,credit:150000,base_debit:0,base_credit:150000}
+  ];
+  erpBanks = [{id:'demo-bank',name:'Main PKR Account',bank_name:'Demo Bank',currency:'PKR',opening_balance:150000,active:true}];
+}
+
+async function loadErp(){
+  if(NEEDS_SETUP){ seedErpPreview(); erpAvailable=false; renderErp(); return; }
+  const [parties,projects,accounts,journals,lines,banks,attachments] = await Promise.all([
+    sb.from('erp_parties').select('*').order('name'),
+    sb.from('erp_projects').select('*').order('created_at',{ascending:false}),
+    sb.from('erp_accounts').select('*').eq('active',true).order('code'),
+    sb.from('erp_journals').select('*').order('journal_date',{ascending:false}).limit(100),
+    sb.from('erp_journal_lines').select('*').limit(1000),
+    sb.from('erp_bank_accounts').select('*').eq('active',true).order('name'),
+    sb.from('erp_attachments').select('*').order('created_at',{ascending:false}).limit(100)
+  ]);
+  if(parties.error){
+    erpAvailable=false;
+    seedErpPreview();
+  } else {
+    erpAvailable=true;
+    erpParties=parties.data||[]; erpProjects=projects.data||[]; erpAccounts=accounts.data||[];
+    erpJournals=journals.data||[]; erpJournalLines=lines.data||[]; erpBanks=banks.data||[]; erpAttachments=attachments.data||[];
+  }
+  renderErp();
+}
+
+function erpMoney(value,currency='PKR'){
+  return new Intl.NumberFormat('en-PK',{style:'currency',currency,maximumFractionDigits:currency==='PKR'?0:2}).format(Number(value)||0);
+}
+function renderErp(){
+  const note=document.getElementById('erp-setup-note'); if(note) note.style.display=erpAvailable?'none':'block';
+  renderErpParties(); renderErpAccounting(); renderErpBanks(); renderTrialBalance();
+}
+function renderErpParties(){
+  const rows=document.getElementById('erp-party-rows'); if(!rows) return;
+  const q=(document.getElementById('erp-party-search')?.value||'').trim().toLowerCase();
+  const list=erpParties.filter(p=>[p.name,p.city,p.country,p.email,p.phone].some(v=>String(v||'').toLowerCase().includes(q)));
+  document.getElementById('erp-party-count').textContent=`${erpParties.length} ${erpParties.length===1?'party':'parties'}`;
+  document.getElementById('erp-party-empty').style.display=list.length?'none':'block';
+  rows.innerHTML=list.map(p=>`<tr><td><strong>${esc(p.name)}</strong><div style="font-size:11px;color:var(--muted)">${esc(p.tax_id||'')}</div></td><td><span class="erp-chip">${esc((p.party_type||'both').replace('_',' '))}</span></td><td>${esc([p.city,p.country].filter(Boolean).join(', ')||'—')}</td><td>${esc(p.email||p.phone||'—')}</td><td><strong>${esc(p.default_currency||'PKR')}</strong></td></tr>`).join('');
+}
+function renderErpAccounting(){
+  const count=document.getElementById('erp-journal-count'); if(!count) return;
+  count.textContent=erpJournals.filter(j=>j.status==='posted').length;
+  const postedIds=new Set(erpJournals.filter(j=>j.status==='posted').map(j=>j.id));
+  const net=erpJournalLines.filter(l=>postedIds.has(l.journal_id)).reduce((s,l)=>s+(Number(l.base_debit)||0)-(Number(l.base_credit)||0),0);
+  document.getElementById('erp-ledger-balance').textContent=erpMoney(net,'PKR');
+  const journalList=document.getElementById('erp-journal-list');
+  journalList.innerHTML=erpJournals.length?erpJournals.slice(0,8).map(j=>{
+    const lines=erpJournalLines.filter(l=>l.journal_id===j.id); const debit=lines.reduce((s,l)=>s+(Number(l.base_debit)||0),0);
+    return `<div class="erp-list-row"><div><strong>${esc(j.journal_no||'Journal')}</strong><small>${esc(fmtDate(j.journal_date))} · ${esc(j.description||'No description')}</small></div><div style="text-align:right"><div class="erp-amount">${erpMoney(debit,'PKR')}</div><span class="erp-chip ${j.status==='posted'?'ok':''}">${esc(j.status||'draft')}</span></div></div>`;
+  }).join(''):'<div class="erp-empty">No journal entries yet.</div>';
+  document.getElementById('erp-account-list').innerHTML=erpAccounts.slice(0,10).map(a=>`<div class="erp-list-row"><div><strong>${esc(a.code)} · ${esc(a.name)}</strong><small>${esc(a.account_type)}</small></div></div>`).join('');
+}
+function renderErpBanks(){
+  const grid=document.getElementById('erp-bank-grid'); if(!grid) return;
+  document.getElementById('erp-bank-empty').style.display=erpBanks.length?'none':'block';
+  grid.innerHTML=erpBanks.map(b=>`<div class="erp-card erp-span-4"><div class="erp-kicker">${esc(b.currency||'PKR')} account</div><h2>${esc(b.name)}</h2><div class="sub">${esc(b.bank_name||'Cash / other')} ${b.account_no?'· '+esc(b.account_no):''}</div><div class="erp-metric red">${erpMoney(b.opening_balance||0,b.currency||'PKR')}</div><div class="sub">Opening balance</div></div>`).join('');
+}
+function trialBalanceRows(){
+  const grouped=new Map(erpAccounts.map(a=>[a.id,{account:a,debit:0,credit:0}]));
+  const posted=new Set(erpJournals.filter(j=>j.status==='posted').map(j=>j.id));
+  erpJournalLines.filter(l=>posted.has(l.journal_id)).forEach(l=>{ const g=grouped.get(l.account_id); if(g){g.debit+=Number(l.base_debit)||0;g.credit+=Number(l.base_credit)||0;} });
+  return [...grouped.values()].filter(g=>g.debit||g.credit).sort((a,b)=>String(a.account.code).localeCompare(String(b.account.code)));
+}
+function renderTrialBalance(){
+  const body=document.getElementById('erp-trial-balance'); if(!body) return;
+  const rows=trialBalanceRows(); const debit=rows.reduce((s,r)=>s+r.debit,0); const credit=rows.reduce((s,r)=>s+r.credit,0); const balanced=Math.abs(debit-credit)<0.01;
+  body.innerHTML=rows.length?rows.map(r=>`<tr><td>${esc(r.account.code)}</td><td><strong>${esc(r.account.name)}</strong></td><td class="num">${erpMoney(r.debit)}</td><td class="num">${erpMoney(r.credit)}</td><td class="num"><strong>${erpMoney(r.debit-r.credit)}</strong></td></tr>`).join(''):'<tr><td colspan="5"><div class="erp-empty">No posted journal lines yet.</div></td></tr>';
+  const chip=document.getElementById('erp-tb-status'); chip.textContent=balanced?'Balanced':'Out of balance'; chip.classList.toggle('ok',balanced);
+}
+
+async function syncTrackerToErp(){
+  if(!erpAvailable){ toast('Install the ERP database scripts in Supabase first'); return; }
+  try{
+    for(const c of customers){
+      const {error}=await sb.from('erp_parties').upsert({legacy_customer_id:c.id,name:c.name,party_type:'customer',city:c.city||null,country:'Pakistan',email:c.email||null,phone:c.mobile||null,default_currency:'PKR'},{onConflict:'legacy_customer_id'});
+      if(error) throw error;
+    }
+    const {data:partyRows,error:partyError}=await sb.from('erp_parties').select('id,legacy_customer_id'); if(partyError) throw partyError;
+    const partyByCustomer=new Map((partyRows||[]).map(p=>[p.legacy_customer_id,p.id]));
+    for(const o of orders){
+      const {error}=await sb.from('erp_projects').upsert({legacy_order_id:o.id,party_id:partyByCustomer.get(o.customer_id)||null,project_no:o.tn,name:o.product,transaction_type:orderCategory(o).toLowerCase(),status:o.is_closed?'closed':'active',progress_pct:o.pct||0},{onConflict:'legacy_order_id'});
+      if(error) throw error;
+    }
+    await loadErp(); toast(`Synced ${customers.length} customers and ${orders.length} orders into ERP`);
+  }catch(error){toast('ERP sync failed: '+error.message);}
+}
+
+function openErpModal(type){
+  erpModalType=type; const title=document.getElementById('erp-modal-title'); const body=document.getElementById('erp-modal-body');
+  if(type==='party'){
+    title.textContent='New customer / supplier';
+    body.innerHTML=`<div class="erp-form-grid"><div class="erp-field full"><label>Company / party name</label><input id="erp-f-name" required placeholder="e.g. Guangzhou Bright Tech Co."></div><div class="erp-field"><label>Role</label><select id="erp-f-party-type"><option value="customer">Customer</option><option value="supplier">Supplier</option><option value="both">Customer & supplier</option></select></div><div class="erp-field"><label>Default currency</label><select id="erp-f-currency"><option>PKR</option><option>CNY</option><option>USD</option></select></div><div class="erp-field"><label>City</label><input id="erp-f-city"></div><div class="erp-field"><label>Country</label><input id="erp-f-country" value="Pakistan"></div><div class="erp-field"><label>Email</label><input id="erp-f-email" type="email"></div><div class="erp-field"><label>Phone</label><input id="erp-f-phone"></div></div>`;
+  } else if(type==='journal'){
+    const opts=erpAccounts.map(a=>`<option value="${esc(a.id)}">${esc(a.code)} · ${esc(a.name)}</option>`).join(''); const projects=erpProjects.map(p=>`<option value="${esc(p.id)}">${esc(p.project_no)} · ${esc(p.name)}</option>`).join('');
+    title.textContent='New journal entry';
+    body.innerHTML=`<div class="erp-form-grid"><div class="erp-field"><label>Date</label><input id="erp-f-date" type="date" value="${todayInputDate()}"></div><div class="erp-field"><label>Project allocation</label><select id="erp-f-project"><option value="">General / no project</option>${projects}</select></div><div class="erp-field full"><label>Description</label><input id="erp-f-description" placeholder="What is this transaction for?"></div><div class="erp-field"><label>Currency</label><select id="erp-f-jcurrency" onchange="document.getElementById('erp-f-rate-wrap').style.display=this.value==='PKR'?'none':'block'"><option>PKR</option><option>CNY</option><option>USD</option></select></div><div class="erp-field" id="erp-f-rate-wrap" style="display:none"><label>PKR exchange rate</label><input id="erp-f-rate" type="number" min="0.000001" step="0.000001" value="1"></div><div class="erp-field"><label>Debit account</label><select id="erp-f-debit">${opts}</select></div><div class="erp-field"><label>Credit account</label><select id="erp-f-credit">${opts}</select></div><div class="erp-field full"><label>Amount</label><input id="erp-f-amount" type="number" min="0.01" step="0.01" placeholder="0.00"></div></div>`;
+  } else if(type==='bank'){
+    title.textContent='New bank / cash account';
+    body.innerHTML=`<div class="erp-form-grid"><div class="erp-field full"><label>Account name</label><input id="erp-f-bank-name" placeholder="e.g. HBL PKR Current"></div><div class="erp-field"><label>Bank name</label><input id="erp-f-bank-bank"></div><div class="erp-field"><label>Account number</label><input id="erp-f-bank-no"></div><div class="erp-field"><label>Currency</label><select id="erp-f-bank-currency"><option>PKR</option><option>CNY</option><option>USD</option></select></div><div class="erp-field"><label>Opening balance</label><input id="erp-f-bank-opening" type="number" step="0.01" value="0"></div></div>`;
+  }
+  document.getElementById('erp-modal-bg').classList.add('on');
+}
+function closeErpModal(){ document.getElementById('erp-modal-bg').classList.remove('on'); erpModalType=null; }
+async function saveErpModal(){
+  const button=document.getElementById('erp-modal-save'); button.disabled=true;
+  try{
+    if(erpModalType==='party'){
+      const record={name:document.getElementById('erp-f-name').value.trim(),party_type:document.getElementById('erp-f-party-type').value,default_currency:document.getElementById('erp-f-currency').value,city:document.getElementById('erp-f-city').value.trim()||null,country:document.getElementById('erp-f-country').value.trim()||null,email:document.getElementById('erp-f-email').value.trim()||null,phone:document.getElementById('erp-f-phone').value.trim()||null};
+      if(!record.name) throw new Error('Party name is required');
+      if(!erpAvailable) erpParties.push({id:crypto.randomUUID(),...record,active:true}); else { const {error}=await sb.from('erp_parties').insert(record); if(error) throw error; }
+    } else if(erpModalType==='bank'){
+      const record={name:document.getElementById('erp-f-bank-name').value.trim(),bank_name:document.getElementById('erp-f-bank-bank').value.trim()||null,account_no:document.getElementById('erp-f-bank-no').value.trim()||null,currency:document.getElementById('erp-f-bank-currency').value,opening_balance:Number(document.getElementById('erp-f-bank-opening').value)||0};
+      if(!record.name) throw new Error('Account name is required');
+      if(!erpAvailable) erpBanks.push({id:crypto.randomUUID(),...record,active:true}); else { const {error}=await sb.from('erp_bank_accounts').insert(record); if(error) throw error; }
+    } else if(erpModalType==='journal'){
+      const amount=Number(document.getElementById('erp-f-amount').value); const currency=document.getElementById('erp-f-jcurrency').value; const rate=currency==='PKR'?1:Number(document.getElementById('erp-f-rate').value); const debit=document.getElementById('erp-f-debit').value; const credit=document.getElementById('erp-f-credit').value; const projectId=document.getElementById('erp-f-project').value||null;
+      if(!amount||amount<=0) throw new Error('Enter a positive amount'); if(!rate||rate<=0) throw new Error('Enter a valid exchange rate'); if(debit===credit) throw new Error('Debit and credit accounts must be different');
+      const header={journal_date:document.getElementById('erp-f-date').value,description:document.getElementById('erp-f-description').value.trim()||'Journal entry',currency,exchange_rate:rate,status:'draft'}; const base=amount*rate;
+      if(!erpAvailable){ const id=crypto.randomUUID(); erpJournals.unshift({id,journal_no:'JV-PREVIEW',...header,status:'posted'}); erpJournalLines.push({journal_id:id,account_id:debit,project_id:projectId,debit:amount,credit:0,base_debit:base,base_credit:0},{journal_id:id,account_id:credit,project_id:projectId,debit:0,credit:amount,base_debit:0,base_credit:base}); }
+      else {
+        const {data:journal,error}=await sb.from('erp_journals').insert(header).select('id').single(); if(error) throw error;
+        const {error:lineError}=await sb.from('erp_journal_lines').insert([{journal_id:journal.id,account_id:debit,project_id:projectId,debit:amount,credit:0,base_debit:base,base_credit:0},{journal_id:journal.id,account_id:credit,project_id:projectId,debit:0,credit:amount,base_debit:0,base_credit:base}]); if(lineError) throw lineError;
+        const {error:postError}=await sb.from('erp_journals').update({status:'posted',posted_at:new Date().toISOString()}).eq('id',journal.id); if(postError) throw postError;
+      }
+    }
+    closeErpModal(); if(erpAvailable) await loadErp(); else renderErp(); toast('ERP record saved');
+  }catch(error){toast(error.message||'Could not save ERP record');}finally{button.disabled=false;}
+}
+
+function exportTrialBalanceCsv(){
+  const rows=[['Code','Account','Debit PKR','Credit PKR','Balance PKR'],...trialBalanceRows().map(r=>[r.account.code,r.account.name,r.debit.toFixed(2),r.credit.toFixed(2),(r.debit-r.credit).toFixed(2)])];
+  const csv=rows.map(row=>row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n'); const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`scs-trial-balance-${todayInputDate()}.csv`; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+
+async function uploadErpAttachment(file,{entityType,entityId,projectId=null}){
+  if(!file) throw new Error('Choose a file first'); if(R2_API_BASE.startsWith('YOUR_')) throw new Error('Cloudflare R2 Worker URL is not configured');
+  const {data:{session}}=await sb.auth.getSession(); if(!session) throw new Error('Sign in again before uploading');
+  const key=`${entityType}/${entityId}/${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9._-]/g,'_')}`;
+  const response=await fetch(`${R2_API_BASE.replace(/\/$/,'')}/objects/${encodeURIComponent(key)}`,{method:'PUT',headers:{Authorization:`Bearer ${session.access_token}`,'Content-Type':file.type||'application/octet-stream','X-File-Name':encodeURIComponent(file.name)},body:file});
+  if(!response.ok) throw new Error(`R2 upload failed (${response.status})`); const stored=await response.json();
+  const {error}=await sb.from('erp_attachments').insert({project_id:projectId,entity_type:entityType,entity_id:entityId,object_key:stored.key,file_name:file.name,mime_type:file.type||null,file_size:file.size}); if(error) throw error; return stored;
+}
+function renderCurrentOrderAttachments(){
+  const wrap=document.getElementById('f-r2-attachments'); if(!wrap) return;
+  const items=editingId?erpAttachments.filter(a=>a.entity_type==='order'&&a.entity_id===editingId):[];
+  wrap.innerHTML=items.length?items.map(a=>`<div class="update"><div style="flex:1"><strong>${esc(a.file_name)}</strong><div style="font-size:11px;color:var(--muted)">${a.file_size?`${(a.file_size/1024).toFixed(0)} KB`:''}</div></div><button class="btn ghost sm" type="button" onclick="downloadErpAttachment('${a.id}')">Download</button></div>`).join(''):'<div class="order-update-history-empty">No R2 attachments for this order.</div>';
+}
+async function uploadCurrentOrderAttachment(){
+  if(!editingId){toast('Save the order first, then reopen it to attach files');return;} if(!erpAvailable){toast('Install the ERP database scripts first');return;}
+  const input=document.getElementById('f-r2-file'); const file=input.files?.[0]; if(!file){toast('Choose a PDF, image or video first');return;}
+  try{const project=erpProjects.find(p=>p.legacy_order_id===editingId); await uploadErpAttachment(file,{entityType:'order',entityId:editingId,projectId:project?.id||null}); input.value=''; await loadErp(); renderCurrentOrderAttachments(); toast('Attachment stored in Cloudflare R2');}catch(error){toast(error.message||'Attachment upload failed');}
+}
+async function downloadErpAttachment(id){
+  const item=erpAttachments.find(a=>a.id===id); if(!item) return; if(R2_API_BASE.startsWith('YOUR_')){toast('Cloudflare R2 Worker URL is not configured');return;}
+  try{const {data:{session}}=await sb.auth.getSession(); const response=await fetch(`${R2_API_BASE.replace(/\/$/,'')}/objects/${encodeURIComponent(item.object_key)}`,{headers:{Authorization:`Bearer ${session.access_token}`}}); if(!response.ok) throw new Error(`Download failed (${response.status})`); const blob=await response.blob(); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=item.file_name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),1000);}catch(error){toast(error.message||'Could not download attachment');}
+}
+function customerName(id){ return customers.find(c=>c.id===id)?.name || 'Unknown customer'; }
+
+/* ================= admin ================= */
+async function doLogin(){
+  if(NEEDS_SETUP){ await enterAdmin(); return; }
+  const email = document.getElementById('admin-email').value.trim();
+  const password = document.getElementById('admin-pass').value;
+  const {data, error} = await sb.auth.signInWithPassword({email, password});
+  if(error){ toast('Login failed — check email/password'); return; }
+  const {data: staffRow, error: staffError} = await sb
+    .from('staff')
+    .select('*')
+    .eq('user_id', data.user.id)
+    .maybeSingle();
+  if(staffError || !staffRow || staffRow.active===false){
+    await sb.auth.signOut();
+    toast('Access denied — this account is not an administrator');
+    return;
+  }
+  currentStaff = {...staffRow, email:staffRow.email || data.user.email};
+  await enterAdmin();
+}
+async function doLogout(){
+  if(!NEEDS_SETUP) await sb.auth.signOut();
+  unlocked = false;
+  currentStaff = null;
+  document.getElementById('admin-login').style.display='block';
+  document.getElementById('admin-panel').style.display='none';
+}
+async function enterAdmin(){
+  unlocked = true;
+  orderFilter = defaultOrderFilter();
+  orderSearch = '';
+  orderSort = 'newest';
+  adminPage = 'orders';
+  document.getElementById('admin-login').style.display='none';
+  document.getElementById('admin-panel').style.display='block';
+  await loadCustomers();
+  await loadOrders();
+  await loadLeads();
+  await loadStaff();
+  if(isOwner()) await loadActivity();
+  await loadErp();
+  renderAdmin();
+  renderLeads();
+  showAdminPage('orders', false);
+}
+async function checkExistingSession(){
+  if(NEEDS_SETUP) return;
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session) return;
+  const {data: staffRow} = await sb.from('staff').select('*').eq('user_id', session.user.id).maybeSingle();
+  if(staffRow && staffRow.active!==false){
+    currentStaff = {...staffRow, email:staffRow.email || session.user.email};
+    await enterAdmin();
+  }
+  else await sb.auth.signOut();
+}
+
+function setOrderView(mode){
+  orderViewMode = mode === 'cards' ? 'cards' : 'list';
+  try { localStorage.setItem('scs-order-view', orderViewMode); } catch {}
+  applyOrderView();
+}
+function applyOrderView(){
+  const listView = document.getElementById('orders-list-view');
+  const cardView = document.getElementById('order-cards');
+  const listButton = document.getElementById('orders-list-button');
+  const cardButton = document.getElementById('orders-card-button');
+  if(!listView || !cardView || !listButton || !cardButton) return;
+  const cardsActive = orderViewMode === 'cards';
+  listView.classList.toggle('view-hidden', cardsActive);
+  cardView.classList.toggle('on', cardsActive);
+  listButton.classList.toggle('active', !cardsActive);
+  cardButton.classList.toggle('active', cardsActive);
+  listButton.setAttribute('aria-pressed', String(!cardsActive));
+  cardButton.setAttribute('aria-pressed', String(cardsActive));
+}
+function orderCategoryThumbnail(category){
+  if(category === 'Shipping'){
+    return `<svg viewBox="0 0 40 40" fill="none" aria-hidden="true">
+      <path d="M7 25h26l-4 7H12l-5-7Z" fill="currentColor" fill-opacity=".28" stroke="currentColor" stroke-width="2"/>
+      <path d="M12 25V14h16v11M16 14V9h8v5M8 34c2 1.5 4 1.5 6 0 2 1.5 4 1.5 6 0 2 1.5 4 1.5 6 0 2 1.5 4 1.5 6 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>`;
+  }
+  if(category === 'Trading'){
+    return `<svg viewBox="0 0 40 40" fill="none" aria-hidden="true">
+      <path d="M8 14h22M25 9l5 5-5 5M32 27H10M15 22l-5 5 5 5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
+  }
+  return `<svg viewBox="0 0 40 40" fill="none" aria-hidden="true">
+    <circle cx="18" cy="18" r="9" stroke="currentColor" stroke-width="2.6"/>
+    <path d="m25 25 8 8M14 18h8M18 14v8" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function syncOrderControls(){
+  const stageSelect = document.getElementById('order-stage-filter');
+  const categorySelect = document.getElementById('order-category-filter');
+  const customerSelect = document.getElementById('order-customer-filter');
+  if(!stageSelect || !categorySelect || !customerSelect) return;
+  stageSelect.innerHTML = `<option value="">All stages</option>` +
+    STAGES.map(stage=>`<option value="${esc(stage.name)}">${esc(stage.name)}</option>`).join('');
+  categorySelect.innerHTML = `<option value="">All categories</option>` +
+    ORDER_CATEGORIES.map(category=>`<option value="${esc(category)}">${esc(category)}</option>`).join('');
+  customerSelect.innerHTML = `<option value="">All customers</option>` +
+    customers.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(customer=>
+      `<option value="${esc(customer.id)}">${esc(customer.name)}</option>`).join('');
+  document.getElementById('order-search').value = orderSearch;
+  stageSelect.value = orderFilter.stage;
+  categorySelect.value = orderFilter.category;
+  customerSelect.value = orderFilter.customerId;
+  document.getElementById('order-state-filter').value = orderFilter.state;
+  document.getElementById('order-sort').value = orderSort;
+}
+function updateOrderControls(){
+  orderSearch = document.getElementById('order-search').value.trim();
+  orderFilter = {
+    stage:document.getElementById('order-stage-filter').value,
+    category:document.getElementById('order-category-filter').value,
+    customerId:document.getElementById('order-customer-filter').value,
+    state:document.getElementById('order-state-filter').value
+  };
+  orderSort = document.getElementById('order-sort').value || 'newest';
+  renderAdmin();
+}
+function orderSearchText(order){
+  const customer = customers.find(item=>item.id===order.customer_id);
+  return [
+    order.tn, order.product, order.stage, orderCategory(order),
+    customer?.name, customer?.city, customer?.mobile, customer?.email
+  ].filter(Boolean).join(' ').toLocaleLowerCase();
+}
+function orderTimestamp(order){
+  const timestamp = Date.parse(order.created_at || '');
+  return Number.isFinite(timestamp) ? timestamp : 0;
+}
+function sortOrdersForAdmin(list){
+  const originalIndex = new Map(orders.map((order,index)=>[order.id,index]));
+  return list.slice().sort((a,b)=>{
+    const customerA = customerName(a.customer_id);
+    const customerB = customerName(b.customer_id);
+    const fallbackNewest = (originalIndex.get(b.id) ?? 0) - (originalIndex.get(a.id) ?? 0);
+    if(orderSort==='oldest'){
+      const difference = orderTimestamp(a)-orderTimestamp(b);
+      return difference || -fallbackNewest;
+    }
+    if(orderSort==='eta_soon'){
+      const aEta = Date.parse(a.eta || '') || Number.MAX_SAFE_INTEGER;
+      const bEta = Date.parse(b.eta || '') || Number.MAX_SAFE_INTEGER;
+      return aEta-bEta || fallbackNewest;
+    }
+    if(orderSort==='eta_latest'){
+      const aEta = Date.parse(a.eta || '') || 0;
+      const bEta = Date.parse(b.eta || '') || 0;
+      return bEta-aEta || fallbackNewest;
+    }
+    if(orderSort==='progress_desc') return (Number(b.pct)||0)-(Number(a.pct)||0) || fallbackNewest;
+    if(orderSort==='progress_asc') return (Number(a.pct)||0)-(Number(b.pct)||0) || fallbackNewest;
+    if(orderSort==='customer_az') return customerA.localeCompare(customerB) || fallbackNewest;
+    return orderTimestamp(b)-orderTimestamp(a) || fallbackNewest;
+  });
+}
+
+function renderAdmin(){
+  const tbody = document.getElementById('order-rows');
+  const active = orders.filter(o=>!o.is_closed && o.pct<100).length;
+  const shipping = orders.filter(o=>!o.is_closed && (o.stage==='Shipping'||o.stage==='Customs')).length;
+  const delivered = orders.filter(o=>o.pct>=100).length;
+  const newLeads = leads.filter(lead=>lead.status==='new').length;
+  const signedIn = currentStaff?.name || currentStaff?.email || (NEEDS_SETUP ? 'Demo Administrator' : 'Admin');
+  document.getElementById('signed-in-user').innerHTML = `<span class="staff-dot"></span>${esc(signedIn)} · ${esc(currentRole())}`;
+  document.getElementById('lead-nav-count').textContent = newLeads ? `(${newLeads})` : '';
+  document.getElementById('team-section').style.display = canManageUsers() ? 'block' : 'none';
+  document.getElementById('activity-section').style.display = isOwner() ? 'block' : 'none';
+  document.getElementById('new-customer-btn').style.display = canManageUsers() ? 'inline-block' : 'none';
+  document.getElementById('nav-users').style.display = canManageUsers() ? 'inline-block' : 'none';
+  if(adminPage==='users' && !canManageUsers()) showAdminPage('dashboard', false);
+  syncOrderControls();
+  document.getElementById('stats').innerHTML = `
+    <button class="stat action" onclick="openAllOrders()"><b>${orders.length}</b><span>Total orders · open</span></button>
+    ${canManageUsers()
+      ? `<button class="stat action" onclick="showAdminPage('users')"><b>${customers.length}</b><span>Customers · manage</span></button>`
+      : `<div class="stat"><b>${customers.length}</b><span>Customers</span></div>`}
+    <div class="stat"><b>${active}</b><span>In progress</span></div>
+    <div class="stat"><b>${shipping}</b><span>On the water</span></div>
+    <button class="stat action" onclick="filterOrdersByStatus('Delivered')"><b>${delivered}</b><span>Delivered · open</span></button>
+    <button class="stat action" onclick="showAdminPage('leads')"><b>${newLeads}</b><span>New leads · open</span></button>`;
+  renderDashboardSummaries();
+  const normalizedSearch = orderSearch.toLocaleLowerCase();
+  const filteredOrders = orders.filter(o=>
+    (!orderFilter.stage || o.stage===orderFilter.stage) &&
+    (!orderFilter.customerId || o.customer_id===orderFilter.customerId) &&
+    (!orderFilter.category || orderCategory(o)===orderFilter.category) &&
+    (!orderFilter.state ||
+      (orderFilter.state==='active' && !o.is_closed && Number(o.pct)<100) ||
+      (orderFilter.state==='delivered' && Number(o.pct)>=100) ||
+      (orderFilter.state==='closed' && Boolean(o.is_closed))) &&
+    (!normalizedSearch || orderSearchText(o).includes(normalizedSearch))
+  );
+  const selectedCustomer = customers.find(c=>c.id===orderFilter.customerId);
+  const stateLabels = {active:'In progress', delivered:'Delivered', closed:'Closed'};
+  const activeFilters = [
+    normalizedSearch ? `Search: “${orderSearch}”` : '',
+    orderFilter.stage ? `Stage: ${orderFilter.stage}` : '',
+    orderFilter.category ? `Category: ${orderFilter.category}` : '',
+    orderFilter.customerId ? `Customer: ${selectedCustomer?.name || 'Unknown'}` : '',
+    orderFilter.state ? `Status: ${stateLabels[orderFilter.state]}` : ''
+  ].filter(Boolean);
+  document.getElementById('orders-heading').textContent = activeFilters.length ? 'Filtered orders' : 'All orders';
+  document.getElementById('orders-filter-note').textContent = activeFilters.length
+    ? `${filteredOrders.length} matching order${filteredOrders.length===1?'':'s'} · ${activeFilters.join(' · ')}`
+    : `Showing all ${orders.length} order${orders.length===1?'':'s'}, sorted by ${document.getElementById('order-sort').selectedOptions[0].text.toLocaleLowerCase()}.`;
+  document.getElementById('clear-order-filter').textContent = 'Reset';
+  const hasNonDefaultOrderControls = Boolean(
+    normalizedSearch ||
+    orderFilter.stage ||
+    orderFilter.category ||
+    orderFilter.customerId ||
+    orderFilter.state!=='active' ||
+    orderSort!=='newest'
+  );
+  document.getElementById('clear-order-filter').style.display =
+    hasNonDefaultOrderControls ? 'inline-block' : 'none';
+  const empty = document.getElementById('empty-msg');
+  empty.style.display = filteredOrders.length ? 'none':'block';
+  empty.textContent = orders.length
+    ? 'No orders match your search and filters. Try changing or resetting them.'
+    : 'No orders yet. Click “+ New order” to add your first one.';
+  const sortedOrders = sortOrdersForAdmin(filteredOrders);
+  tbody.innerHTML = sortedOrders.map(o=>{
+    const c = customers.find(c=>c.id===o.customer_id);
+    const category = orderCategory(o);
+    return `
+    <tr class="row">
+      <td><strong>${esc(c?.name||'Unknown')}</strong><br><span style="color:var(--ink-dim);font-size:12px">${esc(c?.city||'')}</span></td>
+      <td style="max-width:220px">${esc(o.product)}</td>
+      <td><span class="stagechip category-chip ${category==='Shipping'?'shipping-category':''}">${esc(category)}</span></td>
+      <td>${o.tn}</td>
+      <td><span class="stagechip stage-status-chip ${o.stage==='Payment'?'payment-stage':''}">${esc(o.stage)}</span>${o.is_closed?' <span class="stagechip closed-chip">Closed</span>':''}</td>
+      <td><div style="display:flex;align-items:center">
+        <div class="mini-bar"><div class="mini-fill" style="width:${o.pct}%"></div></div>
+        <span class="pct">${o.pct}%</span></div></td>
+      <td>${fmtDate(o.eta)||'—'}</td>
+      <td><div class="table-actions">
+        <button class="btn ghost sm" onclick="viewOrder('${o.id}')">View</button>
+        <button class="btn ghost sm" onclick="openForm('${o.id}')">Edit</button>
+        <button class="btn whatsapp sm" onclick="openWhatsAppForOrder('${o.id}')" ${c?.mobile?'':'disabled title="Add a mobile number to the customer profile first"'}>WhatsApp</button>
+        ${externalUrl(o.asset_url)?`<a class="btn ghost sm" href="${esc(externalUrl(o.asset_url))}" target="_blank" rel="noopener noreferrer" title="View product photos and videos">Photos &amp; Videos ↗</a>`:''}
+      </div></td>
+    </tr>`;}).join('');
+  document.getElementById('order-cards').innerHTML = sortedOrders.map(o=>{
+    const c = customers.find(customer=>customer.id===o.customer_id);
+    const category = orderCategory(o);
+    const thumbnail = productThumbnailUrl(o.thumbnail_url);
+    return `
+      <article class="admin-order-card">
+        <div class="admin-order-card-head">
+          <div class="order-thumbnail ${category.toLowerCase()} ${thumbnail?'has-image':''}">
+            ${thumbnail?`<img src="${esc(thumbnail)}" alt="${esc(o.product)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentElement.classList.remove('has-image');this.remove()">`:''}
+            <span class="thumbnail-fallback">${orderCategoryThumbnail(category)}</span>
+          </div>
+          <div>
+            <h3 title="${esc(o.product)}">${esc(o.product)}</h3>
+            <div class="admin-order-customer">${esc(c?.name || 'Unknown customer')}${c?.city ? ' · '+esc(c.city) : ''}</div>
+          </div>
+        </div>
+        <div class="order-card-badges">
+          <span class="stagechip category-chip ${category==='Shipping'?'shipping-category':''}">${esc(category)}</span>
+          <span class="stagechip stage-status-chip ${o.stage==='Payment'?'payment-stage':''}">${esc(o.stage)}</span>
+          ${o.is_closed?'<span class="stagechip closed-chip">Closed</span>':''}
+        </div>
+        <div class="order-card-meta">
+          <div><label>Tracking number</label><strong>${esc(o.tn)}</strong></div>
+          <div><label>Estimated completion</label><strong>${esc(fmtDate(o.eta) || '—')}</strong></div>
+        </div>
+        <div class="order-card-progress-head"><span>Order progress</span><strong>${esc(o.pct)}%</strong></div>
+        <div class="order-card-progress"><span style="width:${Math.max(0,Math.min(100,Number(o.pct)||0))}%"></span></div>
+        <div class="order-card-actions">
+          <button class="btn ghost sm" onclick="viewOrder('${o.id}')">View</button>
+          <button class="btn ghost sm" onclick="openForm('${o.id}')">Edit</button>
+          <button class="btn whatsapp sm" onclick="openWhatsAppForOrder('${o.id}')" ${c?.mobile?'':'disabled title="Add a mobile number to the customer profile first"'}>WhatsApp</button>
+          ${externalUrl(o.asset_url)
+            ? `<a class="btn ghost sm" href="${esc(externalUrl(o.asset_url))}" target="_blank" rel="noopener noreferrer">Photos &amp; Videos ↗</a>`
+            : `<button class="btn ghost sm" type="button" disabled>No media link</button>`}
+        </div>
+      </article>`;
+  }).join('');
+  applyOrderView();
+
+  const custBody = document.getElementById('customer-rows');
+  document.getElementById('cust-empty-msg').style.display = customers.length? 'none':'block';
+  custBody.innerHTML = customers.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(c=>`
+    <tr class="row">
+      <td><strong>${esc(c.name)}</strong></td>
+      <td>${esc(c.city||'—')}</td>
+      <td>${esc(c.mobile||'—')}</td>
+      <td style="font-size:13px; color:var(--ink-dim)">${esc(c.email)}</td>
+      <td>${canManageUsers()?`<button class="btn ghost sm" onclick="openEditCustomerForm('${c.id}')">Edit</button>`:'—'}</td>
+    </tr>`).join('');
+  renderStaff();
+  renderActivity();
+  renderLeads();
+}
+
+function showAdminPage(page, scroll=true){
+  if(page==='users' && !canManageUsers()){
+    toast('Your role cannot manage users');
+    page = 'dashboard';
+  }
+  adminPage = page;
+  const meta = {
+    dashboard:['ERP dashboard','Orders, customers and operating activity at a glance.'],
+    orders:['Orders / Projects','Your existing tracker is the central project workspace.'],
+    parties:['Customers & suppliers','One party master shared across sales, purchasing and accounting.'],
+    products:['Products','Reusable product master and transaction history.'],
+    sales:['Sales','Quotations, invoices, receipts and project revenue.'],
+    purchasing:['Purchasing','Supplier RFQs, purchase orders, bills and payments.'],
+    inventory:['Inventory','Movement-based stock across multiple warehouses.'],
+    logistics:['Logistics','Goods receipt, warehouse movement, shipping and delivery.'],
+    accounting:['Accounting','Double-entry journals, chart of accounts and multi-currency posting.'],
+    banking:['Banking','PKR and CNY bank/cash accounts and statements.'],
+    reports:['Reports','Trial balance today; GL, profitability and statements next.'],
+    leads:['Lead management','Follow up inquiries received across all connected websites.'],
+    users:['User management','Manage customer access, team users and account activity.']
+  };
+  ['dashboard','orders','parties','products','sales','purchasing','inventory','logistics','accounting','banking','reports','leads','users'].forEach(name=>{
+    document.getElementById(`page-${name}`).classList.toggle('on', name===page);
+    document.getElementById(`nav-${name}`).classList.toggle('active', name===page);
+  });
+  document.querySelectorAll('#erp-bottom-nav [data-page]').forEach(btn=>btn.classList.toggle('active',btn.dataset.page===page));
+  document.getElementById('admin-page-title').textContent = meta[page][0];
+  document.getElementById('admin-page-subtitle').textContent = meta[page][1];
+  if(scroll) window.scrollTo({top:0,behavior:'smooth'});
+}
+
+const LEAD_STATUS_LABELS = {
+  new:'New', contacted:'Contacted', follow_up:'Follow-up',
+  quoted:'Quoted', converted:'Converted', lost:'Lost'
+};
+function leadStatusLabel(status){ return LEAD_STATUS_LABELS[status] || 'New'; }
+function leadSourceName(lead){ return lead.source_name || lead.source_code || 'Website'; }
+function leadDate(value, includeTime=false){
+  if(!value) return '—';
+  const date = new Date(value);
+  if(Number.isNaN(date.getTime())) return value;
+  return date.toLocaleString('en-GB', includeTime
+    ? {day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}
+    : {day:'numeric',month:'short',year:'numeric'});
+}
+function datetimeLocalValue(value){
+  if(!value) return '';
+  const date = new Date(value);
+  if(Number.isNaN(date.getTime())) return '';
+  return new Date(date.getTime()-date.getTimezoneOffset()*60000).toISOString().slice(0,16);
+}
+function leadSearchText(lead){
+  return [
+    lead.name,lead.business,lead.phone,lead.email,lead.country,lead.product,
+    lead.estimated_quantity,lead.message,lead.source_name,lead.source_code,lead.category
+  ].filter(Boolean).join(' ').toLocaleLowerCase();
+}
+function updateLeadControls(){
+  leadSearch = document.getElementById('lead-search').value.trim();
+  leadFilter = {
+    source:document.getElementById('lead-source-filter').value,
+    status:document.getElementById('lead-status-filter').value
+  };
+  leadSort = document.getElementById('lead-sort').value || 'newest';
+  renderLeads();
+}
+function filterLeadsByStatus(status){
+  leadFilter.status = status;
+  document.getElementById('lead-status-filter').value = status;
+  renderLeads();
+  showAdminPage('leads');
+}
+function renderLeads(){
+  const rows = document.getElementById('lead-rows');
+  if(!rows) return;
+  const today = todayInputDate();
+  const newCount = leads.filter(lead=>lead.status==='new').length;
+  const dueCount = leads.filter(lead=>
+    lead.next_follow_up && lead.next_follow_up<=today && !['converted','lost'].includes(lead.status)
+  ).length;
+  const convertedCount = leads.filter(lead=>lead.status==='converted').length;
+  document.getElementById('lead-stat-total').textContent = leads.length;
+  document.getElementById('lead-stat-new').textContent = newCount;
+  document.getElementById('lead-stat-due').textContent = dueCount;
+  document.getElementById('lead-stat-converted').textContent = convertedCount;
+  const sourceSelect = document.getElementById('lead-source-filter');
+  const sourceValue = leadFilter.source;
+  const sources = [...new Map(leads.map(lead=>[
+    lead.source_code || leadSourceName(lead),
+    leadSourceName(lead)
+  ])).entries()].sort((a,b)=>a[1].localeCompare(b[1]));
+  sourceSelect.innerHTML = `<option value="">All websites</option>` +
+    sources.map(([code,name])=>`<option value="${esc(code)}">${esc(name)}</option>`).join('');
+  sourceSelect.value = sourceValue;
+  document.getElementById('lead-search').value = leadSearch;
+  document.getElementById('lead-status-filter').value = leadFilter.status;
+  document.getElementById('lead-sort').value = leadSort;
+
+  const normalizedSearch = leadSearch.toLocaleLowerCase();
+  let filtered = leads.filter(lead=>
+    (!leadFilter.source || (lead.source_code || leadSourceName(lead))===leadFilter.source) &&
+    (!leadFilter.status || lead.status===leadFilter.status) &&
+    (!normalizedSearch || leadSearchText(lead).includes(normalizedSearch))
+  );
+  filtered.sort((a,b)=>{
+    if(leadSort==='oldest') return Date.parse(a.created_at||0)-Date.parse(b.created_at||0);
+    if(leadSort==='follow_up'){
+      return (Date.parse(a.next_follow_up||'9999-12-31')||Infinity)-
+        (Date.parse(b.next_follow_up||'9999-12-31')||Infinity);
+    }
+    if(leadSort==='name') return (a.name||'').localeCompare(b.name||'');
+    return Date.parse(b.created_at||0)-Date.parse(a.created_at||0);
+  });
+  const filters = [
+    leadSearch ? `Search: “${leadSearch}”` : '',
+    leadFilter.source ? `Website: ${sources.find(item=>item[0]===leadFilter.source)?.[1] || leadFilter.source}` : '',
+    leadFilter.status ? `Status: ${leadStatusLabel(leadFilter.status)}` : ''
+  ].filter(Boolean);
+  document.getElementById('leads-filter-note').textContent = filters.length
+    ? `${filtered.length} matching lead${filtered.length===1?'':'s'} · ${filters.join(' · ')}`
+    : `${leads.length} lead${leads.length===1?'':'s'} received across ${sources.length} connected website${sources.length===1?'':'s'}.`;
+  const empty = document.getElementById('lead-empty-msg');
+  empty.style.display = filtered.length ? 'none' : 'block';
+  empty.textContent = leadsAvailable
+    ? (leads.length ? 'No leads match the current filters.' : 'No leads have been received yet.')
+    : 'Install the supplied Supabase leads setup, then refresh this page.';
+  rows.innerHTML = filtered.map(lead=>{
+    const due = lead.next_follow_up && lead.next_follow_up<=today && !['converted','lost'].includes(lead.status);
+    return `<tr class="row">
+      <td><div class="lead-contact">
+        <strong>${esc(lead.name || 'Unnamed lead')}</strong>
+        <span>${esc(lead.business || lead.country || '')}</span>
+        ${lead.phone?`<a href="tel:${esc(lead.phone)}">${esc(lead.phone)}</a>`:''}
+      </div></td>
+      <td><div class="lead-product">
+        <strong>${esc(lead.product || lead.category || 'General inquiry')}</strong>
+        <span>${esc(lead.estimated_quantity || lead.message || '')}</span>
+      </div></td>
+      <td><span class="lead-source" title="${esc(lead.source_url || '')}">${esc(leadSourceName(lead))}</span></td>
+      <td><span class="lead-status ${esc(lead.status || 'new')}">${esc(leadStatusLabel(lead.status))}</span></td>
+      <td><div class="lead-dates">
+        Received: <b>${esc(leadDate(lead.created_at,true))}</b><br>
+        Follow-up: <b class="${due?'due':''}">${esc(leadDate(lead.next_follow_up))}</b>
+      </div></td>
+      <td><div class="lead-actions">
+        <button class="btn ghost sm" onclick="openLead('${lead.id}')">Open</button>
+        <button class="btn whatsapp sm" onclick="openLeadWhatsApp('${lead.id}')" ${lead.phone?'':'disabled'}>WhatsApp</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+  const navCount = document.getElementById('lead-nav-count');
+  if(navCount) navCount.textContent = newCount ? `(${newCount})` : '';
+}
+function openLead(id){
+  const lead = leads.find(item=>item.id===id);
+  if(!lead){ toast('Lead could not be found'); return; }
+  editingLeadId = id;
+  document.getElementById('lead-modal-title').textContent = lead.name || 'Lead details';
+  document.getElementById('lead-modal-source').textContent =
+    `${leadSourceName(lead)}${lead.category?' · '+lead.category:''} · received ${leadDate(lead.created_at,true)}`;
+  const reference = externalUrl(lead.reference_url);
+  const sourceUrl = externalUrl(lead.source_url);
+  document.getElementById('lead-modal-details').innerHTML = `
+    <strong>Business:</strong> ${esc(lead.business || '—')}<br>
+    <strong>Phone:</strong> ${esc(lead.phone || '—')} &nbsp; <strong>Email:</strong> ${esc(lead.email || '—')}<br>
+    <strong>Country:</strong> ${esc(lead.country || '—')}<br>
+    <strong>Product:</strong> ${esc(lead.product || lead.category || '—')} &nbsp; <strong>Quantity:</strong> ${esc(lead.estimated_quantity || '—')}<br>
+    <strong>Requirement:</strong> ${esc(lead.message || '—')}
+    ${reference?`<br><strong>Reference:</strong> <a href="${esc(reference)}" target="_blank" rel="noopener noreferrer">Open product reference ↗</a>`:''}
+    ${sourceUrl?`<br><strong>Source page:</strong> <a href="${esc(sourceUrl)}" target="_blank" rel="noopener noreferrer">Open website ↗</a>`:''}`;
+  document.getElementById('lead-edit-status').value = lead.status || 'new';
+  document.getElementById('lead-edit-follow-up').value = lead.next_follow_up || '';
+  document.getElementById('lead-edit-contacted').value = datetimeLocalValue(lead.last_contacted_at);
+  document.getElementById('lead-edit-notes').value = lead.admin_notes || '';
+  const assigned = document.getElementById('lead-edit-assigned');
+  assigned.innerHTML = `<option value="">Unassigned</option>` + staff
+    .filter(member=>member.active!==false)
+    .map(member=>`<option value="${esc(member.user_id)}">${esc(member.name || member.email || 'Team user')}</option>`).join('');
+  assigned.value = lead.assigned_to || '';
+  document.getElementById('lead-modal-whatsapp').disabled = !lead.phone;
+  document.getElementById('lead-modal-email').disabled = !lead.email;
+  document.getElementById('lead-modal-bg').classList.add('on');
+}
+function closeLeadModal(){
+  editingLeadId = null;
+  document.getElementById('lead-modal-bg').classList.remove('on');
+}
+async function saveLead(){
+  const lead = leads.find(item=>item.id===editingLeadId);
+  if(!lead) return;
+  const contactedValue = document.getElementById('lead-edit-contacted').value;
+  const updates = {
+    status:document.getElementById('lead-edit-status').value,
+    next_follow_up:document.getElementById('lead-edit-follow-up').value || null,
+    assigned_to:document.getElementById('lead-edit-assigned').value || null,
+    last_contacted_at:contactedValue ? new Date(contactedValue).toISOString() : null,
+    admin_notes:document.getElementById('lead-edit-notes').value.trim() || null,
+    updated_at:new Date().toISOString()
+  };
+  const button = document.getElementById('lead-save-button');
+  button.disabled = true;
+  if(NEEDS_SETUP){
+    Object.assign(lead,updates);
+  }else{
+    const {error} = await sb.from('leads').update(updates).eq('id',lead.id);
+    if(error){
+      button.disabled = false;
+      toast('Could not save lead: '+error.message);
+      return;
+    }
+    Object.assign(lead,updates);
+    await logActivity('updated','lead',lead.id,lead.name || lead.product || 'Lead',
+      `Lead status: ${leadStatusLabel(updates.status)}${updates.next_follow_up?`; follow-up ${updates.next_follow_up}`:''}`);
+  }
+  button.disabled = false;
+  closeLeadModal();
+  renderAdmin();
+  toast('Lead follow-up saved');
+}
+function leadWhatsAppMessage(lead){
+  return `Hello ${lead.name || ''},\n\nThank you for contacting Shaikh China Sourcing regarding ${lead.product || 'your sourcing requirement'}. I am following up on your inquiry.`;
+}
+function openLeadWhatsApp(id=editingLeadId){
+  const lead = leads.find(item=>item.id===id);
+  if(!lead?.phone){ toast('This lead has no WhatsApp number'); return; }
+  const phone = String(lead.phone).replace(/\D/g,'');
+  if(!phone){ toast('This lead has no valid WhatsApp number'); return; }
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(leadWhatsAppMessage(lead))}`,'_blank','noopener,noreferrer');
+}
+function openLeadEmail(id=editingLeadId){
+  const lead = leads.find(item=>item.id===id);
+  if(!lead?.email){ toast('This lead has no email address'); return; }
+  const subject = `Following up: ${lead.product || 'your sourcing inquiry'}`;
+  const body = `Hello ${lead.name || ''},\n\nThank you for contacting Shaikh China Sourcing. I am following up on your inquiry regarding ${lead.product || 'your sourcing requirement'}.`;
+  window.location.href = `mailto:${encodeURIComponent(lead.email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+function renderDashboardSummaries(){
+  const statusMax = Math.max(1, ...STAGES.map(s=>orders.filter(o=>o.stage===s.name).length));
+  document.getElementById('status-summary').innerHTML = STAGES.map(s=>{
+    const count = orders.filter(o=>o.stage===s.name).length;
+    return `
+      <button class="summary-row ${orderFilter.stage===s.name?'active':''}" onclick="filterOrdersByStatus('${s.name}')">
+        <strong>${esc(s.name)}</strong>
+        <span class="summary-bar"><span class="summary-bar-fill" style="width:${count/statusMax*100}%"></span></span>
+        <span class="count">${count}</span>
+      </button>`;
+  }).join('');
+
+  const customerCounts = customers.map(c=>({
+    ...c,
+    orderCount:orders.filter(o=>o.customer_id===c.id).length
+  })).sort((a,b)=>b.orderCount-a.orderCount || a.name.localeCompare(b.name));
+  const customerMax = Math.max(1, ...customerCounts.map(c=>c.orderCount));
+  document.getElementById('customer-summary').innerHTML = customerCounts.length
+    ? customerCounts.map(c=>`
+        <button class="summary-row ${orderFilter.customerId===c.id?'active':''}" onclick="filterOrdersByCustomer('${c.id}')">
+          <strong title="${esc(c.name)}">${esc(c.name)}</strong>
+          <span class="summary-bar"><span class="summary-bar-fill" style="width:${c.orderCount/customerMax*100}%"></span></span>
+          <span class="count">${c.orderCount}</span>
+        </button>`).join('')
+    : `<div class="dashboard-empty">No customers have been added yet.</div>`;
+
+  const categoryMax = Math.max(1, ...ORDER_CATEGORIES.map(category=>
+    orders.filter(o=>orderCategory(o)===category).length
+  ));
+  document.getElementById('category-summary').innerHTML = ORDER_CATEGORIES.map(category=>{
+    const count = orders.filter(o=>orderCategory(o)===category).length;
+    return `
+      <button class="summary-row ${orderFilter.category===category?'active':''}" onclick="filterOrdersByCategory('${category}')">
+        <strong>${esc(category)}</strong>
+        <span class="summary-bar"><span class="summary-bar-fill" style="width:${count/categoryMax*100}%"></span></span>
+        <span class="count">${count}</span>
+      </button>`;
+  }).join('');
+}
+
+function filterOrdersByStatus(stage){
+  orderFilter = {...emptyOrderFilter(), stage};
+  orderSearch = '';
+  renderAdmin();
+  showAdminPage('orders');
+}
+function filterOrdersByCustomer(customerId){
+  orderFilter = {...emptyOrderFilter(), customerId};
+  orderSearch = '';
+  renderAdmin();
+  showAdminPage('orders');
+}
+function filterOrdersByCategory(category){
+  orderFilter = {...emptyOrderFilter(), category};
+  orderSearch = '';
+  renderAdmin();
+  showAdminPage('orders');
+}
+function clearOrderFilter(){
+  orderFilter = defaultOrderFilter();
+  orderSearch = '';
+  orderSort = 'newest';
+  renderAdmin();
+}
+function openAllOrders(){
+  orderFilter = emptyOrderFilter();
+  orderSearch = '';
+  orderSort = 'newest';
+  renderAdmin();
+  showAdminPage('orders');
+}
+
+function shipSVG(){
+  return `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M12 1.8 19 8.4l-1.7 11.2L12 22.2l-5.3-2.6L5 8.4 12 1.8Z" fill="#de2910" stroke="#0a0a0a" stroke-width="1.25" stroke-linejoin="round"/>
+    <path d="M8.2 9.3h7.6v8.2H8.2z" fill="#ff8a1f" stroke="#0a0a0a" stroke-width="1.1"/>
+    <path d="M9.6 6.8h4.8v3H9.6z" fill="#fff" stroke="#0a0a0a" stroke-width="1.05"/>
+    <path d="M9.3 12h5.4M9.3 14.6h5.4" stroke="#fff" stroke-width="1.1"/>
+  </svg>`;
+}
+async function viewOrder(id){
+  const o = orders.find(x=>x.id===id);
+  if(!o){ toast('Order could not be found'); return; }
+  const adminNotes = await loadOrderAdminNotes(id);
+  const routeStages = stagesForCategory(orderCategory(o));
+  const compatibleStage = orderCategory(o)==='Shipping' && o.stage==='Payment'
+    ? 'Received in China Warehouse'
+    : o.stage;
+  let activeIdx = routeStages.findIndex(s=>s.name===compatibleStage);
+  if(activeIdx<0 && routeStages.length){
+    const orderPct = Number(o.pct)||0;
+    activeIdx = routeStages.reduce((bestIndex,stage,index)=>
+      Math.abs(stage.pct-orderPct)<Math.abs(routeStages[bestIndex].pct-orderPct)
+        ? index
+        : bestIndex
+    ,0);
+  }
+  const displayStage = routeStages[activeIdx]?.name || compatibleStage || 'Inquiry';
+  const done = Number(o.pct)>=100;
+  const routePosition = activeIdx>=0 && routeStages.length>1
+    ? (activeIdx/(routeStages.length-1))*100
+    : Math.max(0,Math.min(100,Number(o.pct)||0));
+  const stops = routeStages.map((s,i)=>`
+    <div class="stop ${i<activeIdx?'past':''} ${i===activeIdx?'now':''}" style="--stop-position:${routeStages.length>1?(i/(routeStages.length-1))*100:0}%">
+      ${i===activeIdx?`<span class="stage-ship">${shipSVG()}</span>`:''}
+      <span class="stop-label">${esc(s.name)}</span>
+    </div>`).join('');
+  const updates = Array.isArray(o.updates) && o.updates.length
+    ? o.updates.slice().reverse().map(u=>`
+        <div class="update">
+          <time>${esc(fmtDate(u?.t) || 'No date')}</time>
+          <div>${esc(u?.msg || '')}</div>
+        </div>`).join('')
+    : `<div class="update"><div style="color:var(--ink-dim)">No updates posted yet.</div></div>`;
+  document.getElementById('order-preview').innerHTML = `
+    <div class="order-card">
+      <div class="order-head">
+        <div>
+          <h2>${esc(o.product)}</h2>
+          <div class="tn">${esc(o.tn)} &nbsp;·&nbsp; ${esc(customerName(o.customer_id))}</div>
+        </div>
+        <span class="status-pill ${done?'done':''}">${done?'✓ Delivered':'Current stage: '+esc(displayStage)}</span>
+      </div>
+      <div class="route" style="--route-position:${routePosition}%;--route-height:${Math.max(300,(routeStages.length-1)*52+20)}px">
+        <div class="route-line">
+          <div class="route-fill" style="width:${routePosition}%"></div>
+        </div>
+        <div class="route-stops">${stops}</div>
+      </div>
+      <div class="meta-grid">
+        <div class="meta"><label>Progress</label><div class="big">${esc(o.pct)}%</div></div>
+        <div class="meta"><label>Category</label><div>${esc(orderCategory(o))}</div></div>
+        <div class="meta"><label>Current stage</label><div>${esc(displayStage)}</div></div>
+        <div class="meta"><label>Estimated ${done?'delivered':'completion'}</label><div>${esc(fmtDate(o.eta)||'—')}</div></div>
+      </div>
+      ${externalUrl(o.asset_url)?`
+        <div class="product-link-card">
+          <label>Product pictures and videos</label>
+          <a class="product-files-link" href="${esc(externalUrl(o.asset_url))}" target="_blank" rel="noopener noreferrer">Open product files ↗</a>
+        </div>`:''}
+      <div class="updates">
+        <h3>Updates from our team</h3>
+        ${updates}
+      </div>
+      <div class="private-notes-panel">
+        <h3>Admin-only notes <span class="private-badge">Private</span></h3>
+        ${adminNotesHtml(adminNotes)}
+      </div>
+    </div>`;
+  document.getElementById('view-order-modal-bg').classList.add('on');
+}
+function closeOrderView(){
+  document.getElementById('view-order-modal-bg').classList.remove('on');
+  document.getElementById('order-preview').innerHTML = '';
+}
+
+function renderStaff(){
+  const body = document.getElementById('staff-rows');
+  const empty = document.getElementById('staff-empty-msg');
+  empty.style.display = staff.length ? 'none' : 'block';
+  body.innerHTML = staff.map(s=>{
+    const canPassword = canManageUsers() && (isOwner() || s.role!=='owner');
+    const actions = [
+      isOwner() ? `<button class="btn ghost sm" onclick="openEditStaffForm('${s.user_id}')">Edit</button>` : '',
+      canPassword ? `<button class="btn ghost sm" onclick="openStaffPasswordForm('${s.user_id}')">Password</button>` : ''
+    ].filter(Boolean).join(' ');
+    return `
+    <tr class="row">
+      <td><strong>${esc(s.name || 'Staff user')}</strong></td>
+      <td>${esc(s.email || '—')}</td>
+      <td><span class="stagechip">${esc(s.role || 'admin')}</span></td>
+      <td>${s.active===false ? 'Disabled' : 'Active'}</td>
+      <td style="white-space:nowrap">${actions || '—'}</td>
+    </tr>`}).join('');
+  const filter = document.getElementById('activity-user-filter');
+  const selected = filter.value;
+  filter.innerHTML = `<option value="">All users</option>` + staff.map(s=>
+    `<option value="${esc(s.user_id)}">${esc(s.name || s.email || 'Staff user')}</option>`).join('');
+  filter.value = selected;
+}
+function renderActivity(){
+  if(!isOwner()) return;
+  const filter = document.getElementById('activity-user-filter')?.value || '';
+  const rows = filter ? activityLogs.filter(x=>x.user_id===filter) : activityLogs;
+  document.getElementById('activity-empty-msg').style.display = rows.length ? 'none' : 'block';
+  document.getElementById('activity-rows').innerHTML = rows.map(x=>`
+    <tr>
+      <td>${esc(new Date(x.created_at).toLocaleString('en-GB'))}</td>
+      <td><strong>${esc(x.user_name || x.user_email || 'Unknown user')}</strong></td>
+      <td>${esc(x.action || 'updated')}</td>
+      <td>${esc([x.entity_type,x.entity_label].filter(Boolean).join(': '))}</td>
+      <td class="activity-detail">${esc(x.details || '')}</td>
+    </tr>`).join('');
+}
+async function logActivity(action, entityType, entityId, entityLabel, details){
+  const entry = {
+    user_id: currentStaff?.user_id || 'demo-admin',
+    user_name: currentStaff?.name || 'Demo Administrator',
+    user_email: currentStaff?.email || 'admin@shaikhchinasourcing.com',
+    action, entity_type:entityType, entity_id:entityId || null,
+    entity_label:entityLabel || '', details:details || '',
+    created_at:new Date().toISOString()
+  };
+  if(NEEDS_SETUP){ activityLogs.unshift(entry); return; }
+  const {error} = await sb.from('activity_logs').insert(entry);
+  if(!error) activityLogs.unshift(entry);
+}
+
+function openStaffForm(){
+  if(!canManageUsers()){ toast('Your role cannot create team users'); return; }
+  document.getElementById('ns-name').value='';
+  document.getElementById('ns-email').value='';
+  document.getElementById('ns-role').value='manager';
+  document.getElementById('ns-password-mode').value='automatic';
+  document.getElementById('ns-password').value='';
+  toggleStaffPasswordField('ns');
+  document.getElementById('ns-result').style.display='none';
+  document.getElementById('ns-submit').style.display='inline-block';
+  document.getElementById('staff-modal-bg').classList.add('on');
+}
+function closeStaffForm(){
+  document.getElementById('staff-modal-bg').classList.remove('on');
+}
+async function createStaff(){
+  const name = document.getElementById('ns-name').value.trim();
+  const email = document.getElementById('ns-email').value.trim();
+  const role = document.getElementById('ns-role').value;
+  const password_mode = document.getElementById('ns-password-mode').value;
+  const password = document.getElementById('ns-password').value;
+  if(!name || !email){ toast('Name and email are required'); return; }
+  if(password_mode==='custom' && password.length<10){ toast('Custom password must contain at least 10 characters'); return; }
+  if(NEEDS_SETUP){
+    const user_id = crypto.randomUUID();
+    staff.push({user_id,name,email,role,active:true});
+    activityLogs.unshift({user_id:'demo-admin',user_name:'Demo Administrator',user_email:'admin@shaikhchinasourcing.com',action:'created',entity_type:'staff',entity_id:user_id,entity_label:name,details:`Added ${email} as ${role}`,created_at:new Date().toISOString()});
+    document.getElementById('ns-result').style.display='block';
+    document.getElementById('ns-creds').innerHTML=`Email: ${esc(email)}<br>Password: ${esc(password_mode==='custom'?password:'Demo-Auto!4837')}`;
+    document.getElementById('ns-submit').style.display='none';
+    renderStaff(); renderActivity();
+    return;
+  }
+  const {data:{session}} = await sb.auth.getSession();
+  const {data,error} = await sb.functions.invoke('manage-staff',{
+    body:{action:'create',name,email,role,password_mode,password:password_mode==='custom'?password:undefined},
+    headers:{Authorization:`Bearer ${session.access_token}`}
+  });
+  if(error || data?.error){
+    let message = data?.error || error?.message || 'Unknown function error';
+    try {
+      const payload = await error?.context?.json();
+      if(payload?.error) message = payload.error;
+    } catch {}
+    toast('Could not create admin user: '+message);
+    return;
+  }
+  await logActivity('created','staff',data.user_id,name,`Added ${email} as ${role}`);
+  await loadStaff();
+  document.getElementById('ns-result').style.display='block';
+  document.getElementById('ns-creds').innerHTML=`Email: ${esc(email)}<br>Password: ${esc(data.password || 'Invitation sent')}`;
+  document.getElementById('ns-submit').style.display='none';
+  renderStaff(); renderActivity();
+}
+
+function toggleStaffPasswordField(prefix){
+  const custom = document.getElementById(`${prefix}-password-mode`).value==='custom';
+  document.getElementById(`${prefix}-password-wrap`).style.display = custom ? 'block' : 'none';
+}
+async function staffFunction(body){
+  const {data:{session}} = await sb.auth.getSession();
+  const {data,error} = await sb.functions.invoke('manage-staff',{
+    body,
+    headers:{Authorization:`Bearer ${session.access_token}`}
+  });
+  if(error || data?.error){
+    let message = data?.error || error?.message || 'Unknown function error';
+    try {
+      const payload = await error?.context?.json();
+      if(payload?.error) message = payload.error;
+    } catch {}
+    throw new Error(message);
+  }
+  return data;
+}
+
+function openEditStaffForm(userId){
+  if(!isOwner()){ toast('Only an owner can edit team users'); return; }
+  const s = staff.find(x=>x.user_id===userId);
+  if(!s) return;
+  editingStaffId = userId;
+  document.getElementById('es-title').textContent = `Edit team user — ${s.name || s.email}`;
+  document.getElementById('es-name').value = s.name || '';
+  document.getElementById('es-email').value = s.email || '';
+  document.getElementById('es-role').value = s.role || 'manager';
+  document.getElementById('es-active').value = String(s.active!==false);
+  document.getElementById('edit-staff-modal-bg').classList.add('on');
+}
+function closeEditStaffForm(){
+  editingStaffId = null;
+  document.getElementById('edit-staff-modal-bg').classList.remove('on');
+}
+async function saveStaffChanges(){
+  const target = staff.find(x=>x.user_id===editingStaffId);
+  if(!target) return;
+  const name = document.getElementById('es-name').value.trim();
+  const email = document.getElementById('es-email').value.trim();
+  const role = document.getElementById('es-role').value;
+  const active = document.getElementById('es-active').value==='true';
+  if(!name || !email){ toast('Name and email are required'); return; }
+  try {
+    if(NEEDS_SETUP){
+      Object.assign(target,{name,email,role,active});
+    } else {
+      await staffFunction({action:'update',user_id:editingStaffId,name,email,role,active});
+      await loadStaff();
+      const refreshedSelf = staff.find(x=>x.user_id===currentStaff?.user_id);
+      if(refreshedSelf) currentStaff = refreshedSelf;
+    }
+    await logActivity('updated','staff',editingStaffId,name,`Profile updated; role ${role}; ${active?'active':'disabled'}`);
+    closeEditStaffForm();
+    renderAdmin();
+    toast('Team user updated');
+  } catch(error){ toast('Could not update team user: '+error.message); }
+}
+
+function openStaffPasswordForm(userId){
+  const s = staff.find(x=>x.user_id===userId);
+  if(!s || !canManageUsers() || (!isOwner() && s.role==='owner')){
+    toast('Your role cannot change this password'); return;
+  }
+  passwordStaffId = userId;
+  document.getElementById('sp-title').textContent = `Set password — ${s.name || s.email}`;
+  document.getElementById('sp-password-mode').value='automatic';
+  document.getElementById('sp-password').value='';
+  document.getElementById('sp-result').style.display='none';
+  document.getElementById('sp-submit').style.display='inline-block';
+  toggleStaffPasswordField('sp');
+  document.getElementById('staff-password-modal-bg').classList.add('on');
+}
+function closeStaffPasswordForm(){
+  passwordStaffId = null;
+  document.getElementById('staff-password-modal-bg').classList.remove('on');
+}
+async function saveStaffPassword(){
+  const target = staff.find(x=>x.user_id===passwordStaffId);
+  if(!target) return;
+  const password_mode = document.getElementById('sp-password-mode').value;
+  const password = document.getElementById('sp-password').value;
+  if(password_mode==='custom' && password.length<10){ toast('Custom password must contain at least 10 characters'); return; }
+  try {
+    const result = NEEDS_SETUP
+      ? {password:password_mode==='custom'?password:'Demo-Auto!4837'}
+      : await staffFunction({action:'reset_password',user_id:passwordStaffId,password_mode,password:password_mode==='custom'?password:undefined});
+    document.getElementById('sp-result').style.display='block';
+    document.getElementById('sp-creds').innerHTML=`Email: ${esc(target.email)}<br>Password: ${esc(result.password)}`;
+    document.getElementById('sp-submit').style.display='none';
+    await logActivity('reset password','staff',passwordStaffId,target.name,`Password changed for ${target.email}`);
+    if(isOwner()) renderActivity();
+    toast('Password updated');
+  } catch(error){ toast('Could not set password: '+error.message); }
+}
+
+/* ---- reset password ---- */
+let resettingId = null;
+function openResetModal(customerId){
+  if(!canManageUsers()){ toast('Your role cannot reset user passwords'); return; }
+  resettingId = customerId;
+  const c = customers.find(x=>x.id===customerId);
+  document.getElementById('reset-title').textContent = `Reset password — ${c?.name||''}`;
+  document.getElementById('reset-password-mode').value='automatic';
+  document.getElementById('reset-password').value='';
+  toggleCustomerPasswordField('reset');
+  document.getElementById('reset-result').style.display='none';
+  document.getElementById('reset-submit').style.display='inline-block';
+  document.getElementById('reset-modal-bg').classList.add('on');
+}
+function closeResetModal(){
+  document.getElementById('reset-modal-bg').classList.remove('on');
+  resettingId = null;
+}
+async function confirmReset(){
+  if(!canManageUsers()){ toast('Your role cannot reset user passwords'); return; }
+  const c = customers.find(x=>x.id===resettingId);
+  if(!c) return;
+  const password_mode = document.getElementById('reset-password-mode').value;
+  const password = document.getElementById('reset-password').value;
+  if(password_mode==='custom' && password.length<10){
+    toast('Custom password must contain at least 10 characters');
+    return;
+  }
+
+  if(NEEDS_SETUP){
+    document.getElementById('reset-result').style.display='block';
+    document.getElementById('reset-creds').innerHTML = `Email: ${esc(c.email)}<br>Password: ${esc(password_mode==='custom'?password:'Demo-Customer!4837')}`;
+    document.getElementById('reset-submit').style.display='none';
+    return;
+  }
+
+  const {data:{session}} = await sb.auth.getSession();
+  const {data, error} = await sb.functions.invoke('create-customer', {
+    body:{
+      action:'reset',
+      customer_id: resettingId,
+      password_mode,
+      password:password_mode==='custom'?password:undefined
+    },
+    headers:{ Authorization:`Bearer ${session.access_token}` }
+  });
+  if(error || data?.error){
+    const message = await functionErrorMessage(error,data);
+    toast('Reset failed: '+message);
+    return;
+  }
+  document.getElementById('reset-result').style.display='block';
+  document.getElementById('reset-creds').innerHTML = `Email: ${esc(data.email)}<br>Password: ${esc(data.password)}`;
+  document.getElementById('reset-submit').style.display='none';
+  await logActivity('reset password','customer',c.id,c.name,`Reset login password for ${c.email}`);
+  renderActivity();
+}
+function copyResetCreds(){
+  const text = document.getElementById('reset-creds').innerText.replace('\n',' / ');
+  const msg = `Assalam o Alaikum! Your Shaikh China Sourcing order tracking password has been reset — ${text}. Sign in any time to see your order status.`;
+  navigator.clipboard?.writeText(msg).then(()=>toast('Login message copied — paste into WhatsApp'))
+    .catch(()=>toast('Copy manually: '+text));
+}
+
+/* ---- edit customer ---- */
+function openEditCustomerForm(customerId){
+  if(!canManageUsers()){ toast('Your role cannot edit customers'); return; }
+  const c = customers.find(x=>x.id===customerId);
+  if(!c){ toast('Customer record not found'); return; }
+  editingCustomerId = customerId;
+  document.getElementById('ec-title').textContent = `Edit customer — ${c.name}`;
+  document.getElementById('ec-name').value = c.name || '';
+  document.getElementById('ec-email').value = c.email || '';
+  document.getElementById('ec-city').value = c.city || '';
+  document.getElementById('ec-mobile').value = c.mobile || '';
+  document.getElementById('ec-submit').disabled = false;
+  document.getElementById('edit-customer-modal-bg').classList.add('on');
+}
+function closeEditCustomerForm(){
+  document.getElementById('edit-customer-modal-bg').classList.remove('on');
+  editingCustomerId = null;
+}
+function openResetFromCustomerEdit(){
+  const customerId = editingCustomerId;
+  if(!customerId) return;
+  closeEditCustomerForm();
+  openResetModal(customerId);
+}
+async function saveCustomerChanges(){
+  if(!canManageUsers()){ toast('Your role cannot edit customers'); return; }
+  const c = customers.find(x=>x.id===editingCustomerId);
+  if(!c){ toast('Customer record not found'); return; }
+  const name = document.getElementById('ec-name').value.trim();
+  const email = document.getElementById('ec-email').value.trim();
+  const city = document.getElementById('ec-city').value.trim();
+  const mobile = document.getElementById('ec-mobile').value.trim();
+  if(!name || !email){ toast('Name and email are required'); return; }
+
+  const submit = document.getElementById('ec-submit');
+  submit.disabled = true;
+  if(NEEDS_SETUP){
+    Object.assign(c,{name,email,city,mobile});
+    await logActivity('updated','customer',c.id,name,`Updated customer profile for ${email}`);
+    closeEditCustomerForm();
+    renderAdmin();
+    toast('Customer updated');
+    return;
+  }
+
+  const {data:{session}} = await sb.auth.getSession();
+  const {data, error} = await sb.functions.invoke('create-customer', {
+    body:{
+      action:'update',
+      customer_id:c.id,
+      name,
+      email,
+      city,
+      mobile
+    },
+    headers:{ Authorization:`Bearer ${session.access_token}` }
+  });
+  if(error || data?.error){
+    submit.disabled = false;
+    const message = await functionErrorMessage(error,data);
+    toast('Could not update customer: '+message);
+    return;
+  }
+  await logActivity('updated','customer',c.id,name,`Updated customer profile and login username to ${email}`);
+  await loadCustomers();
+  closeEditCustomerForm();
+  renderAdmin();
+  toast('Customer updated');
+}
+
+/* ---- new customer ---- */
+function openCustomerForm(){
+  if(!canManageUsers()){ toast('Your role cannot create users'); return; }
+  document.getElementById('nc-name').value='';
+  document.getElementById('nc-email').value='';
+  document.getElementById('nc-city').value='';
+  document.getElementById('nc-mobile').value='';
+  document.getElementById('nc-password-mode').value='automatic';
+  document.getElementById('nc-password').value='';
+  toggleCustomerPasswordField('nc');
+  document.getElementById('nc-result').style.display='none';
+  document.getElementById('nc-submit').style.display='inline-block';
+  document.getElementById('cust-modal-bg').classList.add('on');
+}
+function closeCustomerForm(){
+  document.getElementById('cust-modal-bg').classList.remove('on');
+  loadCustomers().then(renderAdmin); // refresh table/dropdown with the new customer
+}
+async function createCustomer(){
+  if(!canManageUsers()){ toast('Your role cannot create users'); return; }
+  const name = document.getElementById('nc-name').value.trim();
+  const email = document.getElementById('nc-email').value.trim();
+  const city = document.getElementById('nc-city').value.trim();
+  const mobile = document.getElementById('nc-mobile').value.trim();
+  const password_mode = document.getElementById('nc-password-mode').value;
+  const password = document.getElementById('nc-password').value;
+  if(!name || !email){ toast('Name and email are required'); return; }
+  if(password_mode==='custom' && password.length<10){
+    toast('Custom password must contain at least 10 characters');
+    return;
+  }
+
+  if(NEEDS_SETUP){
+    const id = crypto.randomUUID();
+    customers.push({id, name, email, city, mobile});
+    showCreds(email, password_mode==='custom'?password:'Demo-Customer!4837');
+    await logActivity('created','customer',id,name,`Created customer login for ${email}`);
+    renderAdmin();
+    return;
+  }
+
+  const {data:{session}} = await sb.auth.getSession();
+  const {data, error} = await sb.functions.invoke('create-customer', {
+    body:{
+      action:'create',
+      name,
+      email,
+      city,
+      mobile,
+      password_mode,
+      password:password_mode==='custom'?password:undefined
+    },
+    headers:{ Authorization:`Bearer ${session.access_token}` }
+  });
+  if(error || data?.error){
+    const message = await functionErrorMessage(error,data);
+    toast('Could not create login: '+message);
+    return;
+  }
+  showCreds(data.email, data.password);
+  await logActivity('created','customer',data.customer_id || null,name,`Created customer login for ${email}`);
+  const onboardingResult = await sendCustomerOnboardingEmail(data.customer_id);
+  await loadCustomers();
+  renderAdmin();
+  if(onboardingResult?.ok) toast('Customer created — onboarding email sent');
+  else toast('Customer created, but onboarding email failed: '+(onboardingResult?.message||'Unknown email error'));
+}
+function showCreds(email, password){
+  document.getElementById('nc-result').style.display='block';
+  document.getElementById('nc-creds').innerHTML = `Email: ${esc(email)}<br>Password: ${esc(password)}`;
+  document.getElementById('nc-submit').style.display='none';
+}
+function copyCreds(){
+  const text = document.getElementById('nc-creds').innerText.replace('\n',' / ');
+  const msg = `Assalam o Alaikum! Here's your Shaikh China Sourcing order tracking login — ${text}.\n\nCustomer tracking portal:\nhttps://track.shaikhchinasourcing.com/\n\nSign in any time to see your order status.`;
+  navigator.clipboard?.writeText(msg).then(()=>toast('Login message copied — paste into WhatsApp'))
+    .catch(()=>toast('Copy manually: '+text));
+}
+
+async function sendCustomerOnboardingEmail(customerId){
+  try {
+    if(!customerId) return {ok:false,message:'Customer ID was not returned'};
+    const {data:{session}} = await sb.auth.getSession();
+    const {data,error} = await sb.functions.invoke('notify-customer',{
+      body:{
+        notification_type:'onboarding',
+        customer_id:customerId
+      },
+      headers:{Authorization:`Bearer ${session.access_token}`}
+    });
+    if(error || data?.error){
+      return {ok:false,message:await functionErrorMessage(error,data)};
+    }
+    return {ok:true};
+  } catch(error){
+    return {ok:false,message:error?.message||'Unknown email error'};
+  }
+}
+
+function toggleCustomerPasswordField(prefix){
+  const custom = document.getElementById(`${prefix}-password-mode`).value==='custom';
+  document.getElementById(`${prefix}-password-wrap`).style.display = custom ? 'block' : 'none';
+}
+async function functionErrorMessage(error,data){
+  let message = data?.error || error?.message || 'Unknown Edge Function error';
+  try {
+    const payload = await error?.context?.json();
+    if(payload?.error) message = payload.error;
+  } catch {}
+  return message;
+}
+
+/* ---- order form ---- */
+async function openForm(id){
+  editingId = id||null;
+  const categorySel = document.getElementById('f-category');
+  categorySel.innerHTML = ORDER_CATEGORIES.map(category=>`<option>${category}</option>`).join('');
+  const custSel = document.getElementById('f-customer-id');
+  if(!customers.length){
+    custSel.innerHTML = `<option value="">No customers yet — add one first</option>`;
+  } else {
+    custSel.innerHTML = customers.map(c=>`<option value="${c.id}">${esc(c.name)}${c.city?' — '+esc(c.city):''}</option>`).join('');
+  }
+  const o = id ? orders.find(x=>x.id===id) : null;
+  document.getElementById('modal-title').textContent = o? 'Edit order' : 'New order';
+  document.getElementById('btn-delete').style.display = o? 'inline':'none';
+  if(o) custSel.value = o.customer_id;
+  document.getElementById('f-product').value = o?.product||'';
+  categorySel.value = orderCategory(o);
+  document.getElementById('f-tn').value = o?.tn || genTN();
+  const selectedStage = populateStageOptions(o?.stage||'Inquiry');
+  document.getElementById('f-pct').value = o && selectedStage===o.stage
+    ? o.pct
+    : (STAGES.find(s=>s.name===selectedStage)?.pct ?? 5);
+  document.getElementById('f-eta').value = o?.eta||'';
+  const thumbnailInput = document.getElementById('f-thumbnail-url');
+  thumbnailInput.value = o?.thumbnail_url || '';
+  thumbnailInput.dataset.savedValue = o?.thumbnail_url || '';
+  renderThumbnailLinkField(!externalUrl(o?.thumbnail_url));
+  const assetInput = document.getElementById('f-asset-url');
+  assetInput.value = o?.asset_url || '';
+  assetInput.dataset.savedValue = o?.asset_url || '';
+  renderProductLinkField(!externalUrl(o?.asset_url));
+  document.getElementById('f-show-assets-customer').checked = Boolean(o?.show_asset_to_customer);
+  document.getElementById('f-closed').checked = Boolean(o?.is_closed);
+  document.getElementById('f-update-date').value = todayInputDate();
+  document.getElementById('f-update').value = '';
+  document.getElementById('f-admin-note').value = '';
+  renderOrderUpdateHistory(o?.updates || []);
+  currentAdminNotes = o ? await loadOrderAdminNotes(o.id) : [];
+  renderAdminNoteHistory(currentAdminNotes);
+  document.getElementById('f-r2-file').value='';
+  renderCurrentOrderAttachments();
+  document.getElementById('modal-bg').classList.add('on');
+}
+function renderOrderUpdateHistory(updates){
+  const wrap = document.getElementById('order-update-history-wrap');
+  const history = document.getElementById('order-update-history');
+  wrap.style.display = editingId ? 'block' : 'none';
+  if(!editingId) {
+    history.innerHTML = '';
+    return;
+  }
+  const items = Array.isArray(updates) ? updates.slice() : [];
+  history.innerHTML = items.length
+    ? items.reverse().map(u=>`
+        <div class="update">
+          <time>${esc(fmtDate(u?.t) || 'No date')}</time>
+          <div>${esc(u?.msg || '')}</div>
+        </div>`).join('')
+    : `<div class="order-update-history-empty">No updates have been posted for this order yet.</div>`;
+}
+async function loadOrderAdminNotes(orderId){
+  if(!orderId) return [];
+  if(NEEDS_SETUP){
+    return orders.find(order=>order.id===orderId)?._adminNotes || [];
+  }
+  const {data,error} = await sb
+    .from('order_admin_notes')
+    .select('*')
+    .eq('order_id',orderId)
+    .order('note_date',{ascending:false})
+    .order('created_at',{ascending:false});
+  if(error){
+    toast('Could not load admin-only notes: '+error.message);
+    return [];
+  }
+  return data || [];
+}
+function adminNotesHtml(notes){
+  if(!notes.length){
+    return `<div class="order-update-history-empty">No admin-only notes have been added yet.</div>`;
+  }
+  return notes.map(note=>{
+    const author = staff.find(user=>user.user_id===note.created_by);
+    const authorName = author?.name || author?.email || 'Staff user';
+    return `
+      <div class="update">
+        <time>${esc(fmtDate(note.note_date) || 'No date')}</time>
+        <div>${esc(note.note)}<div style="color:#92400e;font-size:11px;margin-top:4px">Added by ${esc(authorName)}</div></div>
+      </div>`;
+  }).join('');
+}
+function renderAdminNoteHistory(notes){
+  const wrap = document.getElementById('admin-note-history-wrap');
+  wrap.style.display = editingId ? 'block' : 'none';
+  document.getElementById('admin-note-history').innerHTML = adminNotesHtml(notes);
+}
+function closeForm(){ document.getElementById('modal-bg').classList.remove('on'); }
+function externalUrl(value){
+  if(!value) return '';
+  try {
+    const url = new URL(String(value).trim());
+    return ['http:','https:'].includes(url.protocol) ? url.href : '';
+  } catch {
+    return '';
+  }
+}
+function productThumbnailUrl(value){
+  const validUrl = externalUrl(value);
+  if(!validUrl) return '';
+  try {
+    const url = new URL(validUrl);
+    if(url.hostname === 'drive.google.com'){
+      const pathMatch = url.pathname.match(/\/file\/d\/([^/]+)/);
+      const fileId = pathMatch?.[1] || url.searchParams.get('id');
+      if(fileId && /^[a-zA-Z0-9_-]+$/.test(fileId)){
+        return `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileId)}&sz=w600`;
+      }
+    }
+    return validUrl;
+  } catch {
+    return '';
+  }
+}
+function renderThumbnailLinkField(editing){
+  const input = document.getElementById('f-thumbnail-url');
+  const validUrl = externalUrl(input.value);
+  const view = document.getElementById('thumbnail-link-view');
+  const editor = document.getElementById('thumbnail-link-editor');
+  const anchor = document.getElementById('thumbnail-link-anchor');
+  const cancel = document.getElementById('thumbnail-link-cancel');
+  const showEditor = editing || !validUrl;
+  view.style.display = showEditor ? 'none' : 'flex';
+  editor.style.display = showEditor ? 'block' : 'none';
+  cancel.style.display = input.dataset.savedValue ? 'inline-block' : 'none';
+  if(validUrl){
+    anchor.href = validUrl;
+    anchor.textContent = 'Open thumbnail image ↗';
+  }
+}
+function editThumbnailLink(){
+  renderThumbnailLinkField(true);
+  document.getElementById('f-thumbnail-url').focus();
+}
+function finishThumbnailLinkEdit(){
+  const input = document.getElementById('f-thumbnail-url');
+  if(input.value.trim() && !externalUrl(input.value)){
+    toast('Thumbnail link must begin with https://');
+    input.focus();
+    return;
+  }
+  input.value = externalUrl(input.value);
+  input.dataset.savedValue = input.value;
+  renderThumbnailLinkField(false);
+}
+function cancelThumbnailLinkEdit(){
+  const input = document.getElementById('f-thumbnail-url');
+  input.value = input.dataset.savedValue || '';
+  renderThumbnailLinkField(false);
+}
+function renderProductLinkField(editing){
+  const input = document.getElementById('f-asset-url');
+  const validUrl = externalUrl(input.value);
+  const view = document.getElementById('product-link-view');
+  const editor = document.getElementById('product-link-editor');
+  const anchor = document.getElementById('product-link-anchor');
+  const cancel = document.getElementById('product-link-cancel');
+  const showEditor = editing || !validUrl;
+  view.style.display = showEditor ? 'none' : 'flex';
+  editor.style.display = showEditor ? 'block' : 'none';
+  cancel.style.display = input.dataset.savedValue ? 'inline-block' : 'none';
+  if(validUrl){
+    anchor.href = validUrl;
+    anchor.textContent = 'Open product files ↗';
+  }
+}
+function editProductLink(){
+  renderProductLinkField(true);
+  document.getElementById('f-asset-url').focus();
+}
+function finishProductLinkEdit(){
+  const input = document.getElementById('f-asset-url');
+  if(input.value.trim() && !externalUrl(input.value)){
+    toast('Enter a complete link beginning with https://');
+    input.focus();
+    return;
+  }
+  input.value = externalUrl(input.value);
+  input.dataset.savedValue = input.value;
+  renderProductLinkField(false);
+}
+function cancelProductLinkEdit(){
+  const input = document.getElementById('f-asset-url');
+  input.value = input.dataset.savedValue || '';
+  renderProductLinkField(false);
+}
+function populateStageOptions(preferredStage){
+  const sel = document.getElementById('f-stage');
+  const stages = stagesForCategory(document.getElementById('f-category').value);
+  const previous = STAGES.find(s=>s.name===preferredStage);
+  const selected = stages.some(s=>s.name===preferredStage)
+    ? preferredStage
+    : (stages.find(s=>s.pct>=(previous?.pct ?? 0)) || stages[0]).name;
+  sel.innerHTML = stages.map(s=>`<option>${s.name}</option>`).join('');
+  sel.value = selected;
+  return selected;
+}
+function categoryChanged(){
+  const selected = populateStageOptions(document.getElementById('f-stage').value);
+  const stage = stagesForCategory(document.getElementById('f-category').value)
+    .find(s=>s.name===selected);
+  if(stage) document.getElementById('f-pct').value = stage.pct;
+}
+function stagePct(){
+  const s = stagesForCategory(document.getElementById('f-category').value)
+    .find(x=>x.name===document.getElementById('f-stage').value);
+  if(s) document.getElementById('f-pct').value = s.pct;
+}
+function genTN(){
+  const d = new Date();
+  const ym = String(d.getFullYear()).slice(2) + String(d.getMonth()+1).padStart(2,'0');
+  return `SCS-${ym}-${Math.floor(1000+Math.random()*9000)}`;
+}
+function whatsappNumber(mobile){
+  const raw = String(mobile || '').trim();
+  if(!raw) return '';
+  let number = raw.replace(/\D/g,'');
+  if(raw.startsWith('00')) number = number.slice(2);
+  else if(raw.startsWith('0')) number = `92${number.slice(1)}`;
+  else if(!raw.startsWith('+') && /^3\d{9}$/.test(number)) number = `92${number}`;
+  return /^\d{8,15}$/.test(number) ? number : '';
+}
+function whatsappMessageForOrder(order){
+  const customer = customers.find(c=>c.id===order?.customer_id);
+  const explanation = STAGE_MESSAGES[order?.stage] || 'Your order status has been updated.';
+  return `Hello ${customer?.name || 'Customer'},
+
+Your order ${order?.tn || ''} of ${order?.product || ''} has moved to the ${order?.stage || ''} stage.
+
+${explanation}
+
+Track your order:
+${TRACKING_PORTAL_URL}`;
+}
+function openWhatsAppForOrder(orderId){
+  const order = orders.find(item=>item.id===orderId);
+  if(!order){ toast('Order could not be found'); return; }
+  const customer = customers.find(c=>c.id===order.customer_id);
+  const number = whatsappNumber(customer?.mobile);
+  pendingWhatsAppOrderId = orderId;
+  document.getElementById('whatsapp-message-preview').textContent = whatsappMessageForOrder(order);
+  document.getElementById('whatsapp-ready-copy').textContent = number
+    ? `Ready to send to ${customer.name} at ${customer.mobile}.`
+    : `Add a valid mobile number to ${customer?.name || 'this customer'} before sending this update.`;
+  const sendButton = document.getElementById('whatsapp-send-btn');
+  sendButton.disabled = !number;
+  document.getElementById('whatsapp-modal-bg').classList.add('on');
+}
+function closeWhatsAppModal(){
+  pendingWhatsAppOrderId = null;
+  document.getElementById('whatsapp-modal-bg').classList.remove('on');
+}
+async function copyPendingWhatsAppMessage(){
+  const order = orders.find(item=>item.id===pendingWhatsAppOrderId);
+  if(!order){ toast('Order could not be found'); return; }
+  const message = whatsappMessageForOrder(order);
+  try {
+    await navigator.clipboard.writeText(message);
+    toast('WhatsApp message copied');
+  } catch {
+    const textArea = document.createElement('textarea');
+    textArea.value = message;
+    textArea.style.position = 'fixed';
+    textArea.style.opacity = '0';
+    document.body.appendChild(textArea);
+    textArea.select();
+    const copied = document.execCommand('copy');
+    textArea.remove();
+    toast(copied ? 'WhatsApp message copied' : 'Could not copy the message');
+  }
+}
+function sendPendingWhatsApp(){
+  const order = orders.find(item=>item.id===pendingWhatsAppOrderId);
+  const customer = customers.find(c=>c.id===order?.customer_id);
+  const number = whatsappNumber(customer?.mobile);
+  if(!order || !number){ toast('Add a valid customer mobile number first'); return; }
+  const url = `https://wa.me/${number}?text=${encodeURIComponent(whatsappMessageForOrder(order))}`;
+  window.open(url,'_blank','noopener,noreferrer');
+  closeWhatsAppModal();
+}
+async function saveOrder(){
+  const customer_id = document.getElementById('f-customer-id').value;
+  const product = document.getElementById('f-product').value.trim();
+  if(!customer_id || !product){ toast('Pick a customer and enter a product first'); return; }
+  const rawThumbnailUrl = document.getElementById('f-thumbnail-url').value.trim();
+  const thumbnailUrl = externalUrl(rawThumbnailUrl);
+  if(rawThumbnailUrl && !thumbnailUrl){ toast('Thumbnail link must begin with https://'); return; }
+  const rawAssetUrl = document.getElementById('f-asset-url').value.trim();
+  const assetUrl = externalUrl(rawAssetUrl);
+  if(rawAssetUrl && !assetUrl){ toast('Product files link must begin with https://'); return; }
+  const showAssetToCustomer = document.getElementById('f-show-assets-customer').checked;
+  if(showAssetToCustomer && !assetUrl){
+    toast('Add a product pictures/videos link before showing it to the customer');
+    return;
+  }
+  const pct = Math.max(0, Math.min(100, parseInt(document.getElementById('f-pct').value||0)));
+  const upd = document.getElementById('f-update').value.trim();
+  const adminNote = document.getElementById('f-admin-note').value.trim();
+  const updateDate = document.getElementById('f-update-date').value;
+  if((upd || adminNote) && !updateDate){ toast('Choose a date for the new entry'); return; }
+  const existing = editingId ? orders.find(x=>x.id===editingId) : null;
+  const updates = existing ? [...(existing.updates||[])] : [];
+  const shouldEmailCustomer = Boolean(existing && (
+    existing.stage !== document.getElementById('f-stage').value ||
+    upd
+  ));
+  if(upd) updates.push({t:updateDate, msg:upd});
+
+  const record = {
+    customer_id,
+    tn: document.getElementById('f-tn').value,
+    product,
+    category: document.getElementById('f-category').value,
+    stage: document.getElementById('f-stage').value,
+    pct,
+    eta: document.getElementById('f-eta').value || null,
+    thumbnail_url: thumbnailUrl || null,
+    asset_url: assetUrl || null,
+    show_asset_to_customer: showAssetToCustomer,
+    is_closed: document.getElementById('f-closed').checked,
+    updates,
+  };
+
+  let savedId = editingId || null;
+  if(NEEDS_SETUP){
+    if(existing) Object.assign(existing, record);
+    else {
+      savedId = crypto.randomUUID();
+      orders.push({id:savedId, ...record});
+    }
+  } else if(editingId){
+    const {error} = await sb.from('orders').update(record).eq('id', editingId);
+    if(error){ toast('Save failed: '+error.message); return; }
+  } else {
+    const {data:created, error} = await sb.from('orders').insert(record).select('id').single();
+    if(error){ toast('Save failed: '+error.message); return; }
+    savedId = created.id;
+  }
+
+  const warnings = [];
+  if(adminNote){
+    if(NEEDS_SETUP){
+      const savedOrder = orders.find(order=>order.id===savedId);
+      savedOrder._adminNotes = savedOrder._adminNotes || [];
+      savedOrder._adminNotes.unshift({
+        id:crypto.randomUUID(),
+        order_id:savedId,
+        note:adminNote,
+        note_date:updateDate,
+        created_by:currentStaff?.user_id || 'demo',
+        created_at:new Date().toISOString()
+      });
+    } else {
+      const {error:noteError} = await sb.from('order_admin_notes').insert({
+        order_id:savedId,
+        note:adminNote,
+        note_date:updateDate
+      });
+      if(noteError) warnings.push('private note failed: '+noteError.message);
+    }
+  }
+
+  await logActivity(editingId?'updated':'created','order',savedId,record.tn,
+    `${customerName(customer_id)} — ${record.product}; category ${record.category}; stage ${record.stage}; progress ${record.pct}%`);
+  let emailResult = null;
+  if(shouldEmailCustomer && !NEEDS_SETUP){
+    emailResult = await sendOrderStatusEmail(savedId);
+    if(emailResult && !emailResult.ok) warnings.push('customer email failed: '+emailResult.message);
+  }
+  await loadOrders();
+  closeForm();
+  renderAdmin();
+  if(shouldEmailCustomer) openWhatsAppForOrder(savedId);
+  if(warnings.length) toast('Order saved, but '+warnings.join('; '));
+  else if(emailResult?.ok) toast('Order updated — customer email sent');
+  else toast(editingId? 'Order updated':'Order created');
+}
+
+async function sendOrderStatusEmail(orderId){
+  try {
+    const {data:{session}} = await sb.auth.getSession();
+    const {data,error} = await sb.functions.invoke('notify-customer',{
+      body:{order_id:orderId},
+      headers:{Authorization:`Bearer ${session.access_token}`}
+    });
+    if(error || data?.error){
+      return {ok:false,message:await functionErrorMessage(error,data)};
+    }
+    return {ok:true};
+  } catch(error){
+    return {ok:false,message:error?.message||'Unknown email error'};
+  }
+}
+async function deleteOrder(){
+  if(!confirm('Delete this order? The customer will no longer see it in their dashboard.')) return;
+  const deleting = orders.find(x=>x.id===editingId);
+  if(NEEDS_SETUP){
+    orders = orders.filter(x=>x.id!==editingId);
+  } else {
+    const {error} = await sb.from('orders').delete().eq('id', editingId);
+    if(error){ toast('Delete failed: '+error.message); return; }
+  }
+  await logActivity('deleted','order',editingId,deleting?.tn || '',`${customerName(deleting?.customer_id)} — ${deleting?.product || ''}`);
+  await loadOrders();
+  closeForm();
+  renderAdmin();
+  toast('Order deleted');
+}
+
+/* ================= utils ================= */
+function esc(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function fmtDate(d){
+  if(!d) return '';
+  const dt = new Date(d+'T00:00:00');
+  if(isNaN(dt)) return d;
+  return dt.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+}
+function orderCategory(order){
+  return ORDER_CATEGORIES.includes(order?.category) ? order.category : 'Sourcing';
+}
+function stagesForCategory(category){
+  if(category!=='Shipping') return STAGES;
+  const excluded = new Set(['Production','Received in China Warehouse','Quality Check']);
+  return STAGES
+    .filter(stage=>!excluded.has(stage.name))
+    .map(stage=>stage.name==='Payment'
+      ? {name:'Received in China Warehouse', pct:stage.pct}
+      : stage);
+}
+function todayInputDate(){
+  const now = new Date();
+  const local = new Date(now.getTime() - now.getTimezoneOffset()*60000);
+  return local.toISOString().slice(0,10);
+}
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('on'), 2600);
+}
+
+if(NEEDS_SETUP){
+  seed();
+  window.addEventListener('DOMContentLoaded', ()=>toast('Demo mode — sign in with any email/password to preview, or add your Supabase URL/key in the script to go live'));
+} else {
+  checkExistingSession();
+}
+if('serviceWorker' in navigator && location.protocol==='https:'){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>

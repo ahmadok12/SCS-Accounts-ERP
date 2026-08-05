@@ -1,0 +1,10 @@
+{
+  "name": "Shaikh China Sourcing ERP",
+  "short_name": "SCS ERP",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#de2910",
+  "description": "SCS order tracking, accounting and business operations ERP."
+}
