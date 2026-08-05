@@ -638,16 +638,34 @@ td .stagechip{
 .erp-module-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
 .erp-module{border:1px solid var(--line);border-radius:16px;padding:15px;background:#fff}.erp-module b{display:block;font-size:14px}.erp-module span{color:var(--muted);font-size:11px}
 .erp-empty{color:var(--muted);font-size:13px;padding:18px 0;text-align:center}
+.sales-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sales-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 18px}
+.sales-kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
+.sales-kpi span{display:block;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.07em;font-weight:800}
+.sales-kpi b{display:block;font-size:24px;letter-spacing:-.035em;margin-top:5px}
+.sales-kpi.red b{color:var(--red)}
+.sales-doc-title{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.sales-doc-title strong{font-size:13px}
+.sales-doc-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.sales-line-list{display:grid;gap:10px;margin-top:10px}
+.sales-line-row{display:grid;grid-template-columns:112px minmax(160px,1.7fr) 72px 105px 165px 76px 116px 36px;gap:8px;align-items:end;padding:11px;background:var(--panel);border:1px solid var(--line);border-radius:14px}
+.sales-line-row .erp-field label{font-size:8px}.sales-line-row .erp-field input,.sales-line-row .erp-field select{padding:9px 9px;font-size:12px}
+.sales-line-row .line-discount-controls{display:grid;grid-template-columns:70px 1fr;gap:5px}.sales-line-row .line-total-value{height:38px;display:flex;align-items:center;justify-content:flex-end;padding:0 9px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:12px;font-weight:900;white-space:nowrap}
+.sales-line-row.amount-only .product-only{display:none}.sales-line-row.product-line .amount-only{display:none}
+.sales-line-remove{height:38px;width:36px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--red);font-weight:900;cursor:pointer}
+.sales-line-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.sales-total-box{display:flex;justify-content:flex-end;margin-top:12px}.sales-total-box>div{min-width:320px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.sales-total-box p{display:flex;justify-content:space-between;gap:20px;color:var(--muted);font-size:12px;margin:3px 0}.sales-total-box p:last-child{color:var(--ink);font-weight:900;font-size:14px;border-top:1px solid var(--line);padding-top:7px;margin-top:7px}
+.sales-document-discount{display:grid;grid-template-columns:1fr 78px 105px;gap:6px;align-items:center;margin:8px 0;padding:8px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:12px;color:var(--muted)}.sales-document-discount select,.sales-document-discount input{padding:7px 8px;border:1px solid var(--line);border-radius:9px;background:#fff;font:inherit;color:var(--ink)}
+.sales-status-draft{background:#f3f4f6;border-color:#e5e7eb;color:#4b5563}.sales-status-confirmed,.sales-status-posted{background:var(--ok-soft);border-color:#1a9b5c22;color:var(--ok)}
 .erp-bottom-nav{display:none}
 @media(max-width:820px){
-  .erp-span-4,.erp-span-6,.erp-span-8{grid-column:span 12}.erp-module-strip{grid-template-columns:1fr 1fr}
+  .erp-span-4,.erp-span-6,.erp-span-8{grid-column:span 12}.erp-module-strip{grid-template-columns:1fr 1fr}.sales-line-row{grid-template-columns:1fr 1fr}.sales-line-row .line-description{grid-column:1/-1}.sales-line-remove{width:100%}.sales-line-actions{justify-content:flex-start}
 }
 @media(max-width:640px){
   main{padding-bottom:96px}.brand-copy small{display:none}.brand .display{font-size:17px}
   .erp-nav{display:none}.erp-form-grid{grid-template-columns:1fr}.erp-form-grid .full{grid-column:auto}
-  .erp-bottom-nav{display:grid;grid-template-columns:repeat(5,1fr);position:fixed;left:8px;right:8px;bottom:8px;z-index:80;background:#fffffff2;backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:18px;padding:6px;box-shadow:0 14px 34px #0a0a0a22}
+  .erp-bottom-nav{display:grid;grid-template-columns:repeat(6,1fr);position:fixed;left:8px;right:8px;bottom:8px;z-index:80;background:#fffffff2;backdrop-filter:blur(18px);border:1px solid var(--line);border-radius:18px;padding:6px;box-shadow:0 14px 34px #0a0a0a22}
   .erp-bottom-nav button{border:0;background:transparent;border-radius:12px;padding:8px 3px;font-size:9px;font-weight:800;color:var(--muted)}
-  .erp-bottom-nav button.active{background:var(--ink);color:#fff}.erp-module-strip{grid-template-columns:1fr}
+  .erp-bottom-nav button.active{background:var(--ink);color:#fff}.erp-module-strip{grid-template-columns:1fr}.sales-kpis{grid-template-columns:1fr}.sales-actions{width:100%}.sales-actions .btn{flex:1}.sales-line-row{grid-template-columns:1fr}.sales-line-row .line-description{grid-column:auto}.sales-total-box div{width:100%;min-width:0}
 }
 .toast{
   position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(80px);
@@ -905,9 +923,10 @@ td .stagechip{
       </div>
 
       <div class="admin-page" id="page-sales">
-        <div class="section-head" style="margin-top:0"><div><h2>Sales</h2><p class="order-filter-note">Quotation → confirmation → sales invoice → receipt, linked to the project.</p></div></div>
-        <div class="erp-module-strip"><div class="erp-module"><b>Quotations</b><span>Multiple quotes per project</span></div><div class="erp-module"><b>Sales invoices</b><span>PKR / CNY document lines</span></div><div class="erp-module"><b>Receipts</b><span>Allocate incoming payments</span></div><div class="erp-module"><b>Margins</b><span>Project-level contribution</span></div></div>
-        <div class="erp-card"><div class="erp-card-head"><div><h2>Sales document engine</h2><p class="sub">Project and accounting links are prepared in the schema; document entry comes in Phase 2.</p></div><span class="erp-chip">Phase 2</span></div></div>
+        <div class="section-head" style="margin-top:0"><div><h2>Sales</h2><p class="order-filter-note">Quotation → customer confirmation → invoice → receipt, all linked to the Order / Project.</p></div><div class="sales-actions"><button class="btn ghost sm" onclick="openErpModal('project')">+ Project</button><button class="btn ghost sm" onclick="openSalesDocument('receipt')">+ Receipt</button><button class="btn ghost sm" onclick="openSalesDocument('sales_invoice')">+ Direct invoice</button><button class="btn gold sm" onclick="openSalesDocument('quotation')">+ Quotation</button></div></div>
+        <div class="sales-kpis"><div class="sales-kpi"><span>Open quotations</span><b id="sales-open-quotes">0</b></div><div class="sales-kpi red"><span>Customer receivable</span><b id="sales-receivable">PKR 0</b></div><div class="sales-kpi"><span>Receipts posted</span><b id="sales-received">PKR 0</b></div></div>
+        <div class="erp-toolbar"><div style="display:flex;gap:8px;flex-wrap:wrap"><select id="sales-type-filter" onchange="renderSales()"><option value="">All sales documents</option><option value="quotation">Quotations</option><option value="sales_invoice">Sales invoices</option><option value="receipt">Receipts</option></select><select id="sales-status-filter" onchange="renderSales()"><option value="">Any status</option><option value="draft">Draft</option><option value="confirmed">Confirmed</option><option value="posted">Posted</option><option value="cancelled">Cancelled</option></select></div><input id="sales-search" type="search" placeholder="Search document, party or project" oninput="renderSales()"></div>
+        <div class="table-wrap"><table class="erp-table"><thead><tr><th>Document</th><th>Project / customer</th><th>Date</th><th>Status</th><th class="num">Total</th><th class="num">Outstanding</th><th></th></tr></thead><tbody id="sales-document-rows"></tbody></table><div class="erp-empty" id="sales-empty">No sales documents yet. Start with a quotation.</div></div>
       </div>
 
       <div class="admin-page" id="page-purchasing">
@@ -1007,6 +1026,7 @@ td .stagechip{
 
 <nav class="erp-bottom-nav" id="erp-bottom-nav" aria-label="Mobile ERP navigation">
   <button data-page="orders" onclick="showAdminPage('orders')">Projects</button>
+  <button data-page="sales" onclick="showAdminPage('sales')">Sales</button>
   <button data-page="parties" onclick="showAdminPage('parties')">Parties</button>
   <button data-page="accounting" onclick="showAdminPage('accounting')">Accounting</button>
   <button data-page="banking" onclick="showAdminPage('banking')">Banking</button>
@@ -1394,14 +1414,15 @@ const STAGE_MESSAGES = {
   'Delivered':'Your order has been delivered successfully.'
 };
 const TRACKING_PORTAL_URL = 'https://track.shaikhchinasourcing.com/';
-// ===== Supabase config — fill these in from Settings → API in your Supabase project =====
-const SUPABASE_URL = 'https://eourkizstbgmrqkdwnjd.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_rEKWzv2DaUZHhHwBdCJKXg_9jEQkz6k';
+// ===== Standalone SCS ERP Supabase project =====
+// The publishable key is intended for browser clients; authorization is enforced by RLS.
+const SUPABASE_URL = 'https://rxfgxoveafqmuwhcxsbb.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_mPm7GUfND5bPjj7SDOwB9w_TgGHzTbZ';
 // Deploy the supplied Cloudflare Worker, then paste its https:// URL here.
 // R2 credentials never belong in this GitHub Pages file.
 const R2_API_BASE = 'YOUR_CLOUDFLARE_WORKER_URL';
-const NEEDS_SETUP = SUPABASE_URL.startsWith('YOUR_') || SUPABASE_ANON_KEY.startsWith('YOUR_');
-const sb = NEEDS_SETUP ? null : supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const NEEDS_SETUP = SUPABASE_URL.startsWith('YOUR_') || SUPABASE_PUBLISHABLE_KEY.startsWith('YOUR_');
+const sb = NEEDS_SETUP ? null : supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 let orders = [];
 let customers = [];       // admin: every customer. customer login: just their own row.
@@ -1428,6 +1449,10 @@ let erpJournals = [];
 let erpJournalLines = [];
 let erpBanks = [];
 let erpAttachments = [];
+let erpDocuments = [];
+let erpDocumentLines = [];
+let erpPaymentAllocations = [];
+let salesDocumentContext = null;
 let erpModalType = null;
 function emptyOrderFilter(){ return {stage:'', customerId:'', category:'', state:''}; }
 function defaultOrderFilter(){ return {...emptyOrderFilter(), state:'active'}; }
@@ -1559,14 +1584,17 @@ function seedErpPreview(){
 
 async function loadErp(){
   if(NEEDS_SETUP){ seedErpPreview(); erpAvailable=false; renderErp(); return; }
-  const [parties,projects,accounts,journals,lines,banks,attachments] = await Promise.all([
+  const [parties,projects,accounts,journals,lines,banks,attachments,documents,documentLines,paymentAllocations] = await Promise.all([
     sb.from('erp_parties').select('*').order('name'),
     sb.from('erp_projects').select('*').order('created_at',{ascending:false}),
     sb.from('erp_accounts').select('*').eq('active',true).order('code'),
     sb.from('erp_journals').select('*').order('journal_date',{ascending:false}).limit(100),
     sb.from('erp_journal_lines').select('*').limit(1000),
     sb.from('erp_bank_accounts').select('*').eq('active',true).order('name'),
-    sb.from('erp_attachments').select('*').order('created_at',{ascending:false}).limit(100)
+    sb.from('erp_attachments').select('*').order('created_at',{ascending:false}).limit(100),
+    sb.from('erp_documents').select('*').in('document_type',['quotation','sales_invoice','receipt']).order('document_date',{ascending:false}).limit(500),
+    sb.from('erp_document_lines').select('*').order('line_no').limit(3000),
+    sb.from('erp_payment_allocations').select('*').limit(3000)
   ]);
   if(parties.error){
     erpAvailable=false;
@@ -1575,6 +1603,7 @@ async function loadErp(){
     erpAvailable=true;
     erpParties=parties.data||[]; erpProjects=projects.data||[]; erpAccounts=accounts.data||[];
     erpJournals=journals.data||[]; erpJournalLines=lines.data||[]; erpBanks=banks.data||[]; erpAttachments=attachments.data||[];
+    erpDocuments=documents.error?[]:(documents.data||[]); erpDocumentLines=documentLines.error?[]:(documentLines.data||[]); erpPaymentAllocations=paymentAllocations.error?[]:(paymentAllocations.data||[]);
   }
   renderErp();
 }
@@ -1584,7 +1613,7 @@ function erpMoney(value,currency='PKR'){
 }
 function renderErp(){
   const note=document.getElementById('erp-setup-note'); if(note) note.style.display=erpAvailable?'none':'block';
-  renderErpParties(); renderErpAccounting(); renderErpBanks(); renderTrialBalance();
+  renderErpParties(); renderErpAccounting(); renderErpBanks(); renderTrialBalance(); renderSales();
 }
 function renderErpParties(){
   const rows=document.getElementById('erp-party-rows'); if(!rows) return;
@@ -1611,6 +1640,164 @@ function renderErpBanks(){
   const grid=document.getElementById('erp-bank-grid'); if(!grid) return;
   document.getElementById('erp-bank-empty').style.display=erpBanks.length?'none':'block';
   grid.innerHTML=erpBanks.map(b=>`<div class="erp-card erp-span-4"><div class="erp-kicker">${esc(b.currency||'PKR')} account</div><h2>${esc(b.name)}</h2><div class="sub">${esc(b.bank_name||'Cash / other')} ${b.account_no?'· '+esc(b.account_no):''}</div><div class="erp-metric red">${erpMoney(b.opening_balance||0,b.currency||'PKR')}</div><div class="sub">Opening balance</div></div>`).join('');
+}
+function salesDocLabel(type){ return type==='quotation'?'Quotation':type==='sales_invoice'?'Sales invoice':'Receipt'; }
+function salesParty(id){ return erpParties.find(p=>p.id===id); }
+function salesProject(id){ return erpProjects.find(p=>p.id===id); }
+function postedReceipts(){ return new Set(erpDocuments.filter(d=>d.document_type==='receipt'&&d.status==='posted').map(d=>d.id)); }
+function invoicePaid(id){
+  const posted=postedReceipts();
+  return erpPaymentAllocations.filter(a=>a.target_document_id===id&&posted.has(a.payment_document_id)).reduce((s,a)=>s+(Number(a.amount)||0),0);
+}
+function invoiceOutstanding(doc){ return Math.max(0,(Number(doc?.total)||0)-invoicePaid(doc?.id)); }
+function invoiceReserved(doc){
+  const activeReceipts=new Set(erpDocuments.filter(d=>d.document_type==='receipt'&&d.status!=='cancelled').map(d=>d.id));
+  return erpPaymentAllocations.filter(a=>a.target_document_id===doc.id&&activeReceipts.has(a.payment_document_id)).reduce((s,a)=>s+(Number(a.amount)||0),0);
+}
+function quoteRemainingLines(doc){
+  const lines=erpDocumentLines.filter(l=>l.document_id===doc.id).sort((a,b)=>a.line_no-b.line_no);
+  const activeInvoices=new Set(erpDocuments.filter(d=>d.document_type==='sales_invoice'&&d.source_document_id===doc.id&&d.status!=='cancelled').map(d=>d.id));
+  return lines.map(line=>{
+    const invoiced=erpDocumentLines.filter(l=>l.source_line_id===line.id&&activeInvoices.has(l.document_id)).reduce((s,l)=>s+(Number(l.quantity)||0),0);
+    return {...line,remaining:Math.max(0,(Number(line.quantity)||0)-invoiced)};
+  }).filter(line=>line.remaining>0.000001);
+}
+function salesDocumentActions(doc){
+  const buttons=[];
+  const hasNewerRevision=doc.document_type==='quotation'&&erpDocuments.some(d=>d.supersedes_document_id===doc.id&&d.status!=='cancelled');
+  if(doc.status==='draft') buttons.push(`<button class="btn ghost sm" onclick="editSalesDocument('${doc.id}')">Edit</button>`);
+  if(doc.document_type==='quotation'&&doc.status==='draft') buttons.push(`<button class="btn gold sm" onclick="advanceSalesDocument('${doc.id}','confirmed')">Confirm</button>`);
+  if(doc.document_type==='quotation'&&doc.status==='confirmed'){
+    if(!hasNewerRevision&&quoteRemainingLines(doc).length) buttons.push(`<button class="btn gold sm" onclick="openSalesDocument('sales_invoice','${doc.id}')">Create invoice</button>`);
+    if(!hasNewerRevision) buttons.push(`<button class="btn ghost sm" onclick="openSalesDocument('quotation','${doc.id}',true)">Revise</button>`);
+  }
+  if(doc.document_type==='sales_invoice'&&doc.status==='draft') buttons.push(`<button class="btn gold sm" onclick="advanceSalesDocument('${doc.id}','posted')">Post invoice</button>`);
+  if(doc.document_type==='sales_invoice'&&doc.status==='posted'&&invoiceOutstanding(doc)>0.005) buttons.push(`<button class="btn ghost sm" onclick="openSalesDocument('receipt','${doc.id}')">Receipt</button>`);
+  if(doc.document_type==='receipt'&&doc.status==='draft') buttons.push(`<button class="btn gold sm" onclick="advanceSalesDocument('${doc.id}','posted')">Post receipt</button>`);
+  return buttons.join('');
+}
+function renderSales(){
+  const body=document.getElementById('sales-document-rows'); if(!body) return;
+  const q=(document.getElementById('sales-search')?.value||'').trim().toLowerCase();
+  const type=document.getElementById('sales-type-filter')?.value||''; const status=document.getElementById('sales-status-filter')?.value||'';
+  const receivable=erpDocuments.filter(d=>d.document_type==='sales_invoice'&&d.status==='posted').reduce((s,d)=>s+invoiceOutstanding(d)*(Number(d.exchange_rate)||1),0);
+  const received=erpDocuments.filter(d=>d.document_type==='receipt'&&d.status==='posted').reduce((s,d)=>s+(Number(d.total)||0)*(Number(d.exchange_rate)||1),0);
+  document.getElementById('sales-open-quotes').textContent=erpDocuments.filter(d=>d.document_type==='quotation'&&!['confirmed','cancelled'].includes(d.status)).length;
+  document.getElementById('sales-receivable').textContent=erpMoney(receivable,'PKR'); document.getElementById('sales-received').textContent=erpMoney(received,'PKR');
+  const list=erpDocuments.filter(d=>{
+    if(type&&d.document_type!==type) return false; if(status&&d.status!==status) return false;
+    const p=salesProject(d.project_id), party=salesParty(d.party_id);
+    return !q||[d.document_no,p?.project_no,p?.name,party?.name].some(v=>String(v||'').toLowerCase().includes(q));
+  }).sort((a,b)=>String(b.document_date||'').localeCompare(String(a.document_date||''))||String(b.created_at||'').localeCompare(String(a.created_at||'')));
+  document.getElementById('sales-empty').style.display=list.length?'none':'block';
+  body.innerHTML=list.map(d=>{
+    const p=salesProject(d.project_id),party=salesParty(d.party_id); const outstanding=d.document_type==='sales_invoice'&&d.status==='posted'?invoiceOutstanding(d):null;
+    const revision=d.document_type==='quotation'&&Number(d.revision_no)>0?` · Rev ${d.revision_no}`:'';
+    return `<tr><td><div class="sales-doc-title"><strong>${esc(d.document_no)}</strong><span class="erp-chip">${esc(salesDocLabel(d.document_type))}</span></div><div class="sales-doc-sub">${esc(revision.replace(/^ · /,''))}</div></td><td><strong>${esc(p?.project_no||'—')}</strong><div class="sales-doc-sub">${esc(party?.name||p?.name||'No party')}</div></td><td>${esc(fmtDate(d.document_date))}</td><td><span class="erp-chip sales-status-${esc(d.status)}">${esc(d.status)}</span></td><td class="num"><strong>${erpMoney(d.total,d.currency)}</strong></td><td class="num">${outstanding===null?'—':erpMoney(outstanding,d.currency)}</td><td><div class="table-actions">${salesDocumentActions(d)}</div></td></tr>`;
+  }).join('');
+}
+function datePlusDays(days){ const d=new Date(); d.setDate(d.getDate()+days); return d.toISOString().slice(0,10); }
+function salesProjectOptions(selected=''){ return erpProjects.filter(p=>!['cancelled','closed'].includes(p.status)||p.id===selected).map(p=>`<option value="${esc(p.id)}" ${p.id===selected?'selected':''}>${esc(p.project_no)} · ${esc(p.name)}</option>`).join(''); }
+function addSalesLine(line={}){
+  const list=document.getElementById('sales-line-list'); if(!list) return;
+  const sourceId=line.sourceLineId||line.source_line_id||''; const type=line.line_type||'product';
+  const discountType=line.discount_type||'percent';
+  list.insertAdjacentHTML('beforeend',`<div class="sales-line-row ${type==='product'?'product-line':'amount-only'}" data-source-line-id="${esc(sourceId)}"><div class="erp-field"><label>Line type</label><select class="line-type" onchange="salesLineTypeChanged(this)"><option value="product" ${type==='product'?'selected':''}>Product</option><option value="service" ${type==='service'?'selected':''}>Service</option><option value="shipping" ${type==='shipping'?'selected':''}>Shipping fee</option><option value="sourcing_fee" ${type==='sourcing_fee'?'selected':''}>Sourcing fee</option></select></div><div class="erp-field line-description"><label>Description</label><input class="line-description-input" value="${esc(line.description||'')}" placeholder="${type==='product'?'Product description':'Service / fee description'}"></div><div class="erp-field product-only"><label>Qty</label><input class="line-qty" type="number" min="0.0001" step="0.0001" value="${Number(line.remaining??line.quantity??1)}" oninput="recalcSalesDraft()"></div><div class="erp-field"><label class="line-price-label">${type==='product'?'Rate':'Amount'}</label><input class="line-price" type="number" min="0" step="0.0001" value="${Number(line.unit_price||0)}" oninput="recalcSalesDraft()"></div><div class="erp-field product-only"><label>Line discount</label><div class="line-discount-controls"><select class="line-discount-type" onchange="recalcSalesDraft()"><option value="percent" ${discountType==='percent'?'selected':''}>%</option><option value="amount" ${discountType==='amount'?'selected':''}>Amount</option></select><input class="line-discount" type="number" min="0" step="0.01" value="${Number(line.discount_value||0)}" oninput="recalcSalesDraft()"></div></div><div class="erp-field product-only"><label>Tax %</label><input class="line-tax" type="number" min="0" max="100" step="0.01" value="${Number(line.tax_rate||0)}" oninput="recalcSalesDraft()"></div><div class="erp-field"><label>Total</label><div class="line-total-value">—</div></div><button class="sales-line-remove" type="button" onclick="this.closest('.sales-line-row').remove();recalcSalesDraft()" title="Remove line">×</button></div>`);
+  recalcSalesDraft();
+}
+function salesLineTypeChanged(select){
+  const row=select.closest('.sales-line-row'); const product=select.value==='product';
+  row.classList.toggle('product-line',product); row.classList.toggle('amount-only',!product);
+  row.querySelector('.line-price-label').textContent=product?'Rate':'Amount';
+  if(!product){row.querySelector('.line-qty').value=1;row.querySelector('.line-tax').value=0;row.querySelector('.line-discount').value=0;row.querySelector('.line-discount-type').value='percent';}
+  recalcSalesDraft();
+}
+function salesLineCalculation(row){
+  const type=row.querySelector('.line-type').value; const product=type==='product'; const qty=product?(Number(row.querySelector('.line-qty').value)||0):1; const rate=Number(row.querySelector('.line-price').value)||0;
+  const gross=qty*rate; let discount=0;
+  if(product){const value=Math.max(0,Number(row.querySelector('.line-discount').value)||0);discount=row.querySelector('.line-discount-type').value==='amount'?value:gross*Math.min(value,100)/100;discount=Math.min(discount,gross);}
+  const net=gross-discount; const tax=product?net*(Number(row.querySelector('.line-tax').value)||0)/100:0;
+  return {type,gross,discount,net,tax,total:net+tax};
+}
+function recalcSalesDraft(){
+  let gross=0,lineDiscount=0,nonSourcingNet=0,tax=0,sourcing=0; const c=document.getElementById('sales-f-currency')?.value||'PKR';
+  document.querySelectorAll('#sales-line-list .sales-line-row').forEach(row=>{const x=salesLineCalculation(row);gross+=x.gross;lineDiscount+=x.discount;tax+=x.tax;if(x.type==='sourcing_fee')sourcing+=x.net;else nonSourcingNet+=x.net;const out=row.querySelector('.line-total-value');if(out)out.textContent=erpMoney(x.total,c);});
+  const invoiceAmount=nonSourcingNet+tax; const discountType=document.getElementById('sales-document-discount-type')?.value||'percent'; const discountValue=Math.max(0,Number(document.getElementById('sales-document-discount-value')?.value)||0); const documentDiscount=Math.min(invoiceAmount,discountType==='amount'?discountValue:invoiceAmount*Math.min(discountValue,100)/100); const grand=invoiceAmount-documentDiscount+sourcing;
+  const put=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=erpMoney(value,c);};
+  put('sales-draft-subtotal',gross-sourcing);put('sales-draft-line-discount',lineDiscount);put('sales-draft-tax',tax);put('sales-draft-invoice-amount',invoiceAmount);put('sales-draft-document-discount',documentDiscount);put('sales-draft-sourcing-fee',sourcing);put('sales-draft-total',grand);
+}
+function salesReceiptInvoiceChanged(){
+  const invoice=erpDocuments.find(d=>d.id===document.getElementById('sales-f-invoice')?.value); if(!invoice) return;
+  const max=Math.max(0,(Number(invoice.total)||0)-invoiceReserved(invoice)); const amount=document.getElementById('sales-f-receipt-amount'); amount.max=String(max); amount.value=String(Math.round(max*100)/100);
+  document.getElementById('sales-f-receipt-currency').textContent=invoice.currency;
+  const bank=document.getElementById('sales-f-receipt-bank'); const compatible=erpBanks.filter(b=>b.ledger_account_id&&b.currency===invoice.currency);
+  bank.innerHTML=compatible.map(b=>`<option value="${esc(b.id)}">${esc(b.name)} · ${esc(b.currency)}</option>`).join('');
+  document.getElementById('sales-bank-warning').style.display=compatible.length?'none':'block';
+}
+function openSalesDocument(type,sourceId=null,revision=false,editId=null){
+  if(!erpAvailable){toast('Phase 2 database is not available yet');return;}
+  const editDoc=editId?erpDocuments.find(d=>d.id===editId):null; const source=sourceId?erpDocuments.find(d=>d.id===sourceId):null;
+  if(editDoc&&editDoc.status!=='draft'){toast('Only draft documents can be edited');return;}
+  salesDocumentContext={type,sourceId:sourceId||editDoc?.source_document_id||null,revision,editId}; erpModalType='sales';
+  const modal=document.querySelector('#erp-modal-bg .modal'); modal.style.maxWidth=type==='receipt'?'680px':'1200px';
+  document.getElementById('erp-modal-title').textContent=editDoc?`Edit ${salesDocLabel(type)}`:revision?'New quotation revision':`New ${salesDocLabel(type)}`;
+  document.getElementById('erp-modal-save').textContent=editDoc?'Update draft':'Save draft';
+  const body=document.getElementById('erp-modal-body');
+  if(type==='receipt'){
+    const invoices=erpDocuments.filter(d=>d.document_type==='sales_invoice'&&d.status==='posted'&&((Number(d.total)||0)-invoiceReserved(d)>0.005));
+    const editingAllocation=editDoc?erpPaymentAllocations.find(a=>a.payment_document_id===editDoc.id):null; const selectedId=sourceId||editingAllocation?.target_document_id||invoices[0]?.id;
+    const available=[...invoices]; if(editDoc&&editingAllocation){ const existing=erpDocuments.find(d=>d.id===editingAllocation.target_document_id); if(existing&&!available.some(d=>d.id===existing.id)) available.unshift(existing); }
+    if(!available.length){toast('There are no posted invoices with an outstanding balance');closeErpModal();return;}
+    body.innerHTML=`<div class="erp-form-grid"><div class="erp-field full"><label>Invoice to receive against</label><select id="sales-f-invoice" onchange="salesReceiptInvoiceChanged()">${available.map(d=>`<option value="${esc(d.id)}" ${d.id===selectedId?'selected':''}>${esc(d.document_no)} · ${esc(salesParty(d.party_id)?.name||'Customer')} · ${erpMoney(invoiceOutstanding(d),d.currency)} open</option>`).join('')}</select></div><div class="erp-field"><label>Receipt date</label><input id="sales-f-date" type="date" value="${esc(editDoc?.document_date||todayInputDate())}"></div><div class="erp-field"><label>Amount <span id="sales-f-receipt-currency"></span></label><input id="sales-f-receipt-amount" type="number" min="0.01" step="0.01"></div><div class="erp-field full"><label>Receiving bank / cash account</label><select id="sales-f-receipt-bank"></select><div id="sales-bank-warning" class="erp-setup" style="margin:8px 0 0">Create a bank/cash account in Banking and link it to a ledger account in the same currency first.</div></div><div class="erp-field full"><label>Notes / reference</label><textarea id="sales-f-notes" placeholder="Bank reference, cheque number or payment note">${esc(editDoc?.notes||'')}</textarea></div></div>`;
+    salesReceiptInvoiceChanged(); if(editDoc){document.getElementById('sales-f-receipt-amount').value=editDoc.total; const b=document.getElementById('sales-f-receipt-bank'); if([...b.options].some(o=>o.value===editDoc.bank_account_id)) b.value=editDoc.bank_account_id;}
+  } else {
+    const projectId=editDoc?.project_id||source?.project_id||erpProjects[0]?.id||''; const currency=editDoc?.currency||source?.currency||salesParty(salesProject(projectId)?.party_id)?.default_currency||'PKR';
+    body.innerHTML=`<div class="erp-form-grid"><div class="erp-field"><label>Order / Project</label><select id="sales-f-project">${salesProjectOptions(projectId)}</select></div><div class="erp-field"><label>Date</label><input id="sales-f-date" type="date" value="${esc(editDoc?.document_date||todayInputDate())}"></div><div class="erp-field"><label>Currency</label><select id="sales-f-currency" onchange="recalcSalesDraft()"><option ${currency==='PKR'?'selected':''}>PKR</option><option ${currency==='CNY'?'selected':''}>CNY</option><option ${currency==='USD'?'selected':''}>USD</option></select></div><div class="erp-field"><label>PKR exchange rate</label><input id="sales-f-rate" type="number" min="0.000001" step="0.000001" value="${Number(editDoc?.exchange_rate||source?.exchange_rate||1)}"></div><div class="erp-field"><label>${type==='quotation'?'Valid until':'Due date'}</label><input id="sales-f-term-date" type="date" value="${esc((type==='quotation'?editDoc?.valid_until:editDoc?.due_date)||datePlusDays(type==='quotation'?15:7))}"></div><div class="erp-field"><label>Revision / source</label><input disabled value="${esc(editDoc?editDoc.document_no:revision?`${source?.document_no||''} · revision ${Number(source?.revision_no||0)+1}`:source?`From ${source.document_no}`:'New document')}"></div><div class="erp-field full"><label>Notes</label><textarea id="sales-f-notes">${esc(editDoc?.notes||source?.notes||'')}</textarea></div></div><div class="erp-card" style="padding:14px;margin-top:14px"><div class="erp-card-head"><div><h3>Document lines</h3><div class="sub">Product lines use quantity, rate, discount and tax. Services and fees use a simple amount.</div></div><div class="sales-line-actions"><button class="btn ghost sm" type="button" onclick="addSalesLine({line_type:'product'})">+ Product</button><button class="btn ghost sm" type="button" onclick="addSalesLine({line_type:'service'})">+ Service</button><button class="btn ghost sm" type="button" onclick="addSalesLine({line_type:'shipping'})">+ Shipping</button><button class="btn ghost sm" type="button" onclick="addSalesLine({line_type:'sourcing_fee'})">+ Sourcing fee</button></div></div><div class="sales-line-list" id="sales-line-list"></div><div class="sales-total-box"><div><p><span>Products / services / shipping</span><b id="sales-draft-subtotal">—</b></p><p><span>Line discounts</span><b id="sales-draft-line-discount">—</b></p><p><span>Tax</span><b id="sales-draft-tax">—</b></p><p><span>Invoice amount</span><b id="sales-draft-invoice-amount">—</b></p><div class="sales-document-discount"><span>Invoice discount</span><select id="sales-document-discount-type" onchange="recalcSalesDraft()"><option value="percent" ${(editDoc?.discount_type||source?.discount_type||'percent')==='percent'?'selected':''}>%</option><option value="amount" ${(editDoc?.discount_type||source?.discount_type)==='amount'?'selected':''}>Amount</option></select><input id="sales-document-discount-value" type="number" min="0" step="0.01" value="${Number(editDoc?.discount_value??source?.discount_value??0)}" oninput="recalcSalesDraft()"></div><p><span>Invoice discount</span><b id="sales-draft-document-discount">—</b></p><p><span>Sourcing fee</span><b id="sales-draft-sourcing-fee">—</b></p><p><span>Grand total</span><b id="sales-draft-total">—</b></p></div></div></div>`;
+    let lines=[];
+    if(editDoc) lines=erpDocumentLines.filter(l=>l.document_id===editDoc.id).sort((a,b)=>a.line_no-b.line_no);
+    else if(type==='sales_invoice'&&source) lines=quoteRemainingLines(source).map(l=>({...l,sourceLineId:l.id,quantity:l.remaining}));
+    else if(revision&&source) lines=erpDocumentLines.filter(l=>l.document_id===source.id).sort((a,b)=>a.line_no-b.line_no);
+    (lines.length?lines:[{}]).forEach(addSalesLine);
+  }
+  document.getElementById('erp-modal-bg').classList.add('on');
+}
+function editSalesDocument(id){ const doc=erpDocuments.find(d=>d.id===id); if(doc) openSalesDocument(doc.document_type,doc.source_document_id||null,false,id); }
+async function saveSalesDocument(){
+  const ctx=salesDocumentContext; if(!ctx) throw new Error('Sales document context is missing'); const edit=ctx.editId?erpDocuments.find(d=>d.id===ctx.editId):null;
+  if(ctx.type==='receipt'){
+    const invoice=erpDocuments.find(d=>d.id===document.getElementById('sales-f-invoice').value); const amount=Number(document.getElementById('sales-f-receipt-amount').value); const bank=document.getElementById('sales-f-receipt-bank').value;
+    if(!invoice) throw new Error('Choose an invoice'); if(!bank) throw new Error('Choose a compatible bank/cash account'); if(!amount||amount<=0) throw new Error('Enter a positive receipt amount');
+    const reserved=Math.max(0,invoiceReserved(invoice)-(edit?erpPaymentAllocations.filter(a=>a.payment_document_id===edit.id&&a.target_document_id===invoice.id).reduce((s,a)=>s+(Number(a.amount)||0),0):0));
+    if(amount>(Number(invoice.total)||0)-reserved+0.005) throw new Error('Receipt amount exceeds the unallocated invoice balance');
+    const header={document_type:'receipt',document_date:document.getElementById('sales-f-date').value,project_id:invoice.project_id,party_id:invoice.party_id,currency:invoice.currency,exchange_rate:invoice.exchange_rate,status:'draft',subtotal:amount,tax_total:0,total:amount,bank_account_id:bank,notes:document.getElementById('sales-f-notes').value.trim()||null};
+    let id=edit?.id;
+    if(edit){ const {error}=await sb.from('erp_documents').update(header).eq('id',id); if(error) throw error; const {error:del}=await sb.from('erp_payment_allocations').delete().eq('payment_document_id',id); if(del) throw del; }
+    else { const {data,error}=await sb.from('erp_documents').insert({...header,document_no:''}).select('id').single(); if(error) throw error; id=data.id; }
+    const {error:allocError}=await sb.from('erp_payment_allocations').insert({payment_document_id:id,target_document_id:invoice.id,amount}); if(allocError) throw allocError;
+    return;
+  }
+  const projectId=document.getElementById('sales-f-project').value; const project=salesProject(projectId); if(!project) throw new Error('Choose an Order / Project'); if(!project.party_id) throw new Error('This project must be linked to a customer party first');
+  const currency=document.getElementById('sales-f-currency').value; const rate=currency==='PKR'?1:Number(document.getElementById('sales-f-rate').value); if(!rate||rate<=0) throw new Error('Enter a valid PKR exchange rate');
+  const rows=[...document.querySelectorAll('#sales-line-list .sales-line-row')]; if(!rows.length) throw new Error('Add at least one document line');
+  const lineRecords=rows.map((row,i)=>{const type=row.querySelector('.line-type').value;const product=type==='product';return {line_no:i+1,line_type:type,description:row.querySelector('.line-description-input').value.trim(),quantity:product?Number(row.querySelector('.line-qty').value):1,unit_price:Number(row.querySelector('.line-price').value),discount_type:product?row.querySelector('.line-discount-type').value:'percent',discount_value:product?(Number(row.querySelector('.line-discount').value)||0):0,tax_rate:product?(Number(row.querySelector('.line-tax').value)||0):0,source_line_id:row.dataset.sourceLineId||null,project_id:projectId};});
+  if(lineRecords.some(l=>!l.description||!l.quantity||l.quantity<=0||Number.isNaN(l.unit_price)||l.unit_price<0)) throw new Error('Every line needs a description and valid amount');
+  if(lineRecords.some(l=>l.discount_type==='percent'&&l.discount_value>100)) throw new Error('A line discount percentage cannot exceed 100%');
+  if(lineRecords.some(l=>l.discount_type==='amount'&&l.discount_value>(l.quantity*l.unit_price))) throw new Error('A line discount cannot exceed its line amount');
+  const source=ctx.sourceId?erpDocuments.find(d=>d.id===ctx.sourceId):null;
+  const discountType=document.getElementById('sales-document-discount-type').value; const discountValue=Number(document.getElementById('sales-document-discount-value').value)||0;
+  if(discountType==='percent'&&discountValue>100) throw new Error('Invoice discount percentage cannot exceed 100%');
+  const header={document_type:ctx.type,document_date:document.getElementById('sales-f-date').value,project_id:projectId,party_id:project.party_id,currency,exchange_rate:rate,status:'draft',discount_type:discountType,discount_value:discountValue,notes:document.getElementById('sales-f-notes').value.trim()||null,valid_until:ctx.type==='quotation'?document.getElementById('sales-f-term-date').value:null,due_date:ctx.type==='sales_invoice'?document.getElementById('sales-f-term-date').value:null,source_document_id:ctx.type==='sales_invoice'?ctx.sourceId:null,supersedes_document_id:ctx.type==='quotation'&&ctx.revision?ctx.sourceId:(edit?.supersedes_document_id||null),revision_no:ctx.type==='quotation'?(edit?.revision_no??(ctx.revision?Number(source?.revision_no||0)+1:0)):0};
+  let id=edit?.id,created=false;
+  try{
+    if(edit){ const {error}=await sb.from('erp_documents').update(header).eq('id',id); if(error) throw error; const {error:del}=await sb.from('erp_document_lines').delete().eq('document_id',id); if(del) throw del; }
+    else { const {data,error}=await sb.from('erp_documents').insert({...header,document_no:''}).select('id').single(); if(error) throw error; id=data.id; created=true; }
+    const {error:lineError}=await sb.from('erp_document_lines').insert(lineRecords.map(l=>({...l,document_id:id}))); if(lineError) throw lineError;
+  }catch(error){ if(created&&id) await sb.from('erp_documents').delete().eq('id',id); throw error; }
+}
+async function advanceSalesDocument(id,status){
+  const doc=erpDocuments.find(d=>d.id===id); if(!doc) return;
+  try{ const {error}=await sb.from('erp_documents').update({status}).eq('id',id); if(error) throw error; await loadErp(); toast(status==='confirmed'?'Quotation confirmed — it can now be invoiced':'Document posted and accounting updated'); }
+  catch(error){toast(error.message||'Could not update document');}
 }
 function trialBalanceRows(){
   const grouped=new Map(erpAccounts.map(a=>[a.id,{account:a,debit:0,credit:0}]));
@@ -1641,34 +1828,55 @@ async function syncTrackerToErp(){
     await loadErp(); toast(`Synced ${customers.length} customers and ${orders.length} orders into ERP`);
   }catch(error){toast('ERP sync failed: '+error.message);}
 }
+async function syncOneOrderToErp(orderId){
+  if(!erpAvailable||NEEDS_SETUP) return;
+  const o=orders.find(x=>x.id===orderId); if(!o) return; const c=customers.find(x=>x.id===o.customer_id); if(!c) return;
+  const {data:party,error:partyError}=await sb.from('erp_parties').upsert({legacy_customer_id:c.id,name:c.name,party_type:'customer',city:c.city||null,country:'Pakistan',email:c.email||null,phone:c.mobile||null,default_currency:'PKR'},{onConflict:'legacy_customer_id'}).select('id').single();
+  if(partyError) throw partyError;
+  const {error:projectError}=await sb.from('erp_projects').upsert({legacy_order_id:o.id,party_id:party.id,project_no:o.tn,name:o.product,transaction_type:orderCategory(o).toLowerCase(),status:o.is_closed?'closed':'active',progress_pct:o.pct||0},{onConflict:'legacy_order_id'}); if(projectError) throw projectError;
+  await loadErp();
+}
 
 function openErpModal(type){
   erpModalType=type; const title=document.getElementById('erp-modal-title'); const body=document.getElementById('erp-modal-body');
+  document.querySelector('#erp-modal-bg .modal').style.maxWidth='620px'; document.getElementById('erp-modal-save').textContent='Save';
   if(type==='party'){
     title.textContent='New customer / supplier';
     body.innerHTML=`<div class="erp-form-grid"><div class="erp-field full"><label>Company / party name</label><input id="erp-f-name" required placeholder="e.g. Guangzhou Bright Tech Co."></div><div class="erp-field"><label>Role</label><select id="erp-f-party-type"><option value="customer">Customer</option><option value="supplier">Supplier</option><option value="both">Customer & supplier</option></select></div><div class="erp-field"><label>Default currency</label><select id="erp-f-currency"><option>PKR</option><option>CNY</option><option>USD</option></select></div><div class="erp-field"><label>City</label><input id="erp-f-city"></div><div class="erp-field"><label>Country</label><input id="erp-f-country" value="Pakistan"></div><div class="erp-field"><label>Email</label><input id="erp-f-email" type="email"></div><div class="erp-field"><label>Phone</label><input id="erp-f-phone"></div></div>`;
+  } else if(type==='project'){
+    const partyOpts=erpParties.filter(p=>p.active!==false&&['customer','both'].includes(p.party_type)).map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');
+    const now=new Date(); const suggested=`SCS-${String(now.getFullYear()).slice(-2)}${String(now.getMonth()+1).padStart(2,'0')}-${Math.floor(1000+Math.random()*9000)}`;
+    title.textContent='New Order / Project';
+    body.innerHTML=`<div class="erp-form-grid"><div class="erp-field"><label>Project / tracking no.</label><input id="erp-f-project-no" value="${esc(suggested)}"></div><div class="erp-field"><label>Customer</label><select id="erp-f-project-party"><option value="">Select customer…</option>${partyOpts}</select></div><div class="erp-field full"><label>Project name / product</label><input id="erp-f-project-name" placeholder="e.g. 500 × LED desk lamps"></div><div class="erp-field"><label>Business type</label><select id="erp-f-project-type"><option value="sourcing">Sourcing</option><option value="trading">Trading</option><option value="shipping">Shipping</option></select></div><div class="erp-field"><label>Reporting currency</label><select id="erp-f-project-currency"><option>PKR</option><option>CNY</option><option>USD</option></select></div><div class="erp-field full"><label>Notes</label><textarea id="erp-f-project-notes"></textarea></div></div>${partyOpts?'':'<div class="erp-setup" style="display:block;margin-top:12px">Create a customer in Parties first.</div>'}`;
   } else if(type==='journal'){
     const opts=erpAccounts.map(a=>`<option value="${esc(a.id)}">${esc(a.code)} · ${esc(a.name)}</option>`).join(''); const projects=erpProjects.map(p=>`<option value="${esc(p.id)}">${esc(p.project_no)} · ${esc(p.name)}</option>`).join('');
     title.textContent='New journal entry';
     body.innerHTML=`<div class="erp-form-grid"><div class="erp-field"><label>Date</label><input id="erp-f-date" type="date" value="${todayInputDate()}"></div><div class="erp-field"><label>Project allocation</label><select id="erp-f-project"><option value="">General / no project</option>${projects}</select></div><div class="erp-field full"><label>Description</label><input id="erp-f-description" placeholder="What is this transaction for?"></div><div class="erp-field"><label>Currency</label><select id="erp-f-jcurrency" onchange="document.getElementById('erp-f-rate-wrap').style.display=this.value==='PKR'?'none':'block'"><option>PKR</option><option>CNY</option><option>USD</option></select></div><div class="erp-field" id="erp-f-rate-wrap" style="display:none"><label>PKR exchange rate</label><input id="erp-f-rate" type="number" min="0.000001" step="0.000001" value="1"></div><div class="erp-field"><label>Debit account</label><select id="erp-f-debit">${opts}</select></div><div class="erp-field"><label>Credit account</label><select id="erp-f-credit">${opts}</select></div><div class="erp-field full"><label>Amount</label><input id="erp-f-amount" type="number" min="0.01" step="0.01" placeholder="0.00"></div></div>`;
   } else if(type==='bank'){
+    const assetAccounts=erpAccounts.filter(a=>a.account_type==='asset').map(a=>`<option value="${esc(a.id)}">${esc(a.code)} · ${esc(a.name)}</option>`).join('');
     title.textContent='New bank / cash account';
-    body.innerHTML=`<div class="erp-form-grid"><div class="erp-field full"><label>Account name</label><input id="erp-f-bank-name" placeholder="e.g. HBL PKR Current"></div><div class="erp-field"><label>Bank name</label><input id="erp-f-bank-bank"></div><div class="erp-field"><label>Account number</label><input id="erp-f-bank-no"></div><div class="erp-field"><label>Currency</label><select id="erp-f-bank-currency"><option>PKR</option><option>CNY</option><option>USD</option></select></div><div class="erp-field"><label>Opening balance</label><input id="erp-f-bank-opening" type="number" step="0.01" value="0"></div></div>`;
+    body.innerHTML=`<div class="erp-form-grid"><div class="erp-field full"><label>Account name</label><input id="erp-f-bank-name" placeholder="e.g. HBL PKR Current"></div><div class="erp-field"><label>Bank name</label><input id="erp-f-bank-bank"></div><div class="erp-field"><label>Account number</label><input id="erp-f-bank-no"></div><div class="erp-field"><label>Currency</label><select id="erp-f-bank-currency"><option>PKR</option><option>CNY</option><option>USD</option></select></div><div class="erp-field"><label>Opening balance</label><input id="erp-f-bank-opening" type="number" step="0.01" value="0"></div><div class="erp-field full"><label>Ledger account</label><select id="erp-f-bank-ledger"><option value="">Select asset ledger…</option>${assetAccounts}</select><div class="sub" style="margin-top:6px">Required before this account can receive customer payments.</div></div></div>`;
   }
   document.getElementById('erp-modal-bg').classList.add('on');
 }
-function closeErpModal(){ document.getElementById('erp-modal-bg').classList.remove('on'); erpModalType=null; }
+function closeErpModal(){ document.getElementById('erp-modal-bg').classList.remove('on'); erpModalType=null; salesDocumentContext=null; document.getElementById('erp-modal-save').textContent='Save'; document.querySelector('#erp-modal-bg .modal').style.maxWidth='620px'; }
 async function saveErpModal(){
   const button=document.getElementById('erp-modal-save'); button.disabled=true;
   try{
     if(erpModalType==='party'){
       const record={name:document.getElementById('erp-f-name').value.trim(),party_type:document.getElementById('erp-f-party-type').value,default_currency:document.getElementById('erp-f-currency').value,city:document.getElementById('erp-f-city').value.trim()||null,country:document.getElementById('erp-f-country').value.trim()||null,email:document.getElementById('erp-f-email').value.trim()||null,phone:document.getElementById('erp-f-phone').value.trim()||null};
       if(!record.name) throw new Error('Party name is required');
-      if(!erpAvailable) erpParties.push({id:crypto.randomUUID(),...record,active:true}); else { const {error}=await sb.from('erp_parties').insert(record); if(error) throw error; }
+      if(!erpAvailable) erpParties.push({id:crypto.randomUUID(),...record,active:true}); else { const {error}=await sb.from('erp_parties').insert(record); if(error) throw error; await loadCustomers(); }
+    } else if(erpModalType==='project'){
+      const record={project_no:document.getElementById('erp-f-project-no').value.trim(),party_id:document.getElementById('erp-f-project-party').value||null,name:document.getElementById('erp-f-project-name').value.trim(),transaction_type:document.getElementById('erp-f-project-type').value,reporting_currency:document.getElementById('erp-f-project-currency').value,status:'active',notes:document.getElementById('erp-f-project-notes').value.trim()||null};
+      if(!record.project_no||!record.name||!record.party_id) throw new Error('Project number, customer and project name are required');
+      const {error}=await sb.from('erp_projects').insert(record); if(error) throw error;
     } else if(erpModalType==='bank'){
-      const record={name:document.getElementById('erp-f-bank-name').value.trim(),bank_name:document.getElementById('erp-f-bank-bank').value.trim()||null,account_no:document.getElementById('erp-f-bank-no').value.trim()||null,currency:document.getElementById('erp-f-bank-currency').value,opening_balance:Number(document.getElementById('erp-f-bank-opening').value)||0};
+      const record={name:document.getElementById('erp-f-bank-name').value.trim(),bank_name:document.getElementById('erp-f-bank-bank').value.trim()||null,account_no:document.getElementById('erp-f-bank-no').value.trim()||null,currency:document.getElementById('erp-f-bank-currency').value,opening_balance:Number(document.getElementById('erp-f-bank-opening').value)||0,ledger_account_id:document.getElementById('erp-f-bank-ledger').value||null};
       if(!record.name) throw new Error('Account name is required');
       if(!erpAvailable) erpBanks.push({id:crypto.randomUUID(),...record,active:true}); else { const {error}=await sb.from('erp_bank_accounts').insert(record); if(error) throw error; }
+    } else if(erpModalType==='sales'){
+      await saveSalesDocument();
     } else if(erpModalType==='journal'){
       const amount=Number(document.getElementById('erp-f-amount').value); const currency=document.getElementById('erp-f-jcurrency').value; const rate=currency==='PKR'?1:Number(document.getElementById('erp-f-rate').value); const debit=document.getElementById('erp-f-debit').value; const credit=document.getElementById('erp-f-credit').value; const projectId=document.getElementById('erp-f-project').value||null;
       if(!amount||amount<=0) throw new Error('Enter a positive amount'); if(!rate||rate<=0) throw new Error('Enter a valid exchange rate'); if(debit===credit) throw new Error('Debit and credit accounts must be different');
@@ -2024,7 +2232,7 @@ function showAdminPage(page, scroll=true){
   adminPage = page;
   const meta = {
     dashboard:['ERP dashboard','Orders, customers and operating activity at a glance.'],
-    orders:['Orders / Projects','Your existing tracker is the central project workspace.'],
+    orders:['Orders / Projects','The integrated order tracker is the central project workspace.'],
     parties:['Customers & suppliers','One party master shared across sales, purchasing and accounting.'],
     products:['Products','Reusable product master and transaction history.'],
     sales:['Sales','Quotations, invoices, receipts and project revenue.'],
@@ -2863,15 +3071,16 @@ async function functionErrorMessage(error,data){
 /* ---- order form ---- */
 async function openForm(id){
   editingId = id||null;
+  const o = id ? orders.find(x=>x.id===id) : null;
   const categorySel = document.getElementById('f-category');
   categorySel.innerHTML = ORDER_CATEGORIES.map(category=>`<option>${category}</option>`).join('');
   const custSel = document.getElementById('f-customer-id');
-  if(!customers.length){
+  const selectableCustomers=customers.filter(c=>c.active!==false||c.id===o?.customer_id);
+  if(!selectableCustomers.length){
     custSel.innerHTML = `<option value="">No customers yet — add one first</option>`;
   } else {
-    custSel.innerHTML = customers.map(c=>`<option value="${c.id}">${esc(c.name)}${c.city?' — '+esc(c.city):''}</option>`).join('');
+    custSel.innerHTML = selectableCustomers.map(c=>`<option value="${c.id}">${esc(c.name)}${c.city?' — '+esc(c.city):''}</option>`).join('');
   }
-  const o = id ? orders.find(x=>x.id===id) : null;
   document.getElementById('modal-title').textContent = o? 'Edit order' : 'New order';
   document.getElementById('btn-delete').style.display = o? 'inline':'none';
   if(o) custSel.value = o.customer_id;
@@ -3239,6 +3448,7 @@ async function saveOrder(){
     if(emailResult && !emailResult.ok) warnings.push('customer email failed: '+emailResult.message);
   }
   await loadOrders();
+  try{ await syncOneOrderToErp(savedId); }catch(error){ warnings.push('ERP project sync failed: '+error.message); }
   closeForm();
   renderAdmin();
   if(shouldEmailCustomer) openWhatsAppForOrder(savedId);

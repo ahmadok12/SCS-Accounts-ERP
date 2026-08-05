@@ -1,4 +1,4 @@
-const CACHE_NAME = 'scs-erp-phase2';
+const CACHE_NAME = 'scs-erp-phase2-1';
 const APP_SHELL = ['./index.html', './manifest.webmanifest'];
 
 self.addEventListener('install', event => {
