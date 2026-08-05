@@ -1395,8 +1395,8 @@ const STAGE_MESSAGES = {
 };
 const TRACKING_PORTAL_URL = 'https://track.shaikhchinasourcing.com/';
 // ===== Supabase config — fill these in from Settings → API in your Supabase project =====
-const SUPABASE_URL = 'https://eourkizstbgmrqkdwnjd.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_rEKWzv2DaUZHhHwBdCJKXg_9jEQkz6k';
+const SUPABASE_URL = 'YOUR_NEW_ERP_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_NEW_ERP_SUPABASE_PUBLISHABLE_KEY';
 // Deploy the supplied Cloudflare Worker, then paste its https:// URL here.
 // R2 credentials never belong in this GitHub Pages file.
 const R2_API_BASE = 'YOUR_CLOUDFLARE_WORKER_URL';
@@ -2024,7 +2024,7 @@ function showAdminPage(page, scroll=true){
   adminPage = page;
   const meta = {
     dashboard:['ERP dashboard','Orders, customers and operating activity at a glance.'],
-    orders:['Orders / Projects','Your existing tracker is the central project workspace.'],
+    orders:['Orders / Projects','The integrated order tracker is the central project workspace.'],
     parties:['Customers & suppliers','One party master shared across sales, purchasing and accounting.'],
     products:['Products','Reusable product master and transaction history.'],
     sales:['Sales','Quotations, invoices, receipts and project revenue.'],
