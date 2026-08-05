@@ -1394,14 +1394,15 @@ const STAGE_MESSAGES = {
   'Delivered':'Your order has been delivered successfully.'
 };
 const TRACKING_PORTAL_URL = 'https://track.shaikhchinasourcing.com/';
-// ===== Supabase config — fill these in from Settings → API in your Supabase project =====
-const SUPABASE_URL = 'YOUR_NEW_ERP_SUPABASE_URL';
-const SUPABASE_ANON_KEY = 'YOUR_NEW_ERP_SUPABASE_PUBLISHABLE_KEY';
+// ===== Standalone SCS ERP Supabase project =====
+// The publishable key is intended for browser clients; authorization is enforced by RLS.
+const SUPABASE_URL = 'https://rxfgxoveafqmuwhcxsbb.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_mPm7GUfND5bPjj7SDOwB9w_TgGHzTbZ';
 // Deploy the supplied Cloudflare Worker, then paste its https:// URL here.
 // R2 credentials never belong in this GitHub Pages file.
 const R2_API_BASE = 'YOUR_CLOUDFLARE_WORKER_URL';
-const NEEDS_SETUP = SUPABASE_URL.startsWith('YOUR_') || SUPABASE_ANON_KEY.startsWith('YOUR_');
-const sb = NEEDS_SETUP ? null : supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const NEEDS_SETUP = SUPABASE_URL.startsWith('YOUR_') || SUPABASE_PUBLISHABLE_KEY.startsWith('YOUR_');
+const sb = NEEDS_SETUP ? null : supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
 let orders = [];
 let customers = [];       // admin: every customer. customer login: just their own row.
