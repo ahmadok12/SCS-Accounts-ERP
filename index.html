@@ -721,6 +721,7 @@ td .stagechip{
         <button id="nav-inventory" onclick="showAdminPage('inventory')">Inventory</button>
         <button id="nav-logistics" onclick="showAdminPage('logistics')">Logistics</button>
         <button id="nav-accounting" onclick="showAdminPage('accounting')">Accounting</button>
+        <button id="nav-expenses" onclick="showAdminPage('expenses')">Expenses</button>
         <button id="nav-banking" onclick="showAdminPage('banking')">Banking</button>
         <button id="nav-reports" onclick="showAdminPage('reports')">Reports</button>
         <button id="nav-leads" onclick="showAdminPage('leads')">Leads <span id="lead-nav-count"></span></button>
@@ -732,6 +733,7 @@ td .stagechip{
         <div class="erp-module-strip" aria-label="ERP quick access">
           <button class="erp-module" style="text-align:left;cursor:pointer" onclick="showAdminPage('parties')"><b>Parties</b><span>Customers &amp; suppliers</span></button>
           <button class="erp-module" style="text-align:left;cursor:pointer" onclick="showAdminPage('accounting')"><b>Accounting</b><span>Journals &amp; chart of accounts</span></button>
+          <button class="erp-module" style="text-align:left;cursor:pointer" onclick="showAdminPage('expenses')"><b>Expenses</b><span>Project &amp; business costs</span></button>
           <button class="erp-module" style="text-align:left;cursor:pointer" onclick="showAdminPage('banking')"><b>Banking</b><span>PKR / CNY accounts</span></button>
           <button class="erp-module" style="text-align:left;cursor:pointer" onclick="showAdminPage('reports')"><b>Reports</b><span>Trial balance &amp; exports</span></button>
         </div>
@@ -952,9 +954,16 @@ td .stagechip{
           <div class="erp-card erp-span-4"><div class="erp-kicker">Ledger</div><h3>Posted journals</h3><div class="erp-metric red" id="erp-journal-count">0</div><div class="sub">Double-entry records</div></div>
           <div class="erp-card erp-span-4"><div class="erp-kicker">Reporting currency</div><h3>Base currency</h3><div class="erp-metric">PKR</div><div class="sub">CNY transactions retain their FX rate</div></div>
           <div class="erp-card erp-span-4"><div class="erp-kicker">Control</div><h3>Journal balance</h3><div class="erp-metric" id="erp-ledger-balance">PKR 0</div><div class="sub">Debit minus credit across loaded lines</div></div>
-          <div class="erp-card erp-span-8"><div class="erp-card-head"><div><h2>Recent journal entries</h2><p class="sub">Every posting can be allocated to an Order / Project.</p></div><button class="btn gold sm" onclick="openErpModal('journal')">+ New journal</button></div><div class="erp-list" id="erp-journal-list"></div></div>
+          <div class="erp-card erp-span-8"><div class="erp-card-head"><div><h2>Recent journal entries</h2><p class="sub">Every posting can be allocated to an Order / Project.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost sm" onclick="showAdminPage('expenses')">Expenses</button><button class="btn gold sm" onclick="openErpModal('journal')">+ New journal</button></div></div><div class="erp-list" id="erp-journal-list"></div></div>
           <div class="erp-card erp-span-4"><div class="erp-card-head"><div><h2>Chart of accounts</h2><p class="sub">Portable PostgreSQL master.</p></div></div><div class="erp-list" id="erp-account-list"></div></div>
         </div>
+      </div>
+
+      <div class="admin-page" id="page-expenses">
+        <div class="section-head" style="margin-top:0"><div><h2>Business expenses</h2><p class="order-filter-note">Record project costs and general overhead, then post them into the ledger.</p></div><button class="btn gold sm" onclick="openErpModal('expense')">+ New expense</button></div>
+        <div class="sales-kpis"><div class="sales-kpi red"><span>Posted this month</span><b id="expense-month-total">PKR 0</b></div><div class="sales-kpi"><span>Project expenses</span><b id="expense-project-total">PKR 0</b></div><div class="sales-kpi"><span>General expenses</span><b id="expense-general-total">PKR 0</b></div></div>
+        <div class="erp-toolbar"><div style="display:flex;gap:8px;flex-wrap:wrap"><select id="expense-status-filter" onchange="renderExpenses()"><option value="">Any status</option><option value="draft">Draft</option><option value="submitted">Submitted</option><option value="approved">Approved</option><option value="posted">Posted</option><option value="cancelled">Cancelled</option></select><select id="expense-project-filter" onchange="renderExpenses()"><option value="">All allocations</option><option value="project">Project expenses</option><option value="general">General expenses</option></select></div><input id="expense-search" type="search" placeholder="Search expense, category, party or project" oninput="renderExpenses()"></div>
+        <div class="table-wrap"><table class="erp-table"><thead><tr><th>Expense</th><th>Category</th><th>Project / payee</th><th>Date</th><th>Status</th><th class="num">Amount</th><th></th></tr></thead><tbody id="expense-document-rows"></tbody></table><div class="erp-empty" id="expense-empty">No expenses yet. Record your first project or business expense.</div></div>
       </div>
 
       <div class="admin-page" id="page-banking">
@@ -1452,6 +1461,7 @@ let erpAttachments = [];
 let erpDocuments = [];
 let erpDocumentLines = [];
 let erpPaymentAllocations = [];
+let erpExpenseCategories = [];
 let salesDocumentContext = null;
 let erpModalType = null;
 function emptyOrderFilter(){ return {stage:'', customerId:'', category:'', state:''}; }
@@ -1584,7 +1594,7 @@ function seedErpPreview(){
 
 async function loadErp(){
   if(NEEDS_SETUP){ seedErpPreview(); erpAvailable=false; renderErp(); return; }
-  const [parties,projects,accounts,journals,lines,banks,attachments,documents,documentLines,paymentAllocations] = await Promise.all([
+  const [parties,projects,accounts,journals,lines,banks,attachments,documents,documentLines,paymentAllocations,expenseCategories] = await Promise.all([
     sb.from('erp_parties').select('*').order('name'),
     sb.from('erp_projects').select('*').order('created_at',{ascending:false}),
     sb.from('erp_accounts').select('*').eq('active',true).order('code'),
@@ -1592,9 +1602,10 @@ async function loadErp(){
     sb.from('erp_journal_lines').select('*').limit(1000),
     sb.from('erp_bank_accounts').select('*').eq('active',true).order('name'),
     sb.from('erp_attachments').select('*').order('created_at',{ascending:false}).limit(100),
-    sb.from('erp_documents').select('*').in('document_type',['quotation','sales_invoice','receipt']).order('document_date',{ascending:false}).limit(500),
+    sb.from('erp_documents').select('*').in('document_type',['quotation','sales_invoice','receipt','expense']).order('document_date',{ascending:false}).limit(750),
     sb.from('erp_document_lines').select('*').order('line_no').limit(3000),
-    sb.from('erp_payment_allocations').select('*').limit(3000)
+    sb.from('erp_payment_allocations').select('*').limit(3000),
+    sb.from('erp_expense_categories').select('*').eq('active',true).order('name')
   ]);
   if(parties.error){
     erpAvailable=false;
@@ -1603,7 +1614,7 @@ async function loadErp(){
     erpAvailable=true;
     erpParties=parties.data||[]; erpProjects=projects.data||[]; erpAccounts=accounts.data||[];
     erpJournals=journals.data||[]; erpJournalLines=lines.data||[]; erpBanks=banks.data||[]; erpAttachments=attachments.data||[];
-    erpDocuments=documents.error?[]:(documents.data||[]); erpDocumentLines=documentLines.error?[]:(documentLines.data||[]); erpPaymentAllocations=paymentAllocations.error?[]:(paymentAllocations.data||[]);
+    erpDocuments=documents.error?[]:(documents.data||[]); erpDocumentLines=documentLines.error?[]:(documentLines.data||[]); erpPaymentAllocations=paymentAllocations.error?[]:(paymentAllocations.data||[]); erpExpenseCategories=expenseCategories.error?[]:(expenseCategories.data||[]);
   }
   renderErp();
 }
@@ -1613,7 +1624,7 @@ function erpMoney(value,currency='PKR'){
 }
 function renderErp(){
   const note=document.getElementById('erp-setup-note'); if(note) note.style.display=erpAvailable?'none':'block';
-  renderErpParties(); renderErpAccounting(); renderErpBanks(); renderTrialBalance(); renderSales();
+  renderErpParties(); renderErpAccounting(); renderErpBanks(); renderTrialBalance(); renderSales(); renderExpenses();
 }
 function renderErpParties(){
   const rows=document.getElementById('erp-party-rows'); if(!rows) return;
@@ -1640,6 +1651,40 @@ function renderErpBanks(){
   const grid=document.getElementById('erp-bank-grid'); if(!grid) return;
   document.getElementById('erp-bank-empty').style.display=erpBanks.length?'none':'block';
   grid.innerHTML=erpBanks.map(b=>`<div class="erp-card erp-span-4"><div class="erp-kicker">${esc(b.currency||'PKR')} account</div><h2>${esc(b.name)}</h2><div class="sub">${esc(b.bank_name||'Cash / other')} ${b.account_no?'· '+esc(b.account_no):''}</div><div class="erp-metric red">${erpMoney(b.opening_balance||0,b.currency||'PKR')}</div><div class="sub">Opening balance</div></div>`).join('');
+}
+function expenseCategory(id){ return erpExpenseCategories.find(c=>c.id===id); }
+function expenseBaseAmount(doc){ return (Number(doc?.total)||0)*(Number(doc?.exchange_rate)||1); }
+function expenseActions(doc){
+  if(doc.status==='draft') return `<button class="btn ghost sm" onclick="editExpenseDocument('${doc.id}')">Edit</button><button class="btn gold sm" onclick="postExpense('${doc.id}')">Post</button>`;
+  return '';
+}
+function renderExpenses(){
+  const body=document.getElementById('expense-document-rows'); if(!body) return;
+  const docs=erpDocuments.filter(d=>d.document_type==='expense');
+  const month=todayInputDate().slice(0,7);
+  const posted=docs.filter(d=>d.status==='posted');
+  const sum=list=>list.reduce((s,d)=>s+expenseBaseAmount(d),0);
+  document.getElementById('expense-month-total').textContent=erpMoney(sum(posted.filter(d=>String(d.document_date||'').startsWith(month))),'PKR');
+  document.getElementById('expense-project-total').textContent=erpMoney(sum(posted.filter(d=>d.project_id)),'PKR');
+  document.getElementById('expense-general-total').textContent=erpMoney(sum(posted.filter(d=>!d.project_id)),'PKR');
+  const q=(document.getElementById('expense-search')?.value||'').trim().toLowerCase(); const status=document.getElementById('expense-status-filter')?.value||''; const allocation=document.getElementById('expense-project-filter')?.value||'';
+  const list=docs.filter(d=>{
+    if(status&&d.status!==status) return false; if(allocation==='project'&&!d.project_id) return false; if(allocation==='general'&&d.project_id) return false;
+    const cat=expenseCategory(d.expense_category_id), project=salesProject(d.project_id), party=salesParty(d.party_id);
+    return !q||[d.document_no,d.notes,d.reference,cat?.name,project?.project_no,project?.name,party?.name].some(v=>String(v||'').toLowerCase().includes(q));
+  }).sort((a,b)=>String(b.document_date||'').localeCompare(String(a.document_date||''))||String(b.created_at||'').localeCompare(String(a.created_at||'')));
+  document.getElementById('expense-empty').style.display=list.length?'none':'block';
+  body.innerHTML=list.map(d=>{const cat=expenseCategory(d.expense_category_id),project=salesProject(d.project_id),party=salesParty(d.party_id); const attachments=erpAttachments.filter(a=>a.entity_type==='expense'&&a.entity_id===d.id).length; return `<tr><td><strong>${esc(d.document_no)}</strong><div class="sales-doc-sub">${esc(d.reference||'')}${attachments?` · ${attachments} attachment${attachments===1?'':'s'}`:''}</div></td><td>${esc(cat?.name||'Uncategorized')}</td><td><strong>${esc(project?.project_no||'General')}</strong><div class="sales-doc-sub">${esc(party?.name||project?.name||'No payee')}</div></td><td>${esc(fmtDate(d.document_date))}</td><td><span class="erp-chip sales-status-${esc(d.status)}">${esc(d.status)}</span></td><td class="num"><strong>${erpMoney(d.total,d.currency)}</strong>${d.currency!=='PKR'?`<div class="sales-doc-sub">${erpMoney(expenseBaseAmount(d),'PKR')}</div>`:''}</td><td><div class="table-actions">${expenseActions(d)}</div></td></tr>`;}).join('');
+}
+function expenseFormCurrencyChanged(){
+  const currency=document.getElementById('erp-f-expense-currency')?.value||'PKR'; const rateWrap=document.getElementById('erp-f-expense-rate-wrap'); if(rateWrap) rateWrap.style.display=currency==='PKR'?'none':'block';
+  const bank=document.getElementById('erp-f-expense-bank'); if(!bank) return; const selected=bank.value; const compatible=erpBanks.filter(b=>b.active!==false&&b.ledger_account_id&&b.currency===currency); bank.innerHTML=`<option value="">Select payment account…</option>${compatible.map(b=>`<option value="${esc(b.id)}">${esc(b.name)} · ${esc(b.currency)}</option>`).join('')}`; if(compatible.some(b=>b.id===selected)) bank.value=selected;
+  const warning=document.getElementById('expense-bank-warning'); if(warning) warning.style.display=compatible.length?'none':'block';
+}
+function editExpenseDocument(id){ const doc=erpDocuments.find(d=>d.id===id&&d.document_type==='expense'); if(doc) openErpModal('expense',doc); }
+async function postExpense(id){
+  const doc=erpDocuments.find(d=>d.id===id&&d.document_type==='expense'); if(!doc||doc.status!=='draft') return;
+  try{const {error}=await sb.from('erp_documents').update({status:'posted'}).eq('id',id); if(error) throw error; await loadErp(); toast('Expense posted — accounting journal created');}catch(error){toast(error.message||'Could not post expense');}
 }
 function salesDocLabel(type){ return type==='quotation'?'Quotation':type==='sales_invoice'?'Sales invoice':'Receipt'; }
 function salesParty(id){ return erpParties.find(p=>p.id===id); }
@@ -1837,7 +1882,7 @@ async function syncOneOrderToErp(orderId){
   await loadErp();
 }
 
-function openErpModal(type){
+function openErpModal(type,editRecord=null){
   erpModalType=type; const title=document.getElementById('erp-modal-title'); const body=document.getElementById('erp-modal-body');
   document.querySelector('#erp-modal-bg .modal').style.maxWidth='620px'; document.getElementById('erp-modal-save').textContent='Save';
   if(type==='party'){
@@ -1852,6 +1897,11 @@ function openErpModal(type){
     const opts=erpAccounts.map(a=>`<option value="${esc(a.id)}">${esc(a.code)} · ${esc(a.name)}</option>`).join(''); const projects=erpProjects.map(p=>`<option value="${esc(p.id)}">${esc(p.project_no)} · ${esc(p.name)}</option>`).join('');
     title.textContent='New journal entry';
     body.innerHTML=`<div class="erp-form-grid"><div class="erp-field"><label>Date</label><input id="erp-f-date" type="date" value="${todayInputDate()}"></div><div class="erp-field"><label>Project allocation</label><select id="erp-f-project"><option value="">General / no project</option>${projects}</select></div><div class="erp-field full"><label>Description</label><input id="erp-f-description" placeholder="What is this transaction for?"></div><div class="erp-field"><label>Currency</label><select id="erp-f-jcurrency" onchange="document.getElementById('erp-f-rate-wrap').style.display=this.value==='PKR'?'none':'block'"><option>PKR</option><option>CNY</option><option>USD</option></select></div><div class="erp-field" id="erp-f-rate-wrap" style="display:none"><label>PKR exchange rate</label><input id="erp-f-rate" type="number" min="0.000001" step="0.000001" value="1"></div><div class="erp-field"><label>Debit account</label><select id="erp-f-debit">${opts}</select></div><div class="erp-field"><label>Credit account</label><select id="erp-f-credit">${opts}</select></div><div class="erp-field full"><label>Amount</label><input id="erp-f-amount" type="number" min="0.01" step="0.01" placeholder="0.00"></div></div>`;
+  } else if(type==='expense'){
+    const d=editRecord||{}; const categoryOptions=erpExpenseCategories.map(c=>`<option value="${esc(c.id)}" ${c.id===d.expense_category_id?'selected':''}>${esc(c.name)}</option>`).join(''); const projectOptions=erpProjects.filter(p=>!['cancelled','closed'].includes(p.status)||p.id===d.project_id).map(p=>`<option value="${esc(p.id)}" ${p.id===d.project_id?'selected':''}>${esc(p.project_no)} · ${esc(p.name)}</option>`).join(''); const partyOptions=erpParties.filter(p=>p.active!==false).map(p=>`<option value="${esc(p.id)}" ${p.id===d.party_id?'selected':''}>${esc(p.name)}</option>`).join(''); const r2Ready=!R2_API_BASE.startsWith('YOUR_');
+    title.textContent=d.id?'Edit draft expense':'New business expense'; document.getElementById('erp-modal-save').textContent='Save draft'; document.querySelector('#erp-modal-bg .modal').style.maxWidth='720px';
+    body.innerHTML=`<div class="erp-form-grid"><input id="erp-f-expense-id" type="hidden" value="${esc(d.id||'')}"><div class="erp-field"><label>Date</label><input id="erp-f-expense-date" type="date" value="${esc(d.document_date||todayInputDate())}"></div><div class="erp-field"><label>Category</label><select id="erp-f-expense-category"><option value="">Select category…</option>${categoryOptions}</select></div><div class="erp-field full"><label>Description</label><input id="erp-f-expense-description" value="${esc(d.notes||'')}" placeholder="e.g. Factory inspection for LED lamp order"></div><div class="erp-field"><label>Amount</label><input id="erp-f-expense-amount" type="number" min="0.01" step="0.01" value="${d.total??''}" placeholder="0.00"></div><div class="erp-field"><label>Currency</label><select id="erp-f-expense-currency" onchange="expenseFormCurrencyChanged()"><option ${d.currency==='PKR'||!d.currency?'selected':''}>PKR</option><option ${d.currency==='CNY'?'selected':''}>CNY</option><option ${d.currency==='USD'?'selected':''}>USD</option></select></div><div class="erp-field" id="erp-f-expense-rate-wrap"><label>PKR exchange rate</label><input id="erp-f-expense-rate" type="number" min="0.000001" step="0.000001" value="${Number(d.exchange_rate)||1}"></div><div class="erp-field"><label>Paid from (required to post)</label><select id="erp-f-expense-bank"></select><div id="expense-bank-warning" class="erp-setup" style="margin:8px 0 0">No linked bank/cash account exists for this currency yet. You can save a draft, then create one in Banking before posting.</div></div><div class="erp-field"><label>Project allocation</label><select id="erp-f-expense-project"><option value="">General / no project</option>${projectOptions}</select></div><div class="erp-field"><label>Payee / supplier (optional)</label><select id="erp-f-expense-party"><option value="">No party</option>${partyOptions}</select></div><div class="erp-field"><label>Reference (optional)</label><input id="erp-f-expense-reference" value="${esc(d.reference||'')}" placeholder="Receipt / voucher / invoice no."></div><div class="erp-field full"><label>Receipt / attachment (optional)</label><input id="erp-f-expense-file" type="file" ${r2Ready?'':'disabled'}><div class="sub" style="margin-top:6px">${r2Ready?'Stored with this expense in Cloudflare R2 after saving.':'Attachment upload becomes available after the R2 gateway is configured.'}</div></div></div>`;
+    expenseFormCurrencyChanged(); const bank=document.getElementById('erp-f-expense-bank'); if([...bank.options].some(o=>o.value===d.bank_account_id)) bank.value=d.bank_account_id;
   } else if(type==='bank'){
     const assetAccounts=erpAccounts.filter(a=>a.account_type==='asset').map(a=>`<option value="${esc(a.id)}">${esc(a.code)} · ${esc(a.name)}</option>`).join('');
     title.textContent='New bank / cash account';
@@ -1871,6 +1921,12 @@ async function saveErpModal(){
       const record={project_no:document.getElementById('erp-f-project-no').value.trim(),party_id:document.getElementById('erp-f-project-party').value||null,name:document.getElementById('erp-f-project-name').value.trim(),transaction_type:document.getElementById('erp-f-project-type').value,reporting_currency:document.getElementById('erp-f-project-currency').value,status:'active',notes:document.getElementById('erp-f-project-notes').value.trim()||null};
       if(!record.project_no||!record.name||!record.party_id) throw new Error('Project number, customer and project name are required');
       const {error}=await sb.from('erp_projects').insert(record); if(error) throw error;
+    } else if(erpModalType==='expense'){
+      const id=document.getElementById('erp-f-expense-id').value||null; const amount=Number(document.getElementById('erp-f-expense-amount').value); const currency=document.getElementById('erp-f-expense-currency').value; const rate=currency==='PKR'?1:Number(document.getElementById('erp-f-expense-rate').value); const category=document.getElementById('erp-f-expense-category').value; const bank=document.getElementById('erp-f-expense-bank').value; const notes=document.getElementById('erp-f-expense-description').value.trim();
+      if(!category) throw new Error('Choose an expense category'); if(!notes) throw new Error('Enter an expense description'); if(!amount||amount<=0) throw new Error('Enter a positive expense amount'); if(!rate||rate<=0) throw new Error('Enter a valid exchange rate');
+      const record={document_type:'expense',document_no:'',document_date:document.getElementById('erp-f-expense-date').value,expense_category_id:category,project_id:document.getElementById('erp-f-expense-project').value||null,party_id:document.getElementById('erp-f-expense-party').value||null,bank_account_id:bank,currency,exchange_rate:rate,status:'draft',subtotal:amount,tax_total:0,total:amount,notes,reference:document.getElementById('erp-f-expense-reference').value.trim()||null}; let expenseId=id;
+      if(id){delete record.document_no; const {error}=await sb.from('erp_documents').update(record).eq('id',id).eq('status','draft'); if(error) throw error;} else {const {data,error}=await sb.from('erp_documents').insert(record).select('id').single(); if(error) throw error; expenseId=data.id;}
+      const file=document.getElementById('erp-f-expense-file').files?.[0]; if(file) await uploadErpAttachment(file,{entityType:'expense',entityId:expenseId,projectId:record.project_id});
     } else if(erpModalType==='bank'){
       const record={name:document.getElementById('erp-f-bank-name').value.trim(),bank_name:document.getElementById('erp-f-bank-bank').value.trim()||null,account_no:document.getElementById('erp-f-bank-no').value.trim()||null,currency:document.getElementById('erp-f-bank-currency').value,opening_balance:Number(document.getElementById('erp-f-bank-opening').value)||0,ledger_account_id:document.getElementById('erp-f-bank-ledger').value||null};
       if(!record.name) throw new Error('Account name is required');
@@ -2240,12 +2296,13 @@ function showAdminPage(page, scroll=true){
     inventory:['Inventory','Movement-based stock across multiple warehouses.'],
     logistics:['Logistics','Goods receipt, warehouse movement, shipping and delivery.'],
     accounting:['Accounting','Double-entry journals, chart of accounts and multi-currency posting.'],
+    expenses:['Expenses','Project costs and general business overhead with automatic accounting.'],
     banking:['Banking','PKR and CNY bank/cash accounts and statements.'],
     reports:['Reports','Trial balance today; GL, profitability and statements next.'],
     leads:['Lead management','Follow up inquiries received across all connected websites.'],
     users:['User management','Manage customer access, team users and account activity.']
   };
-  ['dashboard','orders','parties','products','sales','purchasing','inventory','logistics','accounting','banking','reports','leads','users'].forEach(name=>{
+  ['dashboard','orders','parties','products','sales','purchasing','inventory','logistics','accounting','expenses','banking','reports','leads','users'].forEach(name=>{
     document.getElementById(`page-${name}`).classList.toggle('on', name===page);
     document.getElementById(`nav-${name}`).classList.toggle('active', name===page);
   });
