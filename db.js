@@ -897,6 +897,24 @@ function initDb() {
     db.prepare("UPDATE counters SET next_serial = 3 WHERE name = 'transfer'").run();
   }
 
+  // Repair any transfers that have blank or null bank names
+  try {
+    db.prepare(`
+      UPDATE bank_transfers 
+      SET from_bank_name = (SELECT name FROM banks WHERE banks.id = bank_transfers.from_bank_id)
+      WHERE (from_bank_name IS NULL OR TRIM(from_bank_name) = '')
+        AND EXISTS (SELECT 1 FROM banks WHERE banks.id = bank_transfers.from_bank_id)
+    `).run();
+    db.prepare(`
+      UPDATE bank_transfers 
+      SET to_bank_name = (SELECT name FROM banks WHERE banks.id = bank_transfers.to_bank_id)
+      WHERE (to_bank_name IS NULL OR TRIM(to_bank_name) = '')
+        AND EXISTS (SELECT 1 FROM banks WHERE banks.id = bank_transfers.to_bank_id)
+    `).run();
+  } catch (e) {
+    console.error('Error repairing bank transfers:', e.message);
+  }
+
   // Seed shipping statuses if empty
   const countShipping = db.prepare('SELECT COUNT(*) as cnt FROM order_shipping_statuses').get().cnt;
   if (countShipping === 0) {

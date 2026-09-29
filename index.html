@@ -17888,11 +17888,19 @@
 
       if (emptyState) emptyState.classList.add('hidden');
       container.innerHTML = list.map(t => {
-        const fromCur = t.from_currency || 'RMB';
-        const toCur = t.to_currency || 'RMB';
-        const fromAmtStr = `${fromCur} ${Number(t.from_amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-        const toAmtStr = `${toCur} ${Number(t.to_amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
-        const isFx = fromCur !== toCur;
+        const fromBank = (banks || []).find(b => b.id == (t.from_bank_id || t.fromBankId));
+        const toBank = (banks || []).find(b => b.id == (t.to_bank_id || t.toBankId));
+        const fromBankName = t.from_bank_name || t.fromBankName || fromBank?.name || 'Unknown Bank';
+        const toBankName = t.to_bank_name || t.toBankName || toBank?.name || 'Unknown Bank';
+        const fromCur = t.from_currency || t.fromCurrency || fromBank?.currency || 'RMB';
+        const toCur = t.to_currency || t.toCurrency || toBank?.currency || 'RMB';
+        const fromAmt = t.from_amount !== undefined ? Number(t.from_amount) : (t.fromAmount !== undefined ? Number(t.fromAmount) : (t.sourceAmount !== undefined ? Number(t.sourceAmount) : (Number(t.amount) || 0)));
+        const toAmt = t.to_amount !== undefined ? Number(t.to_amount) : (t.toAmount !== undefined ? Number(t.toAmount) : (t.destAmount !== undefined ? Number(t.destAmount) : fromAmt));
+        const exRate = Number(t.exchange_rate !== undefined ? t.exchange_rate : (t.exchangeRate !== undefined ? t.exchangeRate : 1));
+
+        const fromAmtStr = `${fromCur} ${fromAmt.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+        const toAmtStr = `${toCur} ${toAmt.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+        const isFx = fromCur !== toCur || exRate !== 1;
 
         return `
           <div onclick="openViewBankTransferModal('${t.id}')" class="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-sky-300 transition-all cursor-pointer space-y-2">
@@ -17909,11 +17917,11 @@
 
             <div class="flex items-center justify-between text-xs text-slate-600 pt-1 border-t border-slate-100">
               <div class="flex items-center gap-1.5 truncate max-w-[85%]">
-                <span class="font-bold text-slate-900 truncate">${t.from_bank_name}</span>
+                <span class="font-bold text-slate-900 truncate">${fromBankName}</span>
                 <span class="text-slate-400 font-black">&rarr;</span>
-                <span class="font-bold text-slate-900 truncate">${t.to_bank_name}</span>
+                <span class="font-bold text-slate-900 truncate">${toBankName}</span>
               </div>
-              ${isFx ? `<span class="text-[10px] font-mono font-bold bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded border border-amber-200">Rate ${Number(t.exchange_rate || 1).toFixed(4)}</span>` : ''}
+              ${isFx ? `<span class="text-[10px] font-mono font-bold bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded border border-amber-200">Rate ${exRate.toFixed(4)}</span>` : ''}
             </div>
 
             ${t.details ? `<p class="text-[11px] text-slate-500 font-medium truncate">${t.details}</p>` : ''}
@@ -17926,9 +17934,13 @@
       const q = (document.getElementById('transferSearchInput')?.value || '').toLowerCase();
       const filtered = bankTransfersList.filter(t => {
         if (!q) return true;
+        const fromBank = (banks || []).find(b => b.id == (t.from_bank_id || t.fromBankId));
+        const toBank = (banks || []).find(b => b.id == (t.to_bank_id || t.toBankId));
+        const fromBankName = (t.from_bank_name || t.fromBankName || fromBank?.name || '').toLowerCase();
+        const toBankName = (t.to_bank_name || t.toBankName || toBank?.name || '').toLowerCase();
         return (t.id && t.id.toLowerCase().includes(q)) ||
-               (t.from_bank_name && t.from_bank_name.toLowerCase().includes(q)) ||
-               (t.to_bank_name && t.to_bank_name.toLowerCase().includes(q)) ||
+               fromBankName.includes(q) ||
+               toBankName.includes(q) ||
                (t.details && t.details.toLowerCase().includes(q));
       });
       renderBankTransfersList(filtered);
@@ -18228,16 +18240,31 @@
         return;
       }
 
+      let fromBankName = document.getElementById('transferFromBankName')?.value;
+      let fromBankAccount = document.getElementById('transferFromBankAccount')?.value;
+      let toBankName = document.getElementById('transferToBankName')?.value;
+      let toBankAccount = document.getElementById('transferToBankAccount')?.value;
+      const fromBankObj = banks.find(b => b.id === fromBankId);
+      const toBankObj = banks.find(b => b.id === toBankId);
+      if (!fromBankName && fromBankObj) {
+        fromBankName = fromBankObj.name;
+        if (!fromBankAccount) fromBankAccount = fromBankObj.accountNumber || fromBankObj.account_number || '';
+      }
+      if (!toBankName && toBankObj) {
+        toBankName = toBankObj.name;
+        if (!toBankAccount) toBankAccount = toBankObj.accountNumber || toBankObj.account_number || '';
+      }
+
       const payload = {
         id: document.getElementById('transferVoucherId')?.value,
         date: document.getElementById('transferDate')?.value,
         type: 'bank_to_bank',
         from_bank_id: fromBankId,
-        from_bank_name: document.getElementById('transferFromBankName')?.value,
-        from_bank_account: document.getElementById('transferFromBankAccount')?.value,
+        from_bank_name: fromBankName,
+        from_bank_account: fromBankAccount,
         to_bank_id: toBankId,
-        to_bank_name: document.getElementById('transferToBankName')?.value,
-        to_bank_account: document.getElementById('transferToBankAccount')?.value,
+        to_bank_name: toBankName,
+        to_bank_account: toBankAccount,
         from_amount: fromAmount,
         from_currency: fromCurrency,
         to_amount: toAmount,
@@ -18266,14 +18293,24 @@
       const t = bankTransfersList.find(x => x.id === id);
       if (!t) return;
 
+      const fromBank = (banks || []).find(b => b.id == (t.from_bank_id || t.fromBankId));
+      const toBank = (banks || []).find(b => b.id == (t.to_bank_id || t.toBankId));
+      const fromBankName = t.from_bank_name || t.fromBankName || fromBank?.name || 'Unknown Bank';
+      const toBankName = t.to_bank_name || t.toBankName || toBank?.name || 'Unknown Bank';
+      const fromCur = t.from_currency || t.fromCurrency || fromBank?.currency || 'RMB';
+      const toCur = t.to_currency || t.toCurrency || toBank?.currency || 'RMB';
+      const fromAmt = t.from_amount !== undefined ? Number(t.from_amount) : (t.fromAmount !== undefined ? Number(t.fromAmount) : (t.sourceAmount !== undefined ? Number(t.sourceAmount) : (Number(t.amount) || 0)));
+      const toAmt = t.to_amount !== undefined ? Number(t.to_amount) : (t.toAmount !== undefined ? Number(t.toAmount) : (t.destAmount !== undefined ? Number(t.destAmount) : fromAmt));
+      const exRate = Number(t.exchange_rate !== undefined ? t.exchange_rate : (t.exchangeRate !== undefined ? t.exchangeRate : 1));
+
       document.getElementById('viewTransferIdBadge').textContent = t.id;
-      document.getElementById('viewTransferTypeBadge').textContent = 'Bank to Bank';
-      document.getElementById('viewTransferFromBank').textContent = t.from_bank_name;
-      document.getElementById('viewTransferToBank').textContent = t.to_bank_name;
+      document.getElementById('viewTransferTypeBadge').textContent = t.type === 'rmb_to_pkr' ? 'RMB to PKR Transfer' : (t.type === 'pkr_to_rmb' ? 'PKR to RMB Transfer' : 'Bank to Bank');
+      document.getElementById('viewTransferFromBank').textContent = fromBankName;
+      document.getElementById('viewTransferToBank').textContent = toBankName;
       document.getElementById('viewTransferDate').textContent = t.date;
-      document.getElementById('viewTransferFromAmt').textContent = `${t.from_currency || 'RMB'} ${Number(t.from_amount).toFixed(2)}`;
-      document.getElementById('viewTransferToAmt').textContent = `${t.to_currency || 'RMB'} ${Number(t.to_amount).toFixed(2)}`;
-      document.getElementById('viewTransferRate').textContent = Number(t.exchange_rate || 1).toFixed(4);
+      document.getElementById('viewTransferFromAmt').textContent = `${fromCur} ${fromAmt.toFixed(2)}`;
+      document.getElementById('viewTransferToAmt').textContent = `${toCur} ${toAmt.toFixed(2)}`;
+      document.getElementById('viewTransferRate').textContent = exRate.toFixed(4);
       document.getElementById('viewTransferDetails').textContent = t.details || 'No remarks recorded.';
 
       document.getElementById('viewBankTransferModal')?.classList.remove('hidden');

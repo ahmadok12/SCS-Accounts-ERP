@@ -2400,23 +2400,67 @@ app.delete('/api/media/:id', (req, res) => {
 // ================= BANK TRANSFERS API =================
 function formatTransfer(r) {
   if (!r) return null;
+  let fromBankName = r.from_bank_name;
+  let toBankName = r.to_bank_name;
+  let fromCurrency = r.from_currency;
+  let toCurrency = r.to_currency;
+  let fromBankAccount = r.from_bank_account;
+  let toBankAccount = r.to_bank_account;
+
+  if ((!fromBankName || !fromBankName.trim()) && r.from_bank_id) {
+    try {
+      const b = db.prepare('SELECT name, currency, account_number FROM banks WHERE id = ?').get(r.from_bank_id);
+      if (b) {
+        fromBankName = b.name;
+        if (!fromCurrency) fromCurrency = b.currency;
+        if (!fromBankAccount) fromBankAccount = b.account_number;
+      }
+    } catch (e) {}
+  }
+  if ((!toBankName || !toBankName.trim()) && r.to_bank_id) {
+    try {
+      const b = db.prepare('SELECT name, currency, account_number FROM banks WHERE id = ?').get(r.to_bank_id);
+      if (b) {
+        toBankName = b.name;
+        if (!toCurrency) toCurrency = b.currency;
+        if (!toBankAccount) toBankAccount = b.account_number;
+      }
+    } catch (e) {}
+  }
+
+  const fromAmt = Number(r.from_amount || 0);
+  const toAmt = Number(r.to_amount || 0);
+  const exRate = Number(r.exchange_rate || 1);
+
   return {
     id: r.id,
     date: r.date,
     type: r.type,
     fromBankId: r.from_bank_id,
-    fromBankName: r.from_bank_name,
-    fromBankAccount: r.from_bank_account || '',
+    from_bank_id: r.from_bank_id,
+    fromBankName: fromBankName || 'Unknown Bank',
+    from_bank_name: fromBankName || 'Unknown Bank',
+    fromBankAccount: fromBankAccount || '',
+    from_bank_account: fromBankAccount || '',
     toBankId: r.to_bank_id,
-    toBankName: r.to_bank_name,
-    toBankAccount: r.to_bank_account || '',
-    fromAmount: Number(r.from_amount || 0),
-    fromCurrency: r.from_currency,
-    toAmount: Number(r.to_amount || 0),
-    toCurrency: r.to_currency,
-    exchangeRate: Number(r.exchange_rate || 1),
+    to_bank_id: r.to_bank_id,
+    toBankName: toBankName || 'Unknown Bank',
+    to_bank_name: toBankName || 'Unknown Bank',
+    toBankAccount: toBankAccount || '',
+    to_bank_account: toBankAccount || '',
+    fromAmount: fromAmt,
+    from_amount: fromAmt,
+    fromCurrency: fromCurrency || 'RMB',
+    from_currency: fromCurrency || 'RMB',
+    toAmount: toAmt,
+    to_amount: toAmt,
+    toCurrency: toCurrency || 'RMB',
+    to_currency: toCurrency || 'RMB',
+    exchangeRate: exRate,
+    exchange_rate: exRate,
     details: r.details || '',
-    createdAt: r.created_at
+    createdAt: r.created_at,
+    created_at: r.created_at
   };
 }
 
@@ -2461,6 +2505,23 @@ app.post('/api/transfers', (req, res) => {
 
     if (!fromBankId || !toBankId || !fromAmount || Number(fromAmount) <= 0) {
       return res.status(400).json({ error: 'Valid From Bank, To Bank, and Amount are required' });
+    }
+
+    if ((!fromBankName || !fromBankName.trim()) && fromBankId) {
+      const b = db.prepare('SELECT name, currency, account_number FROM banks WHERE id = ?').get(fromBankId);
+      if (b) {
+        fromBankName = b.name;
+        if (!fromCurrency) fromCurrency = b.currency;
+        if (!fromBankAccount) fromBankAccount = b.account_number;
+      }
+    }
+    if ((!toBankName || !toBankName.trim()) && toBankId) {
+      const b = db.prepare('SELECT name, currency, account_number FROM banks WHERE id = ?').get(toBankId);
+      if (b) {
+        toBankName = b.name;
+        if (!toCurrency) toCurrency = b.currency;
+        if (!toBankAccount) toBankAccount = b.account_number;
+      }
     }
 
     if (!id) {
