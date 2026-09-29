@@ -1,0 +1,14 @@
+{
+  "name": "scs-accounts-erp",
+  "version": "2.0.0",
+  "description": "Shaikh China Sourcing Accounts ERP - Standalone Serverless & Local App",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed": "node seed.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^4.22.2"
+  }
+}

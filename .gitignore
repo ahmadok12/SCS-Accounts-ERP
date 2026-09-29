@@ -1,0 +1,22 @@
+# Database & Local Data (Zero-database on Git/GitHub)
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+database.sqlite
+
+# Node dependencies
+node_modules/
+package-lock.json
+
+# Environment and logs
+.env
+*.log
+npm-debug.log*
+
+# Scratch & build temporary files
+scratch/
+
+# OS files
+.DS_Store
+Thumbs.db
